@@ -1,0 +1,261 @@
+/* SemesterResults.css */
+
+.semesterresults-container {
+  font-family: var(--font-sans);
+  padding-bottom: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.semesterresults-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+  .semesterresults-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.header-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.semesterresults-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.semesterresults-subtitle {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: 6px;
+  margin-bottom: 0;
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.semester-select-dropdown {
+  appearance: none;
+  background-color: #111215;
+  border: 1px solid var(--border-color);
+  color: #ffffff;
+  padding: 8px 36px 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  outline: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-sizing: border-box;
+}
+
+.semester-select-dropdown:hover,
+.semester-select-dropdown:focus {
+  border-color: rgba(227, 27, 35, 0.45);
+  box-shadow: 0 0 10px rgba(227, 27, 35, 0.05);
+}
+
+.select-wrapper::after {
+  content: "▾";
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  pointer-events: none;
+  font-size: 12px;
+}
+
+/* Loading state */
+.semesterresults-loading-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.loading-metrics-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .loading-metrics-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.loading-split-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 1024px) {
+  .loading-split-row {
+    grid-template-columns: 1.4fr 1fr;
+  }
+}
+
+/* Metrics Grid */
+.semesterresults-metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+@media (min-width: 768px) {
+  .semesterresults-metrics-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.gpa-metric-card {
+  padding: 24px;
+  background-color: #111215;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-sizing: border-box;
+}
+
+.metric-card-lbl {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.metric-card-val {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.text-red {
+  color: #E31B23;
+}
+
+.text-green {
+  color: #10b981;
+}
+
+.text-white {
+  color: #ffffff;
+}
+
+/* Split Grid */
+.semesterresults-split-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+@media (min-width: 1024px) {
+  .semesterresults-split-grid {
+    grid-template-columns: 1.4fr 1fr;
+  }
+}
+
+.results-table-card,
+.results-chart-card {
+  padding: 24px;
+  background-color: #111215;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.card-section-title {
+  font-size: 15px;
+  font-weight: 750;
+  color: #ffffff;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.table-wrapper-box {
+  overflow-x: auto;
+  flex: 1;
+}
+
+.results-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.results-data-table th {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.results-data-table td {
+  font-size: 12.5px;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+}
+
+.results-data-table tr:hover td {
+  background-color: rgba(255, 255, 255, 0.01);
+}
+
+.code-td {
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.bold-td {
+  font-weight: 700;
+  color: #ffffff !important;
+}
+
+.trend-chart-box {
+  flex: 1;
+  height: 300px;
+  min-height: 250px;
+}
+
+/* Empty State */
+.semesterresults-empty-card {
+  border: 1.5px dashed var(--border-color);
+  border-radius: 16px;
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  background-color: #111215;
+  box-sizing: border-box;
+}

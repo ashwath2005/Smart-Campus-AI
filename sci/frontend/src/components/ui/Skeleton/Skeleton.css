@@ -1,0 +1,37 @@
+/* Skeleton Layout */
+.skeleton {
+  background-color: rgba(0, 0, 0, 0.06);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.dark .skeleton {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.skeleton-circle {
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+}
+
+.skeleton-card {
+  border-radius: var(--radius-xl);
+  height: 192px;
+  width: 100%;
+}
+
+.skeleton-rectangle {
+  border-radius: var(--radius-md);
+  height: 128px;
+  width: 100%;
+}
+
+.skeleton-text {
+  border-radius: var(--radius-sm);
+  height: 16px;
+  width: 100%;
+}
+
+.skeleton-spacing {
+  margin-top: 8px;
+}

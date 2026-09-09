@@ -1,0 +1,82 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   UTILITIES.CSS
+   Spacing helpers, colors, and utility helper classes.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* Accent theme text & backgrounds */
+.accent-text {
+  color: var(--accent);
+}
+
+.accent-text-hover:hover {
+  color: var(--accent-hover);
+}
+
+.accent-bg {
+  background-color: var(--accent);
+}
+
+.accent-bg-light {
+  background-color: var(--accent-light);
+}
+
+.accent-border {
+  border-color: var(--accent-border);
+}
+
+.accent-glow {
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+.dark .accent-text {
+  color: var(--accent-hover);
+}
+
+.dark .accent-bg-light {
+  background-color: var(--accent-light);
+}
+
+.dark .accent-border {
+  border-color: var(--accent-border);
+}
+
+/* Chat bubble shapes */
+.bubble-sent {
+  background-color: var(--text-primary);
+  color: var(--bg-primary);
+  border-radius: 18px 18px 2px 18px;
+}
+
+.bubble-received {
+  background-color: rgba(0, 0, 0, 0.03);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 18px 18px 18px 2px;
+}
+
+.dark .bubble-received {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Spacing utility classes */
+.gap-8px  { gap: 8px; }
+.gap-16px { gap: 16px; }
+.gap-24px { gap: 24px; }
+.gap-32px { gap: 32px; }
+
+.p-8px  { padding: 8px; }
+.p-16px { padding: 16px; }
+.p-24px { padding: 24px; }
+.p-32px { padding: 32px; }
+.p-48px { padding: 48px; }
+.p-64px { padding: 64px; }
+
+/* Hide scrollbars */
+.scrollbar-none::-webkit-scrollbar {
+  display: none !important;
+}
+
+.scrollbar-none {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}

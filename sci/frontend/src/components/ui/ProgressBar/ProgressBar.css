@@ -1,0 +1,61 @@
+/* Progress Bar Layout */
+.progress-bar-circle-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.progress-bar-svg {
+  transform: rotate(-90deg);
+  width: 100%;
+  height: 100%;
+}
+
+.progress-bar-circle-bg {
+  color: rgba(0, 0, 0, 0.04);
+}
+
+.dark .progress-bar-circle-bg {
+  color: rgba(255, 255, 255, 0.08);
+}
+
+.progress-bar-circle-fill {
+  transition: all 0.5s ease-out;
+}
+
+.progress-bar-label {
+  position: absolute;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font-sans);
+}
+
+.progress-bar-linear-track {
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.04);
+  border-radius: 9999px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.dark .progress-bar-linear-track {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.progress-bar-linear-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: all 0.5s ease-out;
+}
+
+/* Color Status Classes */
+.pb-success-text { color: var(--success); }
+.pb-success-bg { background-color: var(--success); }
+
+.pb-warning-text { color: var(--warning); }
+.pb-warning-bg { background-color: var(--warning); }
+
+.pb-danger-text { color: var(--danger); }
+.pb-danger-bg { background-color: var(--danger); }

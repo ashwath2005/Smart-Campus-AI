@@ -1,0 +1,114 @@
+{
+  "id": "sports-stadium",
+  "name": "Sri Krishna Stadium",
+  "code": "SKS",
+  "department": "Physical Education & Athletics Arena",
+  "latitude": 10.937142,
+  "longitude": 76.957527,
+  "confidence": "high",
+  "source": "Google Maps Satellite & SKCET Sports Board",
+  "track": {
+    "standard": "IAAF 400m 8-Lane Synthetic Standard",
+    "material": "Tartan Polyurethane Synthetic Red",
+    "lengthMeters": 400,
+    "widthMeters": 9.76,
+    "color": "#831843"
+  },
+  "innerField": {
+    "type": "Natural Athletic Turf",
+    "dimensionsMeters": [
+      68,
+      105
+    ],
+    "sports": [
+      "Football",
+      "Cricket",
+      "Athletics Track & Field"
+    ]
+  },
+  "grandstand": {
+    "capacity": 1500,
+    "type": "Covered Spectator Gallery & Cantilever Canopy",
+    "position": "west_boundary"
+  },
+  "basketballCourts": [
+    {
+      "id": "court-bb-1",
+      "name": "Basketball Court 1 (South-East)",
+      "surface": "Synthetic Acrylic Anti-skid",
+      "dimensionsMeters": [
+        28,
+        15
+      ],
+      "latitude": 10.93655,
+      "longitude": 76.95785,
+      "confidence": "verified"
+    },
+    {
+      "id": "court-bb-2",
+      "name": "Basketball Court 2 (North-East)",
+      "surface": "Synthetic Acrylic Anti-skid",
+      "dimensionsMeters": [
+        28,
+        15
+      ],
+      "latitude": 10.93685,
+      "longitude": 76.95785,
+      "confidence": "verified"
+    }
+  ],
+  "volleyballCourts": [
+    {
+      "id": "court-vb-1",
+      "name": "Volleyball Court 1",
+      "surface": "Clay & Fine Sand",
+      "dimensionsMeters": [
+        18,
+        9
+      ],
+      "latitude": 10.93735,
+      "longitude": 76.95815,
+      "confidence": "verified"
+    },
+    {
+      "id": "court-vb-2",
+      "name": "Volleyball Court 2",
+      "surface": "Clay & Fine Sand",
+      "dimensionsMeters": [
+        18,
+        9
+      ],
+      "latitude": 10.93755,
+      "longitude": 76.95815,
+      "confidence": "verified"
+    }
+  ],
+  "cricketNets": [
+    {
+      "id": "cricket-net-1",
+      "name": "Cricket Practice Net Enclosure 1",
+      "pitch": "AstroTurf Synthetic Matting",
+      "enclosure": "Galvanized Steel Frame & High-density Polyethylene Netting",
+      "dimensionsMeters": [
+        22,
+        4
+      ],
+      "latitude": 10.93785,
+      "longitude": 76.9581,
+      "confidence": "verified"
+    },
+    {
+      "id": "cricket-net-2",
+      "name": "Cricket Practice Net Enclosure 2",
+      "pitch": "AstroTurf Synthetic Matting",
+      "enclosure": "Galvanized Steel Frame & High-density Polyethylene Netting",
+      "dimensionsMeters": [
+        22,
+        4
+      ],
+      "latitude": 10.938,
+      "longitude": 76.9581,
+      "confidence": "verified"
+    }
+  ]
+}

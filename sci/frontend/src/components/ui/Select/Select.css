@@ -1,0 +1,131 @@
+/* Select Styles */
+.select-container {
+  width: 100%;
+  margin-bottom: 18px;
+  font-family: var(--font-sans);
+}
+
+.select-label {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 750;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+  padding-left: 2px;
+}
+
+.select-wrapper {
+  position: relative;
+  border-radius: var(--radius-lg);
+  box-shadow: none;
+}
+
+.select-icon-left {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  padding-left: 14px;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  color: var(--text-secondary);
+}
+
+.select-field {
+  display: block;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  background-color: rgba(0, 0, 0, 0.02);
+  color: var(--text-primary);
+  font-size: 13.5px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+  box-sizing: border-box;
+  padding-top: 11px;
+  padding-bottom: 11px;
+  padding-right: 40px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.select-field::-ms-expand {
+  display: none;
+}
+
+.dark .select-field {
+  background-color: #07080b;
+  border-color: rgba(255, 255, 255, 0.03);
+}
+
+.select-field:focus {
+  border-color: rgba(185, 28, 28, 0.5) !important;
+  box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.15) !important;
+  background-color: var(--bg-secondary);
+}
+
+.dark .select-field:focus {
+  background-color: #07080a;
+}
+
+/* Error state classes */
+.select-field-error {
+  border-color: var(--danger);
+  background-color: rgba(239, 68, 68, 0.05);
+}
+
+.select-field-error:focus {
+  background-color: var(--bg-secondary);
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+}
+
+/* Padding modifiers */
+.select-field-padding-left-icon {
+  padding-left: 40px;
+}
+
+.select-field-padding-left-normal {
+  padding-left: 16px;
+}
+
+/* Custom Dropdown Arrow */
+.select-arrow-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  padding-right: 14px;
+  pointer-events: none;
+  color: var(--text-secondary);
+}
+
+.select-arrow-right svg {
+  width: 16px;
+  height: 16px;
+}
+
+.select-option-item {
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+.dark .select-option-item {
+  background-color: #0d0d12;
+  color: #f1f5f9;
+}
+
+.select-error-text {
+  margin-top: 5px;
+  font-size: 11px;
+  color: var(--danger);
+  font-weight: 600;
+  padding-left: 2px;
+}

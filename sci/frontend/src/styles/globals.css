@@ -1,0 +1,143 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   GLOBALS.CSS
+   Clean resets, scrollbars, and base surfaces.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+html {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+}
+
+/* Neutral Clean Background (no blueprint grids or noise) */
+.digital-grid-bg {
+  background-color: var(--bg-primary);
+}
+
+/* Subtle Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.light .custom-scrollbar {
+  scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+}
+
+/* Clean Institutional Toast */
+.custom-toast-container {
+  max-width: 420px;
+  width: 100%;
+  background-color: var(--bg-secondary);
+  box-shadow: var(--shadow-elevated);
+  border-radius: var(--radius-lg);
+  pointer-events: auto;
+  display: flex;
+  box-sizing: border-box;
+  border: 1px solid var(--border-color);
+  padding: 14px;
+}
+
+.custom-toast-body {
+  flex: 1;
+  width: 0;
+}
+
+.custom-toast-content {
+  display: flex;
+  align-items: flex-start;
+}
+
+.custom-toast-icon-wrapper {
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.custom-toast-info {
+  margin-left: 10px;
+  flex: 1;
+}
+
+.custom-toast-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.custom-toast-message {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+.custom-toast-close-container {
+  margin-left: 12px;
+  flex-shrink: 0;
+  display: flex;
+}
+
+.custom-toast-close-btn {
+  border-radius: 4px;
+  padding: 4px;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-toast-close-btn:hover {
+  color: var(--text-primary);
+}

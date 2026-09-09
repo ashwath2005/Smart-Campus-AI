@@ -1,0 +1,154 @@
+/* CreateDriveModal.css */
+
+.drive-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 0.5rem 0;
+  box-sizing: border-box;
+}
+
+.drive-form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .drive-form-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.drive-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.drive-field-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: #8e9196;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.drive-field-label.highlight {
+  color: #ef4444;
+}
+
+.drive-input-control,
+.drive-select-control {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  background-color: #16171b;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.drive-input-control:focus,
+.drive-select-control:focus {
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.drive-textarea-control {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #16171b;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  resize: vertical;
+  min-height: 80px;
+  box-sizing: border-box;
+}
+
+.drive-textarea-control:focus {
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+/* Registration Mode Box */
+.registration-mode-card {
+  background-color: #111215;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0.25rem 0;
+}
+
+.registration-radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.25rem 0;
+}
+
+.registration-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  user-select: none;
+}
+
+.registration-radio-input {
+  accent-color: #ef4444;
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+.external-url-tester-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.external-url-input {
+  flex: 1;
+  padding: 0.6rem 0.85rem;
+  background-color: #16171b;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 13px;
+  outline: none;
+}
+
+.external-url-input:focus {
+  border-color: #3b82f6;
+}
+
+.external-url-hint {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+.drive-modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+  margin-top: 0.5rem;
+}

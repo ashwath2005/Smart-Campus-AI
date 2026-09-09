@@ -1,0 +1,14 @@
+﻿{
+  "project_name": "Smart Campus AI Management System",
+  "version": "1.0.0",
+  "max_iterations": 10,
+  "timeout_seconds": 180,
+  "stop_on_success": true,
+  "emergency_stop_file": ".ralph/EMERGENCY_STOP",
+  "state_file": ".ralph/state.json",
+  "commands": {
+    "test": "powershell -ExecutionPolicy Bypass -File .ralph/scripts/run-tests.ps1",
+    "frontend_build": "cd sci/frontend && npm run build",
+    "backend_test": "cd sci/backend && .\\venv\\Scripts\\python.exe -m pytest -q"
+  }
+}

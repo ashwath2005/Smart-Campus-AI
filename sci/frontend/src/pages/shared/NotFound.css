@@ -1,0 +1,80 @@
+/* NotFound.css */
+
+.pg-notfound-1 {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f7;
+  padding-left: 1rem; padding-right: 1rem;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms;
+  transition-duration: 300ms;
+  position: relative;
+  overflow: hidden;
+}
+
+.dark .pg-notfound-1 {
+  background-color: #000000;
+}
+
+.pg-notfound-2 {
+  position: absolute;
+  top: 0px;
+  width: 24rem;
+  height: 24rem;
+  background-color: rgba(0, 122, 255, 0.1);
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+.dark .pg-notfound-2 {
+  background-color: rgba(10, 132, 255, 0.15);
+}
+
+.pg-notfound-3 {
+  position: absolute;
+  bottom: 0px;
+  width: 24rem;
+  height: 24rem;
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+.pg-notfound-4 {
+  width: 100%;
+  text-align: center;
+  font-family: var(--font-sans);
+  border: 1px solid var(--border-color);
+  padding: 2rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.pg-notfound-5 {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  user-select: none;
+}
+
+.pg-notfound-6 {
+  font-size: 1.875rem; line-height: 2.25rem;
+  font-weight: 800;
+  color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+.pg-notfound-7 {
+  font-size: 0.875rem; line-height: 1.25rem;
+  color: #64748b;
+  margin-bottom: 2rem;
+  margin-left: auto; margin-right: auto;
+  line-height: 1.625;
+}
+
+.dark .pg-notfound-7 {
+  color: #94a3b8;
+}
+
+.pg-notfound-8 {
+  width: 100%;
+}
+

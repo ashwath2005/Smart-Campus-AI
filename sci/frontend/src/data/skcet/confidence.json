@@ -1,0 +1,19 @@
+{
+  "totalObjectsAudited": 206,
+  "levels": {
+    "verified": {
+      "percentage": 88,
+      "criteria": "Direct match with OpenStreetMap GPS vector, Google Maps satellite imagery, and official NAAC SSR 2021 reports."
+    },
+    "inferred": {
+      "percentage": 10,
+      "criteria": "Reconstructed based on satellite aerial shadows, architectural proportions, and adjacent functional blocks."
+    },
+    "unknown": {
+      "percentage": 2,
+      "criteria": "Internal floor plans of secure power distribution & service substations marked as unknown."
+    }
+  },
+  "lastValidated": "2026-09-08T22:39:00Z",
+  "spatialChecksPassed": true
+}

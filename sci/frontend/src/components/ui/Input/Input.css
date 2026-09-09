@@ -1,0 +1,143 @@
+/* Input Styles */
+.input-container {
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+.input-label {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 750;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+  font-family: var(--font-sans);
+  padding-left: 2px;
+}
+
+.input-wrapper {
+  position: relative;
+  border-radius: var(--radius-lg);
+  box-shadow: none;
+}
+
+.input-icon-left {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  padding-left: 14px;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  color: var(--text-secondary);
+}
+
+.input-field {
+  display: block;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  background-color: rgba(0, 0, 0, 0.02);
+  color: var(--text-primary);
+  font-size: 13.5px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: var(--font-sans);
+  outline: none;
+  box-sizing: border-box;
+  padding-top: 11px;
+  padding-bottom: 11px;
+}
+
+.dark .input-field {
+  background-color: #07080b;
+  border-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Autofill overrides to prevent light background in dark mode */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  transition: background-color 5000s ease-in-out 0s;
+  box-shadow: inset 0 0 0 20px rgba(0, 0, 0, 0.02) !important;
+}
+
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover, 
+.dark input:-webkit-autofill:focus, 
+.dark input:-webkit-autofill:active {
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: inset 0 0 0 20px #07080b !important;
+}
+
+/* Normal input focus states - Calm Institutional Blue */
+.input-field:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px var(--accent-light) !important;
+  background-color: var(--bg-secondary);
+}
+
+.dark .input-field:focus {
+  background-color: var(--bg-secondary);
+}
+
+/* Error state classes */
+.input-field-error {
+  border-color: var(--danger);
+  background-color: rgba(239, 68, 68, 0.05);
+}
+
+.input-field-error:focus {
+  background-color: var(--bg-secondary);
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+}
+
+/* Padding modifiers */
+.input-field-padding-left-icon {
+  padding-left: 40px;
+}
+
+.input-field-padding-left-normal {
+  padding-left: 16px;
+}
+
+.input-field-padding-right-password {
+  padding-right: 40px;
+}
+
+.input-field-padding-right-normal {
+  padding-right: 16px;
+}
+
+/* Password Toggle icon */
+.input-password-toggle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  padding-right: 12px;
+  display: flex;
+  align-items: center;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.input-password-toggle:hover {
+  color: var(--text-primary);
+}
+
+.input-error-text {
+  margin-top: 5px;
+  font-size: 11px;
+  color: var(--danger);
+  font-weight: 600;
+  padding-left: 2px;
+}

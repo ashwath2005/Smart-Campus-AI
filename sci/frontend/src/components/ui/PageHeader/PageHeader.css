@@ -1,0 +1,97 @@
+﻿/* PageHeader.css - Enterprise Page Header Tokens */
+.page-header-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+}
+
+.page-header-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--text-muted, #71717a);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.25rem;
+}
+
+.page-header-crumb-link {
+  color: var(--text-secondary, #a1a1aa);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.page-header-crumb-link:hover {
+  color: var(--brand-red, #ff2d2d);
+}
+
+.page-header-crumb-sep {
+  color: var(--text-muted, #71717a);
+  opacity: 0.6;
+}
+
+.page-header-crumb.active {
+  color: var(--text-primary, #ffffff);
+}
+
+.page-header-main-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.page-header-text-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.page-header-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.page-header-title {
+  font-size: 1.625rem;
+  font-weight: 800;
+  color: var(--text-primary, #ffffff);
+  letter-spacing: -0.025em;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.page-header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.725rem;
+  font-weight: 700;
+  background: var(--brand-red-soft, rgba(255, 45, 45, 0.12));
+  color: var(--brand-red, #ff2d2d);
+  border: 1px solid var(--accent-border, rgba(255, 45, 45, 0.35));
+}
+
+.page-header-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #a1a1aa);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}

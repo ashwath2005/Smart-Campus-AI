@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SCME-AWN Executive Dashboard</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500;700&amp;family=Outfit:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config injected from system prompt -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+              "secondary": "#4edea3",
+              "on-secondary-fixed-variant": "#005236",
+              "on-tertiary-container": "#00311d",
+              "inverse-on-surface": "#3e2c2d",
+              "surface-container-lowest": "#180a0b",
+              "outline": "#aa888a",
+              "on-primary-container": "#5b0017",
+              "tertiary-fixed": "#82f9ba",
+              "surface-container-highest": "#423031",
+              "surface-tint": "#ffb2b7",
+              "surface": "#1e0f10",
+              "surface-container": "#2b1b1c",
+              "on-tertiary-fixed-variant": "#005233",
+              "on-secondary": "#003824",
+              "error": "#ffb4ab",
+              "primary-fixed": "#ffdadb",
+              "on-secondary-container": "#00311f",
+              "on-tertiary": "#003822",
+              "on-primary-fixed-variant": "#92002a",
+              "inverse-surface": "#f9dcdc",
+              "outline-variant": "#5b4041",
+              "surface-dim": "#1e0f10",
+              "on-primary": "#67001b",
+              "primary-container": "#ff516a",
+              "surface-bright": "#473435",
+              "on-error-container": "#ffdad6",
+              "inverse-primary": "#bc0b3b",
+              "primary-fixed-dim": "#ffb2b7",
+              "primary": "#ffb2b7",
+              "secondary-fixed": "#6ffbbe",
+              "surface-variant": "#423031",
+              "surface-container-high": "#372626",
+              "error-container": "#93000a",
+              "on-error": "#690005",
+              "on-background": "#f9dcdc",
+              "tertiary-container": "#1fa46d",
+              "on-secondary-fixed": "#002113",
+              "on-tertiary-fixed": "#002112",
+              "on-surface": "#f9dcdc",
+              "tertiary-fixed-dim": "#64dca0",
+              "background": "#1e0f10",
+              "secondary-container": "#00a572",
+              "tertiary": "#64dca0",
+              "surface-container-low": "#271718",
+              "on-surface-variant": "#e3bdbf",
+              "secondary-fixed-dim": "#4edea3",
+              "on-primary-fixed": "#40000d",
+              
+              /* Technical Obsidian Custom Tokens */
+              "obsidian-canvas": "#08090C",
+              "obsidian-panel": "#12151C",
+              "obsidian-border": "#1F2432",
+              "obsidian-active": "#1A1F2B",
+              "accent-emerald": "#10B981",
+              "accent-blue": "#3B82F6",
+              "accent-amber": "#F59E0B",
+              "accent-purple": "#A855F7"
+            },
+            "borderRadius": {
+              "DEFAULT": "0.125rem",
+              "lg": "0.25rem",
+              "xl": "0.5rem",
+              "full": "0.75rem"
+            },
+            "spacing": {
+              "margin-mobile": "16px",
+              "gutter": "12px",
+              "grid_pattern_size": "24px",
+              "unit": "4px",
+              "margin-desktop": "24px"
+            },
+            "fontFamily": {
+              "label-caps": ["JetBrains Mono", "monospace"],
+              "headline-sm": ["Outfit", "sans-serif"],
+              "data-mono": ["JetBrains Mono", "monospace"],
+              "display-lg": ["Outfit", "sans-serif"],
+              "headline-md": ["Outfit", "sans-serif"],
+              "body-md": ["Inter", "sans-serif"],
+              "body-sm": ["Inter", "sans-serif"]
+            },
+            "fontSize": {
+              "label-caps": ["10px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700" }],
+              "headline-sm": ["18px", { "lineHeight": "1.4", "fontWeight": "500" }],
+              "data-mono": ["12px", { "lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+              "display-lg": ["36px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+              "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "500" }],
+              "body-md": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+              "body-sm": ["12px", { "lineHeight": "1.5", "fontWeight": "400" }]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+      body {
+        background-color: theme('colors.obsidian-canvas');
+        color: theme('colors.on-surface');
+      }
+      
+      .blueprint-grid {
+        background-image: linear-gradient(theme('colors.obsidian-border') 1px, transparent 1px),
+                          linear-gradient(90deg, theme('colors.obsidian-border') 1px, transparent 1px);
+        background-size: 24px 24px;
+        background-color: transparent;
+      }
+      
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      
+      /* Primary Glow Animation */
+      @keyframes pulse-emerald {
+        0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+        70% { box-shadow: 0 0 0 4px rgba(16, 185, 129, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+      }
+      
+      .status-pulse {
+        animation: pulse-emerald 2s infinite;
+      }
+      
+      /* Custom Scrollbar for Panels */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: theme('colors.obsidian-border');
+        border-radius: 3px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: theme('colors.surface-variant');
+      }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden antialiased font-body-md relative">
+<!-- Persistent Blueprint Background -->
+<div class="fixed inset-0 blueprint-grid opacity-20 pointer-events-none z-0"></div>
+<!-- Shared Component: SideNavBar -->
+<nav class="bg-surface dark:bg-surface text-primary dark:text-primary font-label-caps text-label-caps fixed left-0 top-0 h-full w-[240px] border-r border-outline-variant flex flex-col py-margin-desktop z-40 bg-obsidian-panel border-obsidian-border">
+<!-- Header -->
+<div class="px-gutter mb-8 flex flex-col gap-4">
+<div class="flex items-center gap-3">
+<img alt="SCME-AWN emblem logo" class="w-10 h-10 rounded-DEFAULT object-cover border border-obsidian-border" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQB3mTLRahvOGEg6wD0s0ARaDWdRP5XqgMV25IM_8E8c1Yos-xcVJwEwFPH1SvpxVTgVxzvDBb_Uhxt_jv1cjy8eEjuRnLfDByURhzFCVrk6Cr4ey4pu58hgZbQIGeJhRcpYeC6Cm-5ltya5XREmkCF3N1wM1gKIOuaZjGJpdJ9gb01h2thc2FkS96BfHwMARZlFfbeT0aLvHqA5DHghvxAKqj7gH_uttdq06FdLArSuY_VRwbAJCQDFPQpjucKw4HH8oFw6s5U8A"/>
+<div>
+<h1 class="font-display-lg text-display-lg text-primary uppercase tracking-tighter text-xl">SCME-AWN</h1>
+<p class="text-on-surface-variant font-data-mono text-xs mt-1">v2.4 Enterprise</p>
+</div>
+</div>
+<button class="w-full flex items-center justify-center gap-2 py-2 px-3 bg-[#1A1F2B] border border-[#1F2432] rounded-DEFAULT hover:border-primary transition-colors text-on-surface">
+<div class="w-[6px] h-[6px] rounded-full bg-accent-emerald status-pulse"></div>
+<span class="font-data-mono">Live Server Active</span>
+</button>
+</div>
+<!-- Navigation Links -->
+<div class="flex-1 flex flex-col gap-1 px-gutter overflow-y-auto">
+<!-- Active Item -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-sm text-primary font-bold border-r-2 border-primary bg-primary/10 transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">dashboard</span>
+<span>Executive Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-sm text-on-surface-variant font-medium hover:bg-surface-container-highest transition-colors opacity-80 hover:opacity-100 duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]">analytics</span>
+<span>Campus Pulse Density</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-sm text-on-surface-variant font-medium hover:bg-surface-container-highest transition-colors opacity-80 hover:opacity-100 duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+<span>CSP Timetables</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-sm text-on-surface-variant font-medium hover:bg-surface-container-highest transition-colors opacity-80 hover:opacity-100 duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]">vpn_key</span>
+<span>Digital Gate Pass</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-sm text-on-surface-variant font-medium hover:bg-surface-container-highest transition-colors opacity-80 hover:opacity-100 duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]">psychology</span>
+<span>Cognitive AI</span>
+</a>
+</div>
+<!-- Footer -->
+<div class="mt-auto px-gutter pt-4 border-t border-obsidian-border">
+<div class="flex items-center gap-3 px-3 py-2 text-on-surface-variant font-data-mono text-[10px]">
+<span class="material-symbols-outlined text-[14px]">sensors</span>
+<span>Status: Online</span>
+</div>
+</div>
+</nav>
+<!-- Shared Component: TopNavBar -->
+<header class="bg-surface/80 backdrop-blur-md text-primary dark:text-primary font-body-md text-body-md fixed top-0 right-0 w-[calc(100%-240px)] z-50 border-b border-outline-variant flex justify-between items-center px-margin-desktop h-16 bg-obsidian-canvas/90 border-obsidian-border">
+<!-- Left: Search -->
+<div class="flex-1 max-w-md">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+<input class="w-full bg-[#08090C] border border-[#1F2432] rounded-DEFAULT py-1.5 pl-10 pr-3 text-sm text-on-surface focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all font-data-mono placeholder:text-on-surface-variant/50" placeholder="Query Telemetry or Student ID..." type="text"/>
+</div>
+</div>
+<!-- Right: Actions -->
+<div class="flex items-center gap-4">
+<button class="bg-[#F43F5E] text-white px-4 py-1.5 rounded-DEFAULT font-data-mono text-sm hover:opacity-90 transition-opacity">
+        Create Gate Pass
+      </button>
+<button class="text-on-surface-variant hover:text-primary transition-all relative p-2 focus:ring-1 focus:ring-primary rounded-DEFAULT">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-accent-amber rounded-full"></span>
+</button>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="ml-[240px] mt-16 flex-1 w-[calc(100%-240px)] h-[calc(100vh-64px)] overflow-y-auto relative z-10 p-margin-desktop">
+<div class="max-w-[1600px] mx-auto space-y-gutter">
+<!-- Section 1: KPI Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-gutter">
+<!-- KPI 1 -->
+<div class="bg-obsidian-panel border border-obsidian-border rounded-DEFAULT p-4 flex flex-col gap-3 relative overflow-hidden group hover:border-accent-blue/50 transition-colors">
+<div class="flex justify-between items-start">
+<span class="font-data-mono text-on-surface-variant text-[11px] uppercase tracking-wider">Campus Pulse Occupancy</span>
+<span class="material-symbols-outlined text-accent-blue text-[18px]">analytics</span>
+</div>
+<div class="font-display-lg text-3xl">84.6%</div>
+<!-- Sparkline representation -->
+<div class="h-8 w-full mt-auto flex items-end gap-[2px] opacity-70">
+<div class="w-1/12 bg-accent-blue/20 h-[30%]"></div>
+<div class="w-1/12 bg-accent-blue/40 h-[50%]"></div>
+<div class="w-1/12 bg-accent-blue/60 h-[40%]"></div>
+<div class="w-1/12 bg-accent-blue/80 h-[70%]"></div>
+<div class="w-1/12 bg-accent-blue h-[85%]"></div>
+<div class="w-1/12 bg-accent-blue h-[90%]"></div>
+<div class="w-1/12 bg-accent-blue/80 h-[80%]"></div>
+<div class="w-1/12 bg-accent-blue/60 h-[60%]"></div>
+<div class="w-1/12 bg-accent-blue/40 h-[75%]"></div>
+<div class="w-1/12 bg-accent-blue/80 h-[95%]"></div>
+<div class="w-1/12 bg-accent-blue h-[100%]"></div>
+<div class="w-1/12 bg-accent-blue/90 h-[84.6%]"></div>
+</div>
+</div>
+<!-- KPI 2 -->
+<div class="bg-obsidian-panel border border-obsidian-border rounded-DEFAULT p-4 flex flex-col gap-3 group hover:border-accent-emerald/50 transition-colors">
+<div class="flex justify-between items-start">
+<span class="font-data-mono text-on-surface-variant text-[11px] uppercase tracking-wider">CSP Conflict-Free Schedules</span>
+<span class="material-symbols-outlined text-accent-emerald text-[18px]">event_available</span>
+</div>
+<div class="font-display-lg text-3xl flex items-baseline gap-2">
+            1,248 <span class="font-data-mono text-xs text-on-surface-variant">Periods</span>
+</div>
+<div class="mt-auto">
+<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-accent-emerald/10 border border-accent-emerald/20 text-accent-emerald font-data-mono text-[10px]">
+<div class="w-1.5 h-1.5 rounded-full bg-accent-emerald"></div>
+              100% Clash-Free
+            </span>
+</div>
+</div>
+<!-- KPI 3 -->
+<div class="bg-obsidian-panel border border-obsidian-border rounded-DEFAULT p-4 flex flex-col gap-3 group hover:border-accent-amber/50 transition-colors">
+<div class="flex justify-between items-start">
+<span class="font-data-mono text-on-surface-variant text-[11px] uppercase tracking-wider">Digital Gate Passes Today</span>
+<span class="material-symbols-outlined text-accent-amber text-[18px]">departure_board</span>
+</div>
+<div class="font-display-lg text-3xl flex items-baseline gap-2">
+            412 <span class="font-data-mono text-xs text-on-surface-variant">Issued</span>
+</div>
+<div class="mt-auto flex items-center justify-between border-t border-obsidian-border pt-2">
+<span class="font-data-mono text-xs text-on-surface-variant">In-Transit:</span>
+<span class="text-accent-amber font-data-mono text-sm">18 Active</span>
+</div>
+</div>
+<!-- KPI 4 -->
+<div class="bg-obsidian-panel border border-obsidian-border rounded-DEFAULT p-4 flex flex-col gap-3 relative overflow-hidden group hover:border-accent-purple/50 transition-colors shadow-[0_0_15px_rgba(168,85,247,0.05)]">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-accent-purple to-transparent opacity-50"></div>
+<div class="flex justify-between items-start">
+<span class="font-data-mono text-on-surface-variant text-[11px] uppercase tracking-wider text-accent-purple">At-Risk Cognitive Alert</span>
+<span class="material-symbols-outlined text-accent-purple text-[18px]">psychology_alt</span>
+</div>
+<div class="font-display-lg text-3xl text-accent-purple flex items-baseline gap-2">
+            12 <span class="font-data-mono text-xs text-on-surface-variant">Students Flagged</span>
+</div>
+<div class="mt-auto text-xs text-on-surface-variant font-body-sm leading-tight">
+            Anomaly detected in movement patterns across sector 4. Review AI insights.
+          </div>
+</div>
+</div>
+<!-- Section 2: Central Grid (8:4 split) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left: Real-Time Zone Density -->
+<div class="lg:col-span-8 bg-obsidian-panel border border-obsidian-border rounded-DEFAULT flex flex-col h-[400px]">
+<div class="p-3 border-b border-obsidian-border flex justify-between items-center bg-obsidian-canvas/30">
+<h2 class="font-headline-sm text-sm uppercase tracking-wider">Real-Time Zone Density &amp; Anomaly Radar</h2>
+<div class="flex gap-2">
+<span class="px-2 py-0.5 bg-obsidian-active border border-obsidian-border rounded font-data-mono text-[10px] text-on-surface-variant">Sector Alpha</span>
+<span class="px-2 py-0.5 bg-obsidian-active border border-obsidian-border rounded font-data-mono text-[10px] text-on-surface-variant">Live View</span>
+</div>
+</div>
+<div class="flex-1 p-4 relative overflow-hidden">
+<!-- Simulated Blueprint Map -->
+<div class="absolute inset-0 opacity-30 flex items-center justify-center p-4">
+<div class="w-full h-full border border-accent-blue/30 rounded relative" style="background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 70%);">
+<!-- Map Nodes -->
+<div class="absolute top-[20%] left-[30%] w-2 h-2 bg-accent-blue rounded-full shadow-[0_0_10px_#3B82F6]"></div>
+<div class="absolute top-[50%] left-[60%] w-3 h-3 bg-accent-emerald rounded-full shadow-[0_0_15px_#10B981] status-pulse"></div>
+<div class="absolute top-[70%] left-[40%] w-2 h-2 bg-accent-blue rounded-full"></div>
+<div class="absolute top-[30%] left-[70%] w-4 h-4 bg-accent-purple/50 rounded-full border border-accent-purple flex items-center justify-center animate-pulse">
+<div class="w-1 h-1 bg-accent-purple rounded-full"></div>
+</div>
+<!-- Connection Lines -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none" preserveaspectratio="none">
+<line stroke="rgba(59, 130, 246, 0.3)" stroke-dasharray="4" stroke-width="1" x1="30%" x2="60%" y1="20%" y2="50%"></line>
+<line stroke="rgba(59, 130, 246, 0.3)" stroke-dasharray="4" stroke-width="1" x1="60%" x2="40%" y1="50%" y2="70%"></line>
+<line stroke="rgba(168, 85, 247, 0.5)" stroke-width="1" x1="60%" x2="70%" y1="50%" y2="30%"></line>
+</svg>
+</div>
+</div>
+<!-- Overlay Predictive Curve UI -->
+<div class="absolute bottom-4 left-4 right-4 h-24 border-t border-obsidian-border pt-2 flex flex-col justify-end">
+<div class="text-[10px] font-data-mono text-on-surface-variant mb-1 flex justify-between">
+<span>Traffic Curve (Next 4hrs)</span>
+<span class="text-accent-blue">Peak: 14:00</span>
+</div>
+<!-- Mock Line Chart -->
+<div class="h-12 w-full flex items-end gap-1 opacity-80">
+<div class="flex-1 bg-gradient-to-t from-accent-blue/20 to-accent-blue/5 h-[30%] rounded-t-sm border-t border-accent-blue/50"></div>
+<div class="flex-1 bg-gradient-to-t from-accent-blue/20 to-accent-blue/5 h-[45%] rounded-t-sm border-t border-accent-blue/50"></div>
+<div class="flex-1 bg-gradient-to-t from-accent-blue/20 to-accent-blue/5 h-[60%] rounded-t-sm border-t border-accent-blue/50"></div>
+<div class="flex-1 bg-gradient-to-t from-accent-purple/30 to-accent-purple/10 h-[90%] rounded-t-sm border-t border-accent-purple relative">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 text-[9px] font-data-mono text-accent-purple bg-obsidian-canvas px-1 border border-accent-purple/50 rounded">Alert</div>
+</div>
+<div class="flex-1 bg-gradient-to-t from-accent-blue/20 to-accent-blue/5 h-[70%] rounded-t-sm border-t border-accent-blue/50"></div>
+<div class="flex-1 bg-gradient-to-t from-accent-blue/20 to-accent-blue/5 h-[40%] rounded-t-sm border-t border-accent-blue/50"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right: CSP Solver -->
+<div class="lg:col-span-4 bg-obsidian-panel border border-obsidian-border rounded-DEFAULT flex flex-col h-[400px]">
+<div class="p-3 border-b border-obsidian-border flex justify-between items-center bg-obsidian-canvas/30">
+<h2 class="font-headline-sm text-sm uppercase tracking-wider">CSP Optimizer</h2>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">settings</span>
+</div>
+<div class="flex-1 overflow-y-auto p-2 space-y-2">
+<!-- List Item 1 -->
+<div class="bg-obsidian-canvas border border-obsidian-border p-3 rounded-sm hover:border-obsidian-border/80 transition-colors">
+<div class="flex justify-between items-start mb-2">
+<span class="font-data-mono text-accent-emerald text-[11px]">CS-401 • LECTURE</span>
+<span class="px-1.5 py-0.5 bg-accent-emerald/10 border border-accent-emerald/30 text-accent-emerald font-data-mono text-[9px] rounded">CLEARED</span>
+</div>
+<div class="flex justify-between items-end">
+<div class="font-body-sm text-xs text-on-surface-variant">
+<div>Hall A • 14:00-15:30</div>
+<div class="text-[10px] mt-1 opacity-70">Hash: 0x9f2a...11c</div>
+</div>
+<button class="text-[10px] font-data-mono px-2 py-1 border border-obsidian-border rounded hover:bg-obsidian-active transition-colors" disabled="">Lock</button>
+</div>
+</div>
+<!-- List Item 2 -->
+<div class="bg-obsidian-active border border-accent-amber/30 p-3 rounded-sm shadow-[0_0_10px_rgba(245,158,11,0.05)]">
+<div class="flex justify-between items-start mb-2">
+<span class="font-data-mono text-accent-amber text-[11px]">PHY-202 • LAB</span>
+<span class="px-1.5 py-0.5 bg-accent-amber/10 border border-accent-amber/30 text-accent-amber font-data-mono text-[9px] rounded animate-pulse">CLASH DETECTED</span>
+</div>
+<div class="flex justify-between items-end">
+<div class="font-body-sm text-xs text-on-surface-variant">
+<div>Lab 3 • 15:00-17:00</div>
+<div class="text-[10px] mt-1 text-accent-amber/80">Resource Conflict: Equip.</div>
+</div>
+<button class="text-[10px] font-data-mono px-2 py-1 bg-accent-amber text-obsidian-canvas font-bold rounded hover:opacity-90 transition-opacity flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">refresh</span> Resolve
+                </button>
+</div>
+</div>
+<!-- List Item 3 -->
+<div class="bg-obsidian-canvas border border-obsidian-border p-3 rounded-sm hover:border-obsidian-border/80 transition-colors">
+<div class="flex justify-between items-start mb-2">
+<span class="font-data-mono text-accent-emerald text-[11px]">MTH-101 • TUTORIAL</span>
+<span class="px-1.5 py-0.5 bg-accent-emerald/10 border border-accent-emerald/30 text-accent-emerald font-data-mono text-[9px] rounded">CLEARED</span>
+</div>
+<div class="flex justify-between items-end">
+<div class="font-body-sm text-xs text-on-surface-variant">
+<div>Room 4B • 16:00-17:00</div>
+<div class="text-[10px] mt-1 opacity-70">Hash: 0x3b1c...99f</div>
+</div>
+<button class="text-[10px] font-data-mono px-2 py-1 border border-obsidian-border rounded hover:bg-obsidian-active transition-colors">Lock</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 3: Bottom Table -->
+<div class="bg-obsidian-panel border border-obsidian-border rounded-DEFAULT flex flex-col">
+<div class="p-3 border-b border-obsidian-border bg-obsidian-canvas/30 flex justify-between items-center">
+<h2 class="font-headline-sm text-sm uppercase tracking-wider">Live Security &amp; Gate Pass Verification</h2>
+<button class="flex items-center gap-1 text-[11px] font-data-mono text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[14px]">download</span> Export Log
+           </button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-obsidian-border bg-obsidian-canvas/50">
+<th class="p-3 font-data-mono text-[10px] text-on-surface-variant font-normal uppercase tracking-wider">Student Profile</th>
+<th class="p-3 font-data-mono text-[10px] text-on-surface-variant font-normal uppercase tracking-wider">Destination</th>
+<th class="p-3 font-data-mono text-[10px] text-on-surface-variant font-normal uppercase tracking-wider">Departure</th>
+<th class="p-3 font-data-mono text-[10px] text-on-surface-variant font-normal uppercase tracking-wider">Verification Hash</th>
+<th class="p-3 font-data-mono text-[10px] text-on-surface-variant font-normal uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-xs">
+<!-- Row 1 -->
+<tr class="border-b border-obsidian-border/50 hover:bg-obsidian-active/50 transition-colors group">
+<td class="p-3 flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-obsidian-border flex items-center justify-center text-[10px] font-data-mono text-on-surface-variant">AR</div>
+<div>
+<div class="font-medium text-on-surface">Alex Rivera</div>
+<div class="font-data-mono text-[10px] text-on-surface-variant">ID: ST-9921</div>
+</div>
+</td>
+<td class="p-3 text-on-surface-variant">Tech Hub, Sector 2</td>
+<td class="p-3 font-data-mono text-on-surface-variant">13:45 EST</td>
+<td class="p-3">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-accent-emerald"></div>
+<span class="font-data-mono text-[11px] opacity-80">0x7a8...df1</span>
+</div>
+</td>
+<td class="p-3 text-right">
+<button class="px-3 py-1 bg-obsidian-border text-on-surface text-[10px] font-data-mono rounded hover:bg-obsidian-active hover:text-accent-emerald border border-transparent hover:border-accent-emerald/30 transition-all">Verify</button>
+</td>
+</tr>
+<!-- Row 2 (Amber State) -->
+<tr class="border-b border-obsidian-border/50 bg-accent-amber/5 hover:bg-accent-amber/10 transition-colors group">
+<td class="p-3 flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-accent-amber/20 flex items-center justify-center text-[10px] font-data-mono text-accent-amber border border-accent-amber/30">JC</div>
+<div>
+<div class="font-medium text-on-surface">Jordan Chen</div>
+<div class="font-data-mono text-[10px] text-accent-amber/80">ID: ST-4410</div>
+</div>
+</td>
+<td class="p-3 text-on-surface-variant">Off-Campus Medical</td>
+<td class="p-3 font-data-mono text-on-surface-variant">14:10 EST</td>
+<td class="p-3">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-accent-amber"></div>
+<span class="font-data-mono text-[11px] opacity-80 text-accent-amber">0x2b4...8c9 (Pending)</span>
+</div>
+</td>
+<td class="p-3 text-right">
+<button class="px-3 py-1 bg-accent-amber text-obsidian-canvas font-bold text-[10px] font-data-mono rounded hover:opacity-90 transition-all">Flag Auth</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-obsidian-active/50 transition-colors group">
+<td class="p-3 flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-obsidian-border flex items-center justify-center text-[10px] font-data-mono text-on-surface-variant">SW</div>
+<div>
+<div class="font-medium text-on-surface">Sam Washington</div>
+<div class="font-data-mono text-[10px] text-on-surface-variant">ID: ST-1108</div>
+</div>
+</td>
+<td class="p-3 text-on-surface-variant">Library, Sector 1</td>
+<td class="p-3 font-data-mono text-on-surface-variant">14:30 EST</td>
+<td class="p-3">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-accent-emerald"></div>
+<span class="font-data-mono text-[11px] opacity-80">0x5f1...ea2</span>
+</div>
+</td>
+<td class="p-3 text-right">
+<button class="px-3 py-1 bg-obsidian-border text-on-surface text-[10px] font-data-mono rounded hover:bg-obsidian-active hover:text-accent-emerald border border-transparent hover:border-accent-emerald/30 transition-all">Verify</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</body></html>

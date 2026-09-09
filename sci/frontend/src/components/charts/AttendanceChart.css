@@ -1,0 +1,69 @@
+/* AttendanceChart.css */
+
+.attendance-chart-container {
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-sans);
+}
+
+.attendance-tooltip-container {
+  padding: 8px 14px;
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-md);
+  user-select: none;
+}
+
+.dark .attendance-tooltip-container {
+  background-color: rgba(9, 9, 13, 0.8);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.attendance-tooltip-date {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-bottom: 2px;
+}
+
+.dark .attendance-tooltip-date {
+  color: #64748b;
+}
+
+.attendance-tooltip-val-row {
+  font-size: 12px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.dark .attendance-tooltip-val-row {
+  color: #f1f5f9;
+}
+
+.attendance-tooltip-val-highlight {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.dark .attendance-tooltip-val-highlight {
+  color: var(--accent);
+}
+
+/* Cartesian grid dark mode toggle fallback helper */
+.dark-grid-line {
+  display: block;
+}
+
+.light-grid-line {
+  display: block;
+}
+
+.dark .light-grid-line {
+  display: none;
+}
+
+.dark .dark-grid-line {
+  display: block;
+}

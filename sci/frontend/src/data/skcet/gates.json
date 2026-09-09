@@ -1,0 +1,29 @@
+[
+  {
+    "id": "gate-main-palakkad",
+    "name": "Main Campus Entrance (BK Pudur Gate)",
+    "code": "GATE-01",
+    "description": "Primary institutional archway gate connecting to Palakkad Main Road via Sri Krishna College Road",
+    "latitude": 10.938162,
+    "longitude": 76.952514,
+    "type": "vehicular_pedestrian"
+  },
+  {
+    "id": "gate-east-sugunapuram",
+    "name": "East Sugunapuram Gate",
+    "code": "GATE-02",
+    "description": "Eastern perimeter security entrance linking to SIDCO-Sugunapuram Road and hostel blocks",
+    "latitude": 10.939218,
+    "longitude": 76.962054,
+    "type": "vehicular_pedestrian"
+  },
+  {
+    "id": "gate-south-pedestrian",
+    "name": "South Academic Pedestrian Gate",
+    "code": "GATE-03",
+    "description": "Access turnstile path connecting southern academic quad and bike parking",
+    "latitude": 10.93512,
+    "longitude": 76.9538,
+    "type": "pedestrian_only"
+  }
+]

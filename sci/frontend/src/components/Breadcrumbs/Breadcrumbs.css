@@ -1,0 +1,372 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   UNTITLED UI BREADCRUMBS & ACCOUNT SWITCHER
+   Pixel-aligned with Untitled UI reference: Logo Badge > User Pill ↕ > Page Title
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.u-breadcrumbs-bar {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  background: transparent;
+  border-bottom: none;
+  user-select: none;
+  position: relative;
+  z-index: 35;
+}
+
+.u-breadcrumbs-inner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 13.5px;
+  font-family: var(--font-primary, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+}
+
+/* 1. Root Org / App Badge */
+.u-breadcrumbs-root {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  text-decoration: none;
+  color: var(--text-primary, #ffffff);
+  font-weight: 600;
+  font-size: 13px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+}
+
+.u-breadcrumbs-root:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.u-breadcrumbs-root-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: #111114;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+:root:not(.dark) .u-breadcrumbs-root-icon {
+  background: #0F172A;
+  border-color: #0F172A;
+}
+
+.u-breadcrumbs-root-title {
+  letter-spacing: -0.01em;
+  color: var(--text-primary, #FFFFFF);
+}
+
+/* Separator Chevron */
+.u-breadcrumbs-chevron {
+  color: #71717A;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+:root:not(.dark) .u-breadcrumbs-chevron {
+  color: #94A3B8;
+}
+
+/* 2. User Switcher Pill */
+.u-breadcrumbs-switcher-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.u-breadcrumbs-user-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 8px 3px 4px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--text-secondary, #A1A1AA);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.u-breadcrumbs-user-pill:hover,
+.u-breadcrumbs-user-pill.active {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary, #FFFFFF);
+}
+
+:root:not(.dark) .u-breadcrumbs-user-pill:hover,
+:root:not(.dark) .u-breadcrumbs-user-pill.active {
+  background-color: #F1F5F9;
+  border-color: #E2E8F0;
+  color: #0F172A;
+}
+
+.u-breadcrumbs-user-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.u-breadcrumbs-user-name {
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+
+.u-breadcrumbs-user-caret {
+  color: #71717A;
+  margin-left: 1px;
+}
+
+/* 3. Untitled UI Switcher Popover */
+.u-switcher-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 290px;
+  background: #0D0D10;
+  border: 1px solid #27272A;
+  border-radius: 12px;
+  box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.8), 0 4px 12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  z-index: 100;
+  animation: uSwitcherFadeIn 0.16s ease-out;
+}
+
+:root:not(.dark) .u-switcher-popover {
+  background: #FFFFFF;
+  border-color: #E2E8F0;
+  box-shadow: 0 16px 32px -4px rgba(15, 23, 42, 0.12), 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+@keyframes uSwitcherFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.u-switcher-header {
+  padding: 10px 14px 8px 14px;
+  border-bottom: 1px solid #1F1F23;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+:root:not(.dark) .u-switcher-header {
+  border-bottom-color: #F1F5F9;
+}
+
+.u-switcher-header-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #71717A;
+}
+
+.u-switcher-header-tag {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(242, 23, 34, 0.12);
+  color: var(--brand, #F21722);
+}
+
+.u-switcher-list {
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.u-switcher-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.14s ease;
+  outline: none;
+}
+
+.u-switcher-item:hover {
+  background: #18181B;
+}
+
+:root:not(.dark) .u-switcher-item:hover {
+  background: #F8FAFC;
+}
+
+.u-switcher-item.active {
+  background: #18181D;
+  border-color: #27272A;
+}
+
+:root:not(.dark) .u-switcher-item.active {
+  background: #F1F5F9;
+  border-color: #E2E8F0;
+}
+
+.u-switcher-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.u-switcher-item-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.u-switcher-item-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.u-switcher-item-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.u-switcher-item-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #FFFFFF);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:root:not(.dark) .u-switcher-item-name {
+  color: #0F172A;
+}
+
+.u-switcher-role-badge {
+  font-size: 9.5px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  background: #27272A;
+  color: #A1A1AA;
+}
+
+.u-switcher-role-badge.admin {
+  background: rgba(242, 23, 34, 0.15);
+  color: #F87171;
+}
+
+.u-switcher-role-badge.student {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60A5FA;
+}
+
+.u-switcher-role-badge.faculty {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34D399;
+}
+
+.u-switcher-item-email {
+  font-size: 11px;
+  color: #71717A;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Radio circle on the right */
+.u-switcher-radio {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid #3F3F46;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+:root:not(.dark) .u-switcher-radio {
+  border-color: #CBD5E1;
+}
+
+.u-switcher-radio.selected {
+  border-color: var(--brand, #F21722);
+}
+
+.u-switcher-radio-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand, #F21722);
+}
+
+/* 4. Current Page Segment */
+.u-breadcrumbs-segment {
+  color: var(--text-secondary, #A1A1AA);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: color 0.15s ease;
+}
+
+.u-breadcrumbs-segment:hover {
+  color: var(--text-primary, #FFFFFF);
+}
+
+:root:not(.dark) .u-breadcrumbs-segment {
+  color: #475569;
+}
+
+:root:not(.dark) .u-breadcrumbs-segment:hover {
+  color: #0F172A;
+}
+
+.u-breadcrumbs-current {
+  color: var(--text-primary, #FFFFFF);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+:root:not(.dark) .u-breadcrumbs-current {
+  color: #0F172A;
+}
+

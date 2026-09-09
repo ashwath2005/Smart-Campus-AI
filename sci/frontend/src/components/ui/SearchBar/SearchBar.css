@@ -1,0 +1,46 @@
+/* SearchBar Layout */
+.search-bar-container {
+  position: relative;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+}
+
+.search-bar-icon-wrapper {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  padding-left: 14px;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  color: var(--text-secondary);
+}
+
+.search-bar-input {
+  display: block;
+  width: 100%;
+  border-radius: var(--radius-md);
+  border: 2px solid transparent;
+  background-color: rgba(0, 0, 0, 0.03);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  padding: 10px 16px 10px 40px;
+  font-size: 14px;
+  transition: all 0.2s ease-in-out;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.dark .search-bar-input {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.search-bar-input:focus {
+  border-color: var(--accent);
+  background-color: #ffffff;
+}
+
+.dark .search-bar-input:focus {
+  background-color: rgba(0, 0, 0, 0.4);
+}

@@ -1,0 +1,63 @@
+[
+  {
+    "id": "source-osm-boundary",
+    "name": "OpenStreetMap SKCET Campus Boundary",
+    "type": "geographic_survey",
+    "reference": "Way 592275141",
+    "url": "https://www.openstreetmap.org/way/592275141",
+    "confidence": "high",
+    "lastVerified": "2024-05-18",
+    "features": [
+      "boundary",
+      "perimeter_fencing",
+      "perimeter_wall"
+    ]
+  },
+  {
+    "id": "source-gmaps-satellite",
+    "name": "Google Maps High-Resolution Satellite & Aerial Imagery",
+    "type": "satellite_imagery",
+    "reference": "Coordinates 10.937800° N, 76.956000° E",
+    "confidence": "high",
+    "lastVerified": "2024-06-01",
+    "features": [
+      "building_footprints",
+      "rooftop_geometry",
+      "roads",
+      "stadium_400m_track",
+      "trees",
+      "parking"
+    ]
+  },
+  {
+    "id": "source-naac-ssr-2021",
+    "name": "SKCET NAAC Self Study Report (SSR)",
+    "type": "institutional_governance",
+    "reference": "Criterion IV - Infrastructure and Learning Resources",
+    "confidence": "high",
+    "lastVerified": "2023-11-10",
+    "features": [
+      "Vankatram Learning Centre 55000 sq ft",
+      "7.5-acre playground and 400m 8-lane track",
+      "Sri Krishna Stadium and gallery seating 1500",
+      "2 basketball courts, 2 volleyball courts, cricket nets",
+      "Powerhouse and sewage treatment plant (STP)",
+      "Food court and JMR cafe",
+      "Ramps and disabled-friendly facilities"
+    ]
+  },
+  {
+    "id": "source-skcet-official-web",
+    "name": "SKCET Official Institutional Portal",
+    "type": "official_website",
+    "reference": "https://www.skcet.ac.in",
+    "confidence": "high",
+    "lastVerified": "2024-05-01",
+    "features": [
+      "department_locations",
+      "hostel_blocks",
+      "central_facilities",
+      "temple"
+    ]
+  }
+]

@@ -1,0 +1,739 @@
+/* StudentDashboard.css - Semantic Light & Dark Theme Dashboard */
+
+.ref-dashboard-container {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* Master 2-Column Coordinated 2x2 Grid */
+.ref-dashboard-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  width: 100%;
+  flex: 1;
+  box-sizing: border-box;
+}
+
+.ref-main-column,
+.ref-side-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (min-width: 1080px) {
+  .ref-dashboard-layout {
+    grid-template-columns: 1fr 340px;
+    grid-template-rows: auto 1fr;
+    gap: 20px;
+    align-items: stretch;
+  }
+
+  .ref-main-column,
+  .ref-side-column {
+    display: contents;
+  }
+
+  .ref-overview-card {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .ref-chart-card {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .ref-products-card {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .ref-comments-card {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}
+
+@media (min-width: 1360px) {
+  .ref-dashboard-layout {
+    grid-template-columns: 1fr 360px;
+    gap: 24px;
+  }
+}
+
+/* Base Reference Card */
+.ref-card {
+  background-color: var(--bg-card);
+  border-radius: 24px;
+  border: 1px solid var(--border-subtle);
+  padding: 22px 26px;
+  box-shadow: var(--shadow-card);
+  box-sizing: border-box;
+  position: relative;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+.ref-overview-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Card Header: Title + Pill Dropdown */
+.ref-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.ref-card-title {
+  font-size: 17.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+/* Pill Dropdown Component */
+.ref-pill-dropdown {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 13px;
+  border-radius: 9999px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 11.5px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.15s ease;
+}
+
+.ref-pill-dropdown:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-surface-hover);
+  color: var(--text-primary);
+}
+
+.ref-dropdown-caret {
+  color: var(--text-muted);
+}
+
+/* 1. Overview Card Metrics */
+.ref-metrics-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 640px) {
+  .ref-metrics-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+}
+
+.ref-metric-box {
+  padding: 16px 20px;
+  border-radius: 18px;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+}
+
+.ref-metric-box.elevated,
+.ref-metric-box.flush {
+  background: var(--bg-card-elevated);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-sm);
+}
+
+.ref-metric-label-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.ref-metric-icon {
+  color: var(--text-primary);
+}
+
+.ref-metric-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.ref-metric-val-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.ref-metric-value {
+  font-size: 38px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.ref-trend-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2.5px 7.5px;
+  border-radius: 9999px;
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
+.ref-trend-pill.down {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.ref-trend-pill.up {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.ref-trend-subtext {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 5px;
+  font-weight: 400;
+}
+
+/* Contextual Statement */
+.ref-context-statement {
+  margin-bottom: 16px;
+}
+
+.ref-statement-heading {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 3px 0;
+}
+
+.ref-statement-sub {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Active Users Avatar Row + View All Button */
+.ref-avatars-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 2px;
+}
+
+.ref-avatars-list {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.ref-avatar-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.ref-user-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: var(--shadow-sm);
+  border: 2px solid var(--bg-card);
+}
+
+.ref-user-name {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.ref-view-all-circle-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+}
+
+.ref-circle-arrow-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.16s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.ref-view-all-circle-btn:hover .ref-circle-arrow-box {
+  background: var(--bg-surface-hover);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+  transform: translateX(2px);
+}
+
+.ref-view-all-text {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* 2. Academic Velocity Bar Chart Card */
+.ref-chart-card {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 24px;
+  min-height: 220px;
+}
+
+.ref-chart-card .ref-card-header {
+  margin-bottom: 0;
+}
+
+.ref-chart-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 10px 0;
+}
+
+.ref-chart-kpi-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ref-chart-kpi-value {
+  font-size: 38px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  user-select: none;
+}
+
+.ref-chart-kpi-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-top: 5px;
+  letter-spacing: -0.01em;
+}
+
+.ref-chart-bars-track {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  height: 130px;
+  flex: 1;
+  justify-content: flex-end;
+  padding-top: 24px;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .ref-chart-bars-track {
+    gap: 16px;
+  }
+}
+
+.ref-chart-bar-column {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.ref-chart-bar-pill {
+  width: 26px;
+  border-radius: 10px 10px 4px 4px;
+  background: var(--bg-tertiary);
+  transition: all 0.3s ease;
+}
+
+@media (min-width: 1280px) {
+  .ref-chart-bar-pill {
+    width: 28px;
+  }
+}
+
+.ref-chart-bar-pill.highlighted {
+  background: var(--ref-accent-green);
+  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.35);
+}
+
+.ref-bar-tooltip-bubble {
+  position: absolute;
+  top: -2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  z-index: 5;
+}
+
+.ref-bar-tooltip-bubble span {
+  background: var(--ref-pill-btn);
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2.5px 7px;
+  border-radius: 5px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-subtle);
+}
+
+.ref-bar-target-ring {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 2px solid var(--ref-accent-green);
+}
+
+/* 3. Campus Activity (Popular products) Card */
+.ref-products-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.ref-products-title,
+.ref-comments-title {
+  font-size: 17.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 12px 0;
+  letter-spacing: -0.02em;
+}
+
+.ref-products-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 12px;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.ref-product-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 3px 5px;
+  border-radius: 10px;
+  transition: background 0.15s ease;
+}
+
+.ref-product-item:hover {
+  background: var(--bg-surface-hover);
+}
+
+.ref-product-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+
+.ref-product-item:hover .ref-product-icon-box {
+  transform: scale(1.04);
+}
+
+/* Subtle icon tiles */
+.tile-indigo {
+  background: #EEF2FF;
+  color: #4F46E5;
+  border: 1px solid #E0E7FF;
+}
+
+.tile-sky {
+  background: #F0F9FF;
+  color: #0284C7;
+  border: 1px solid #E0F2FE;
+}
+
+.tile-amber {
+  background: #FFFBEB;
+  color: #D97706;
+  border: 1px solid #FEF3C7;
+}
+
+.tile-emerald {
+  background: #ECFDF5;
+  color: #059669;
+  border: 1px solid #D1FAE5;
+}
+
+.tile-purple {
+  background: #FAF5FF;
+  color: #7E22CE;
+  border: 1px solid #F3E8FF;
+}
+
+/* Dark theme icon tiles with controlled glow */
+.dark .tile-indigo {
+  background: rgba(79, 70, 229, 0.16);
+  color: #818CF8;
+  border: 1px solid rgba(129, 140, 248, 0.25);
+}
+
+.dark .tile-sky {
+  background: rgba(2, 132, 199, 0.16);
+  color: #38BDF8;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+}
+
+.dark .tile-amber {
+  background: rgba(217, 119, 6, 0.16);
+  color: #FBBF24;
+  border: 1px solid rgba(251, 191, 36, 0.25);
+}
+
+.dark .tile-emerald {
+  background: rgba(5, 150, 105, 0.16);
+  color: #34D399;
+  border: 1px solid rgba(52, 211, 153, 0.25);
+}
+
+.dark .tile-purple {
+  background: rgba(126, 34, 206, 0.16);
+  color: #C084FC;
+  border: 1px solid rgba(192, 132, 252, 0.25);
+}
+
+.ref-product-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.ref-product-name {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ref-product-category {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ref-product-right-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.ref-product-score {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.ref-status-capsule {
+  font-size: 9.5px;
+  font-weight: 600;
+  padding: 1.5px 6.5px;
+  border-radius: 9999px;
+}
+
+.ref-status-capsule.active {
+  background: var(--success-soft);
+  color: var(--success);
+  border: 1px solid var(--success-border);
+}
+
+.ref-status-capsule.offline {
+  background: var(--warning-soft);
+  color: var(--warning);
+  border: 1px solid var(--warning-border);
+}
+
+.ref-all-products-btn {
+  width: 100%;
+  padding: 8px 0;
+  border-radius: 9999px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.ref-all-products-btn:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+}
+
+/* 4. Campus Dispatches (Comments) Card */
+.ref-comments-card {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 24px;
+  min-height: 220px;
+}
+
+.ref-comments-card .ref-comments-title {
+  margin-bottom: 10px;
+}
+
+.ref-comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  justify-content: center;
+}
+
+.ref-comment-item {
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 10px;
+  transition: background 0.15s ease;
+}
+
+.ref-comment-item:hover {
+  background: var(--bg-surface-hover);
+}
+
+.ref-dispatches-footer {
+  padding-top: 10px;
+  border-top: 1px solid var(--border-subtle);
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+}
+
+.ref-view-dispatches-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 0;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.ref-view-dispatches-btn:hover {
+  color: var(--brand);
+  transform: translateX(2px);
+}
+
+.ref-comment-header-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 3px;
+}
+
+.ref-comment-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+.ref-comment-author-block {
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ref-comment-author-line {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.2;
+}
+
+.ref-comment-author {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.ref-comment-context {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.ref-comment-time {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 400;
+  flex-shrink: 0;
+}
+
+.ref-comment-body {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.35;
+  margin: 0 0 0 39px;
+}

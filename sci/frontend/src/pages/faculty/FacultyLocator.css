@@ -1,0 +1,876 @@
+/* FacultyLocator.css */
+
+.locator-container {
+  font-family: var(--font-sans);
+  padding-bottom: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.locator-header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
+}
+
+.locator-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.locator-title-icon-box {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(227, 27, 35, 0.25);
+  background-color: rgba(227, 27, 35, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.locator-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.locator-subtitle {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: 6px;
+  margin-bottom: 0;
+}
+
+/* Tabs Switcher */
+.locator-tabs-navigation {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 8px;
+  margin-bottom: 24px;
+}
+
+.locator-tabs-wrapper {
+  display: flex;
+  gap: 18px;
+}
+
+.locator-tab-capsule-btn {
+  padding-bottom: 8px;
+  border: none;
+  background: transparent;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #8e9196;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  outline: none;
+}
+
+.locator-tab-capsule-btn:hover {
+  color: #ffffff;
+}
+
+.locator-tab-capsule-btn.active {
+  color: #e31b23;
+}
+
+.locator-tab-capsule-btn.active::after {
+  content: "";
+  position: absolute;
+  bottom: -9px;
+  left: 0;
+  width: 100%;
+  height: 2.5px;
+  background-color: #e31b23;
+}
+
+/* Panel Content */
+.locator-panel-content {
+  box-sizing: border-box;
+}
+
+/* Filters Card */
+.locator-filters-card {
+  padding: 20px;
+  background-color: #111215;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  margin-bottom: 24px;
+}
+
+.locator-filters-flex-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.locator-filter-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 180px;
+}
+
+.locator-filter-col.search-box {
+  flex: 2;
+  min-width: 240px;
+}
+
+.locator-filter-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.locator-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.locator-input-icon {
+  position: absolute;
+  left: 12px;
+  color: #8e9196;
+}
+
+.locator-native-input {
+  width: 100%;
+  padding: 8px 12px 8px 36px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background-color: #121316;
+  color: #ffffff;
+  font-size: 12.5px;
+  outline: none;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.locator-native-input:focus {
+  border-color: rgba(227, 27, 35, 0.45);
+}
+
+.locator-native-select {
+  width: 100%;
+  padding: 8px 28px 8px 36px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background-color: #121316;
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 600;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.locator-native-select:focus {
+  border-color: rgba(227, 27, 35, 0.45);
+}
+
+.locator-select-caret {
+  position: absolute;
+  right: 10px;
+  color: #8e9196;
+  pointer-events: none;
+}
+
+/* Feed Listing */
+.locator-faculties-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.locator-loading-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Empty Card */
+.locator-empty-card {
+  border: 1.5px dashed var(--border-color);
+  border-radius: 16px;
+  padding: 64px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #111215;
+}
+
+.locator-empty-icon-box {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background-color: #121316;
+  color: #8e9196;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.locator-empty-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.locator-empty-subtitle {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  margin: 6px 0 0 0;
+}
+
+/* Faculty Card Redesign */
+.locator-faculty-card {
+  padding: 24px;
+  background-color: #111215;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.locator-faculty-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(227, 27, 35, 0.25);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(227, 27, 35, 0.05);
+}
+
+.locator-card-main-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr 1.2fr;
+  gap: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 20px;
+  align-items: flex-start;
+}
+
+@media (max-width: 1024px) {
+  .locator-card-main-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .locator-card-main-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+/* Profile Section */
+.locator-profile-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.avatar-and-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.locator-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #e31b23;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.locator-emp-id-badge {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: #10b981;
+  background-color: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  padding: 2px 8px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+
+.locator-profile-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.locator-status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #8e9196;
+}
+
+.status-dot.available {
+  background-color: #10b981;
+}
+
+.status-dot.teaching {
+  background-color: #3b82f6;
+}
+
+.status-dot.in-staff-room {
+  background-color: #6366f1;
+}
+
+.status-dot.on-leave {
+  background-color: #f43f5e;
+}
+
+.status-dot.meeting {
+  background-color: #f59e0b;
+}
+
+.status-text {
+  font-size: 10px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.03em;
+}
+
+.locator-faculty-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.locator-faculty-dept {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.locator-icon-grey {
+  color: #8e9196;
+}
+
+/* Info Columns */
+.locator-info-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.column-title {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.column-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.column-header-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.column-bold-text {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.column-sub-text {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.locator-btn-map {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1.5px solid #e31b23;
+  background-color: transparent;
+  color: #e31b23;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: fit-content;
+  outline: none;
+}
+
+.locator-btn-map:hover {
+  background-color: rgba(227, 27, 35, 0.06);
+}
+
+/* Weekly Schedule Grid */
+.weekly-schedule-grid {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.day-schedule-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.day-schedule-lbl {
+  font-size: 10px;
+  font-weight: 800;
+  color: #8e9196;
+}
+
+.day-schedule-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #2a2b30;
+}
+
+.day-schedule-dot.active-today {
+  width: 14px;
+  height: 14px;
+  background-color: #e31b23;
+  border: 3.5px solid #111215;
+  outline: 1px solid #e31b23;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.locator-schedule-link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #e31b23;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.locator-schedule-link:hover {
+  color: #ff3344;
+}
+
+/* Card Bottom */
+.locator-card-bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.locator-expertise-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.expertise-lbl {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.expertise-tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.expertise-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: #1e1f24;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.expertise-empty-text {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.locator-btn-contact {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  background-color: #e31b23;
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 3px 10px rgba(227, 27, 35, 0.35);
+  outline: none;
+}
+
+.locator-btn-contact:hover {
+  background-color: #ff3344;
+}
+
+/* Dynamic layouts for overrides & admin panels */
+.my-status-layout,
+.admin-locator-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 1024px) {
+  .my-status-layout,
+  .admin-locator-layout {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.status-config-card,
+.apply-leave-card {
+  padding: 20px;
+  background-color: #111215;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  box-sizing: border-box;
+}
+
+.status-config-title,
+.apply-leave-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 16px 0;
+}
+
+.apply-leave-title svg {
+  color: #E31B23;
+}
+
+.apply-leave-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.btn-submit-leave,
+.btn-save-override {
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  background-color: #e31b23;
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.btn-submit-leave:hover,
+.btn-save-override:hover {
+  background-color: #ff3344;
+}
+
+.status-override-row {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.override-lbl {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.current-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.override-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #8e9196;
+}
+
+.override-text {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.override-notice-text {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  margin-top: 12px;
+  line-height: 1.4;
+}
+
+.today-lectures-list,
+.admin-actions-flex {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lecture-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  background-color: #121316;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+}
+
+.lecture-subject {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.lecture-meta {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  margin: 2px 0 0 0;
+  display: flex;
+  gap: 6px;
+}
+
+.lecture-time {
+  font-size: 12px;
+  font-weight: 600;
+  color: #e31b23;
+}
+
+.lectures-empty-text,
+.table-empty-td {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Leaves History Table */
+.leaves-table-wrapper {
+  overflow-x: auto;
+  margin-top: 10px;
+}
+
+.leaves-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.leaves-data-table th {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.leaves-data-table td {
+  font-size: 12.5px;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+}
+
+.leaves-data-table tr:hover td {
+  background-color: rgba(255, 255, 255, 0.01);
+}
+
+.bold-td {
+  font-weight: 700;
+  color: #ffffff !important;
+}
+
+.italic-td {
+  font-style: italic;
+}
+
+.status-badge-val {
+  font-size: 10px;
+  font-weight: 850;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.status-badge-val.approved {
+  background-color: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.status-badge-val.pending {
+  background-color: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+.status-badge-val.rejected {
+  background-color: rgba(244, 63, 94, 0.08);
+  border: 1px solid rgba(244, 63, 94, 0.2);
+  color: #f43f5e;
+}
+
+/* Admin specific overrides */
+.admin-section-header {
+  margin-bottom: 16px;
+}
+
+.fac-bold-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.fac-sub-email,
+.leave-reason-val {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin: 2px 0 0 0;
+}
+
+.leave-type-val {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.admin-actions-flex {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+}
+
+.btn-admin-action {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-admin-action.approve {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.btn-admin-action.reject {
+  background-color: rgba(244, 63, 94, 0.1);
+  color: #f43f5e;
+}
+
+.btn-admin-action.delete {
+  background-color: rgba(255, 255, 255, 0.04);
+  color: #8e9196;
+}
+
+/* Modals */
+.locator-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.locator-modal-card {
+  padding: 24px;
+  background-color: #111215;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.modal-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+}
+
+.modal-actions-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}

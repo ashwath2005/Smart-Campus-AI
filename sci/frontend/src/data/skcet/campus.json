@@ -1,0 +1,23 @@
+{
+  "origin": {
+    "latitude": 10.9378,
+    "longitude": 76.956,
+    "description": "Administrative Block & Central Academic Quadrangle Axis"
+  },
+  "name": "Sri Krishna College of Engineering and Technology",
+  "acronym": "SKCET",
+  "location": "BK Pudur, Kuniamuthur, Coimbatore, Tamil Nadu, India",
+  "postalCode": "641008",
+  "affiliation": "Autonomous Institution, Affiliated to Anna University Chennai, Accredited by NAAC with A Grade",
+  "established": 1998,
+  "scale": {
+    "metersPerThreeUnit": 4,
+    "scaleFactor": 0.25
+  },
+  "stats": {
+    "buildingsCount": 28,
+    "roadsCount": 119,
+    "boundaryVertices": 44,
+    "gatesCount": 3
+  }
+}

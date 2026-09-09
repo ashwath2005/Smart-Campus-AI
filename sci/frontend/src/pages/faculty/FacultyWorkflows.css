@@ -1,0 +1,163 @@
+/* FacultyWorkflows.css */
+
+.pg-fac-workflows-container {
+  font-family: var(--font-sans);
+  padding-bottom: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pg-fac-workflows-header {
+  margin-bottom: 24px;
+}
+
+.pg-fac-workflows-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.pg-fac-workflows-subtitle {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
+/* Tabs */
+.pg-fac-workflows-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 24px;
+  gap: 24px;
+}
+
+.pg-fac-workflows-tab-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  padding: 12px 4px;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.pg-fac-workflows-tab-btn:hover {
+  color: #ffffff;
+}
+
+.pg-fac-workflows-tab-btn.active {
+  color: #E31B23;
+}
+
+.pg-fac-workflows-tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #E31B23;
+  border-radius: 2px;
+}
+
+/* Cards Layout */
+.pg-fac-workflows-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pg-fac-workflow-card {
+  background-color: #111215;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.pg-fac-workflow-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.pg-fac-workflow-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.pg-fac-workflow-card-student {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-top: 4px;
+}
+
+.pg-fac-workflow-card-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.pg-fac-workflow-card-body {
+  font-size: 13.5px;
+  color: #e2e8f0;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  background-color: #16181d;
+  padding: 12px 16px;
+  border-radius: 8px;
+}
+
+/* Actions Row */
+.pg-fac-workflow-review-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 16px;
+}
+
+.pg-fac-workflow-comment-input {
+  background-color: #1a1d24;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #ffffff;
+  font-size: 13.5px;
+  resize: vertical;
+}
+
+.pg-fac-workflow-comment-input:focus {
+  outline: none;
+  border-color: #E31B23;
+}
+
+.pg-fac-workflow-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* History logs */
+.pg-fac-workflow-reviewed-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  border-top: 1px solid var(--border-color);
+  padding-top: 16px;
+}

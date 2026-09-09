@@ -1,0 +1,751 @@
+/* ===============================================================================
+   CAMPUSDIGITALTWIN3D.CSS
+   SKCET Realistic 3D Digital Twin - Pitch-Black Institutional Standard
+   =============================================================================== */
+
+/* Screen reader utility so accessibility tables never bleed visually */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border-width: 0 !important;
+}
+
+/* 3D Viewport Root Container */
+.dt-viewport-container {
+  position: relative;
+  width: 100%;
+  height: 560px;
+  border-radius: var(--radius-xl, 12px);
+  overflow: hidden;
+  background-color: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.85);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .dt-viewport-container {
+    height: 620px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .dt-viewport-container {
+    height: 680px;
+  }
+}
+
+/* Fullscreen expanded state */
+.dt-viewport-container.dt-expanded {
+  position: fixed !important;
+  inset: 16px !important;
+  width: calc(100vw - 32px) !important;
+  height: calc(100vh - 32px) !important;
+  z-index: 1000 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.95) !important;
+}
+
+/* 3D Scene Wrapper & Canvas Element */
+.dt-scene-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.dt-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  outline: none !important;
+  cursor: grab;
+}
+
+.dt-canvas:active {
+  cursor: grabbing;
+}
+
+/* Top HUD Bar */
+.dt-top-hud {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.dt-top-hud-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  pointer-events: auto;
+}
+
+.dt-top-hud-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+/* Institutional Badge */
+.dt-title-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(8, 8, 8, 0.94);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 6px 12px;
+  border-radius: 8px;
+  color: #F4F4F5;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.dt-live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.dt-live-pill.live {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: #34D399;
+}
+
+.dt-live-pill.simulation {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.22);
+  color: #FBBF24;
+}
+
+.dt-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.dt-live-dot.live {
+  background-color: #10B981;
+}
+
+.dt-live-dot.simulation {
+  background-color: #F59E0B;
+}
+
+/* Camera & Control Buttons Toolbar */
+.dt-btn-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: rgba(8, 8, 8, 0.94);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 3px;
+  border-radius: 8px;
+}
+
+.dt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 9px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: #A1A1AA;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dt-btn:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.dt-btn.active {
+  color: #FFFFFF;
+  background: #151515;
+  border: 1px solid rgba(242, 23, 34, 0.4);
+}
+
+.dt-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(8, 8, 8, 0.94);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #A1A1AA;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dt-icon-btn:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Bottom HUD Scale Legend */
+.dt-bottom-hud {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(8, 8, 8, 0.94);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: #D4D4D8;
+  z-index: 15;
+}
+
+.dt-legend-title {
+  color: #71717A;
+  font-weight: 600;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+
+.dt-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dt-legend-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.dt-legend-dot.green { background: #10B981; }
+.dt-legend-dot.amber { background: #F59E0B; }
+.dt-legend-dot.red   { background: #EF4444; }
+
+/* Quick Navigation Hint */
+.dt-nav-hint {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  display: none;
+  align-items: center;
+  gap: 6px;
+  background: rgba(8, 8, 8, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.68rem;
+  color: #71717A;
+  z-index: 15;
+}
+
+@media (min-width: 900px) {
+  .dt-nav-hint {
+    display: inline-flex;
+  }
+}
+
+/* 3D Floating Building Label Badge (in Drei <Html>) */
+.dt-3d-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 10, 10, 0.95);
+  color: #F4F4F5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.75);
+  transition: all 0.15s ease;
+  cursor: pointer;
+  pointer-events: auto;
+  user-select: none;
+}
+
+.dt-3d-badge:hover,
+.dt-3d-badge.hovered {
+  border-color: #F21722;
+  background: #141414;
+}
+
+.dt-3d-badge.selected {
+  border-color: #F21722;
+  background: #181112;
+  box-shadow: 0 0 0 1px #F21722;
+}
+
+.dt-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dt-badge-name {
+  font-size: 0.72rem;
+  color: #FFFFFF;
+}
+
+.dt-badge-density {
+  font-size: 0.68rem;
+  color: #A1A1AA;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Building Inspector Floating Slide Card */
+.dt-inspector-card {
+  position: absolute;
+  top: 68px;
+  right: 14px;
+  width: 320px;
+  background: #080808;
+  border: 1px solid #1A1A1A;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.95);
+  z-index: 25;
+  color: #F4F4F5;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+.dt-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 10px;
+}
+
+.dt-card-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dt-card-icon-wrap {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dt-card-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dt-badge-code {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: #D4D4D8;
+}
+
+.dt-card-subtitle {
+  font-size: 0.72rem;
+  color: #71717A;
+  margin: 2px 0 0 0;
+}
+
+.dt-card-close {
+  background: transparent;
+  border: none;
+  color: #71717A;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.dt-card-close:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dt-density-section {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.dt-density-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dt-density-lbl {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #A1A1AA;
+}
+
+.dt-density-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.dt-density-val-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+.dt-density-number {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.dt-density-occupants {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: #71717A;
+}
+
+.dt-progress-track {
+  margin-top: 6px;
+  height: 4px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.dt-progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+.dt-desc-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dt-desc-title {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #71717A;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dt-desc-text {
+  font-size: 0.75rem;
+  color: #D4D4D8;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.dt-attr-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.dt-attr-item {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+.dt-attr-label {
+  font-size: 0.65rem;
+  color: #71717A;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dt-attr-val {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin-top: 2px;
+}
+
+.dt-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 6px;
+  background: #101010;
+  border: 1px solid rgba(242, 23, 34, 0.3);
+  color: #FFFFFF;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dt-action-btn:hover {
+  background: #1F1113;
+  border-color: #F21722;
+  color: #F21722;
+}
+
+/* True North Compass Widget */
+.dt-compass-widget:hover {
+  background: #141414 !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Verify Map Button in Top HUD */
+.dt-verify-btn:hover {
+  background: #1A1112 !important;
+  border-color: #F21722 !important;
+  color: #FFFFFF !important;
+}
+
+/* Geographic Ground Truth Verification Modal */
+.dt-verify-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.dt-verify-panel {
+  width: 100%;
+  max-width: 680px;
+  background: #080808;
+  border: 1px solid #1A1A1A;
+  border-radius: 14px;
+  padding: 24px;
+  box-sizing: border-box;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.98);
+  color: #F4F4F5;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.dt-verify-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 14px;
+}
+
+.dt-verify-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dt-verify-icon-box {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: rgba(242, 23, 34, 0.12);
+  border: 1px solid rgba(242, 23, 34, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dt-verify-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.dt-verify-subtitle {
+  font-size: 0.72rem;
+  color: #A1A1AA;
+  margin: 3px 0 0 0;
+}
+
+.dt-verify-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+@media (min-width: 640px) {
+  .dt-verify-metrics-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.dt-verify-metric-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.dt-verify-m-label {
+  font-size: 0.65rem;
+  color: #71717A;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.dt-verify-m-val {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+}
+
+.dt-verify-m-sub {
+  font-size: 0.65rem;
+  color: #A1A1AA;
+}
+
+.dt-verify-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dt-verify-section-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #E4E4E7;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dt-check-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.dt-check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  font-size: 0.74rem;
+  line-height: 1.4;
+}
+
+.dt-check-item strong {
+  display: block;
+  color: #F4F4F5;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.dt-check-item p {
+  color: #A1A1AA;
+  margin: 0;
+}
+
+.dt-check-badge.pass {
+  font-size: 0.62rem;
+  font-weight: 800;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34D399;
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.dt-verify-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}

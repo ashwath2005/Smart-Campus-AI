@@ -1,0 +1,69 @@
+/* Textarea Styles */
+.textarea-container {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.textarea-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  font-family: var(--font-sans);
+  letter-spacing: -0.01em;
+  padding-left: 4px;
+}
+
+.textarea-wrapper {
+  position: relative;
+  border-radius: var(--radius-lg);
+  box-shadow: none;
+}
+
+.textarea-field {
+  display: block;
+  width: 100%;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background-color: rgba(0, 0, 0, 0.02);
+  color: var(--text-primary);
+  font-size: 14px;
+  transition: all 0.2s ease-in-out;
+  font-family: var(--font-sans);
+  outline: none;
+  box-sizing: border-box;
+  padding: 10px 16px;
+  line-height: 1.625;
+}
+
+.dark .textarea-field {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* Normal focus state */
+.textarea-field:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+  background-color: var(--bg-secondary);
+}
+
+/* Error state classes */
+.textarea-field-error {
+  border-color: var(--danger);
+  background-color: rgba(239, 68, 68, 0.05);
+}
+
+.textarea-field-error:focus {
+  background-color: var(--bg-secondary);
+  border-color: var(--danger);
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+}
+
+.textarea-error-text {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--danger);
+  font-weight: 500;
+  padding-left: 4px;
+}

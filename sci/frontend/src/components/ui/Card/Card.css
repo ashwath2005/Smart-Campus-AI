@@ -1,0 +1,42 @@
+/* Card specific styles - Institutional Enterprise */
+
+.glass-card {
+  position: relative;
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius-xl) !important;
+  box-shadow: var(--shadow-sm) !important;
+  overflow: hidden;
+  transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.glass-card::before {
+  display: none !important;
+}
+
+.card-clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.card-clickable:hover {
+  border-color: rgba(37, 99, 235, 0.3) !important;
+}
+
+.dark .card-clickable:hover {
+  border-color: rgba(59, 130, 246, 0.35) !important;
+}
+
+.card-padding {
+  padding: 20px;
+}
+
+@media (min-width: 768px) {
+  .card-padding {
+    padding: 24px;
+  }
+}
+
+.glass-card:hover {
+  box-shadow: var(--shadow-elevated) !important;
+}

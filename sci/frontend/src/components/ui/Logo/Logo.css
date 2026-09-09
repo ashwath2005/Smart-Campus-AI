@@ -1,0 +1,5 @@
+/* Logo styling overrides */
+.logo-svg {
+  display: inline-block;
+  vertical-align: middle;
+}

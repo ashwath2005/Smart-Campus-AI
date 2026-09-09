@@ -1,0 +1,164 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   SCME-AWN ENTERPRISE DESIGN TOKENS (ZERO-BASE RESET)
+   High-density, technical calm, precision typography, multi-tier dark surfaces.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* 8PT SYSTEM SPACING */
+  --sp-0: 0px;
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  /* LAYOUT BOUNDS */
+  --shell-sidebar-w: 240px;
+  --shell-sidebar-collapsed-w: 64px;
+  --shell-header-h: 52px;
+  --shell-max-w: 1600px;
+
+  /* TYPOGRAPHY */
+  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Outfit', 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* FONT SIZES & LINE HEIGHTS */
+  --fs-2xs: 10px;
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-base: 13px;
+  --fs-md: 14px;
+  --fs-lg: 16px;
+  --fs-xl: 18px;
+  --fs-2xl: 22px;
+  --fs-3xl: 28px;
+  --fs-4xl: 34px;
+
+  /* RADII */
+  --r-xs: 4px;
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+  --r-full: 9999px;
+
+  /* LIGHT THEME (Clean Architectural Studio) */
+  --bg-app: #F8FAFC;
+  --bg-workspace: #FFFFFF;
+  --bg-panel: #FFFFFF;
+  --bg-surface-1: #FFFFFF;
+  --bg-surface-2: #F1F5F9;
+  --bg-surface-3: #E2E8F0;
+  --bg-hover: #F1F5F9;
+  --bg-active: #E2E8F0;
+
+  --tx-primary: #0F172A;
+  --tx-secondary: #475569;
+  --tx-muted: #94A3B8;
+  --tx-inverse: #FFFFFF;
+
+  --bdr-base: #E2E8F0;
+  --bdr-subtle: #F1F5F9;
+  --bdr-hover: #CBD5E1;
+  --bdr-focus: #E11D48;
+
+  --brand: #E11D48;
+  --brand-hover: #BE123C;
+  --brand-surface: rgba(225, 29, 72, 0.06);
+  --brand-bdr: rgba(225, 29, 72, 0.2);
+  --brand-text: #E11D48;
+
+  --col-success: #10B981;
+  --col-success-surf: rgba(16, 185, 129, 0.08);
+  --col-success-bdr: rgba(16, 185, 129, 0.25);
+  --col-success-tx: #059669;
+
+  --col-warning: #F59E0B;
+  --col-warning-surf: rgba(245, 158, 11, 0.08);
+  --col-warning-bdr: rgba(245, 158, 11, 0.25);
+  --col-warning-tx: #D97706;
+
+  --col-danger: #EF4444;
+  --col-danger-surf: rgba(239, 68, 68, 0.08);
+  --col-danger-bdr: rgba(239, 68, 68, 0.25);
+  --col-danger-tx: #DC2626;
+
+  --col-info: #3B82F6;
+  --col-info-surf: rgba(59, 130, 246, 0.08);
+  --col-info-bdr: rgba(59, 130, 246, 0.25);
+  --col-info-tx: #2563EB;
+
+  --col-purple: #8B5CF6;
+  --col-purple-surf: rgba(139, 92, 246, 0.08);
+  --col-purple-bdr: rgba(139, 92, 246, 0.25);
+  --col-purple-tx: #7C3AED;
+
+  --sh-card: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+  --sh-float: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+
+  --grid-color: rgba(15, 23, 42, 0.03);
+}
+
+/* DARK THEME (Pitch-Black Foundation & Official Logo Red Identity) */
+.dark, [data-theme="dark"] {
+  --bg-app: #000000;
+  --bg-workspace: #050505;
+  --bg-panel: #080808;
+  --bg-surface-1: #060606;
+  --bg-surface-2: #0B0B0B;
+  --bg-surface-3: #121212;
+  --bg-hover: #101010;
+  --bg-active: #151515;
+
+  --tx-primary: #FFFFFF;
+  --tx-secondary: #A1A1A1;
+  --tx-muted: #666666;
+  --tx-inverse: #000000;
+
+  --bdr-base: #181818;
+  --bdr-subtle: #121212;
+  --bdr-hover: #242424;
+  --bdr-focus: #F21722;
+
+  --brand: #F21722;
+  --brand-hover: #D9141E;
+  --brand-surface: rgba(242, 23, 34, 0.1);
+  --brand-bdr: rgba(242, 23, 34, 0.3);
+  --brand-text: #F21722;
+
+  --col-success: #10B981;
+  --col-success-surf: rgba(16, 185, 129, 0.12);
+  --col-success-bdr: rgba(16, 185, 129, 0.3);
+  --col-success-tx: #34D399;
+
+  --col-warning: #F59E0B;
+  --col-warning-surf: rgba(245, 158, 11, 0.12);
+  --col-warning-bdr: rgba(245, 158, 11, 0.3);
+  --col-warning-tx: #FBBF24;
+
+  --col-danger: #EF4444;
+  --col-danger-surf: rgba(239, 68, 68, 0.12);
+  --col-danger-bdr: rgba(239, 68, 68, 0.3);
+  --col-danger-tx: #F87171;
+
+  --col-info: #3B82F6;
+  --col-info-surf: rgba(59, 130, 246, 0.12);
+  --col-info-bdr: rgba(59, 130, 246, 0.3);
+  --col-info-tx: #60A5FA;
+
+  --col-purple: #A855F7;
+  --col-purple-surf: rgba(168, 85, 247, 0.12);
+  --col-purple-bdr: rgba(168, 85, 247, 0.3);
+  --col-purple-tx: #C084FC;
+
+  --sh-card: 0 1px 3px rgba(0, 0, 0, 0.7);
+  --sh-float: 0 16px 36px -8px rgba(0, 0, 0, 0.95);
+
+  --grid-color: transparent;
+}

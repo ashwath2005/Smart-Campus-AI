@@ -1,0 +1,91 @@
+name: Smart Campus AI CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  backend-tests:
+    name: Backend Validation & Algorithmic Test Suites
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: smartcampus
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python Runtime
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        working-directory: ./sci/backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Gate Pass HMAC Security Tests
+        working-directory: ./sci/backend
+        env:
+          PYTHONUTF8: "1"
+          USE_MYSQL: "false"
+        run: |
+          python -u test_gate_pass_security.py
+
+      - name: Run Algorithmic Unit Tests
+        working-directory: ./sci/backend
+        env:
+          PYTHONUTF8: "1"
+          USE_MYSQL: "false"
+        run: |
+          python -u test_alra.py
+          python -u test_skill_gap.py
+          python -u test_classroom_allocation.py
+          python -u test_permanent_classroom.py
+          python -u test_learning_intelligence.py
+
+      - name: Run Master End-to-End Test Suite
+        working-directory: ./sci/backend
+        env:
+          PYTHONUTF8: "1"
+          USE_MYSQL: "false"
+        run: |
+          uvicorn app.main:app --port 8000 &
+          sleep 5
+          python -u test_master_suite.py
+
+  frontend-build:
+    name: Frontend Quality & Production Bundle
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js Runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: ./sci/frontend/package-lock.json
+
+      - name: Install Frontend Dependencies
+        working-directory: ./sci/frontend
+        run: npm ci || npm install
+
+      - name: Production Vite Build (Three.js & Code-Split Chunks)
+        working-directory: ./sci/frontend
+        run: npm run build

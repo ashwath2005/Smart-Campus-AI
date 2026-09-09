@@ -1,0 +1,47 @@
+﻿# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+# CodeRabbit Review Configuration for Smart Campus AI Management System
+# Workspace: d:\FInal Year
+
+language: "en-US"
+early_access: false
+
+reviews:
+  profile: "assertive"
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  auto_review:
+    enabled: true
+    drafts: false
+    auto_incremental_review: true
+
+  # Custom instructions for this project's architecture
+  path_instructions:
+    - path: "sci/backend/**"
+      instructions: |
+        - Verify FastAPI route decorators, dependency injection, and Pydantic schema validation.
+        - Ensure SQLAlchemy ORM sessions are properly closed and database transactions handled securely.
+        - Enforce RBAC (Role-Based Access Control) on all campus administrative and student endpoints.
+        - Ensure secrets, JWT signing keys, and passwords are never hardcoded and always read from environment variables.
+        - Verify proper exception handling and prevent stack trace leaks in production responses.
+    - path: "sci/frontend/**"
+      instructions: |
+        - Verify React 18 / Vite TypeScript type definitions without abusive use of 'any'.
+        - Ensure Lucide icon imports and Tailwind utility classes maintain UI alignment and responsiveness.
+        - Validate responsive behavior across mobile (375px), tablet (768px), and desktop (1280px+).
+        - Verify clean state management and avoid infinite re-render loops in useEffect or event handlers.
+        - Follow Stitch and Untitled UI visual hierarchy conventions established in AGENTS.md.
+    - path: ".agents/**"
+      instructions: |
+        - Verify that skills, plugins, hooks, and MCP configurations adhere to Antigravity specifications.
+        - Ensure credentials and API keys are NOT committed to repository files.
+
+  tools:
+    eslint:
+      enabled: true
+    ruff:
+      enabled: true
+    actionlint:
+      enabled: true

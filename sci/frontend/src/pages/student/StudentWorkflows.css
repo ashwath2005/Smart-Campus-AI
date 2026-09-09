@@ -1,0 +1,326 @@
+/* StudentWorkflows.css */
+
+.pg-workflows-container {
+  font-family: var(--font-sans);
+  padding-bottom: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pg-workflows-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.pg-workflows-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.pg-workflows-subtitle {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
+.pg-workflows-action-row {
+  display: flex;
+  gap: 12px;
+}
+
+/* Tabs */
+.pg-workflows-tabs-nav {
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 24px;
+  gap: 24px;
+}
+
+.pg-workflows-tab-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  padding: 12px 4px;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.pg-workflows-tab-btn:hover {
+  color: #ffffff;
+}
+
+.pg-workflows-tab-btn.active {
+  color: #E31B23;
+}
+
+.pg-workflows-tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #E31B23;
+  border-radius: 2px;
+}
+
+/* Request Cards List */
+.pg-workflows-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pg-workflow-card {
+  background-color: #111215;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.pg-workflow-card:hover {
+  border-color: rgba(227, 27, 35, 0.2);
+}
+
+.pg-workflow-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.pg-workflow-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.pg-workflow-card-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* Badge Status Styles */
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-badge.pending-faculty-review {
+  background-color: rgba(234, 179, 8, 0.1);
+  color: #eab308;
+  border: 1px solid rgba(234, 179, 8, 0.2);
+}
+
+.status-badge.pending-hod-approval {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.status-badge.approved {
+  background-color: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.status-badge.rejected {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* Details and comments */
+.pg-workflow-card-body {
+  font-size: 13.5px;
+  color: #e2e8f0;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.pg-workflow-card-attachment {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: #3b82f6;
+  text-decoration: none;
+  margin-top: 8px;
+}
+
+.pg-workflow-card-attachment:hover {
+  text-decoration: underline;
+}
+
+/* Timeline */
+.pg-workflow-timeline {
+  border-top: 1px solid var(--border-color);
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pg-workflow-timeline-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.pg-workflow-timeline-item {
+  display: flex;
+  gap: 12px;
+  position: relative;
+}
+
+.pg-workflow-timeline-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #1a1d24;
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.pg-workflow-timeline-content {
+  font-size: 13px;
+}
+
+.pg-workflow-timeline-actor {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.pg-workflow-timeline-action {
+  color: var(--text-secondary);
+  margin-left: 4px;
+}
+
+.pg-workflow-timeline-time {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  margin-left: 8px;
+}
+
+.pg-workflow-timeline-comment {
+  font-size: 12.5px;
+  font-style: italic;
+  color: #94a3b8;
+  margin-top: 4px;
+  background-color: #16181d;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border-left: 2px solid #E31B23;
+}
+
+/* Workflow Empty State */
+.pg-workflows-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 64px 24px;
+  border: 1.5px dashed var(--border-color);
+  border-radius: 16px;
+  background-color: #111215;
+}
+
+.pg-workflows-empty-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 16px 0 4px 0;
+}
+
+.pg-workflows-empty-subtitle {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Modal Form Styles */
+.workflow-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.workflow-modal-card {
+  width: 100%;
+  max-width: 540px;
+  background-color: #111215;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+}
+
+.workflow-modal-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.workflow-modal-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+.workflow-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.workflow-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.workflow-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 12px;
+}

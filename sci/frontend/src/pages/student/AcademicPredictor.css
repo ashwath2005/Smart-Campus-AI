@@ -1,0 +1,340 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   ACADEMIC SGPA PREDICTOR CSS - SCME-AWN Smart Campus Operating System
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.ap-container {
+  font-family: var(--font-sans);
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-bottom: 2rem;
+  color: var(--text-primary);
+  box-sizing: border-box;
+}
+
+.ap-loading-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 4rem 2rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.ap-spin-icon {
+  color: var(--brand-red);
+  animation: ap-spin 2s linear infinite;
+}
+
+@keyframes ap-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Header */
+.ap-header {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.ap-header-title-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.35rem;
+}
+
+.ap-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.025em;
+}
+
+.ap-badge-predictor {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--brand-red-soft);
+  color: var(--brand-red);
+  border: 1px solid var(--accent-border);
+  font-size: 0.725rem;
+  font-weight: 800;
+  padding: 0.3rem 0.85rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ap-subtitle {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  margin: 0.25rem 0 0 0;
+  font-weight: 500;
+}
+
+/* Main Grid */
+.ap-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 1024px) {
+  .ap-grid {
+    grid-template-columns: 420px 1fr;
+  }
+}
+
+.ap-left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Cards */
+.ap-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  box-sizing: border-box;
+  box-shadow: var(--shadow-elevated);
+}
+
+.ap-card-title {
+  font-size: 15px;
+  font-weight: 750;
+  color: var(--text-primary);
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.ap-title-icon {
+  color: var(--brand-red);
+  flex-shrink: 0;
+}
+
+/* Score Dial Box */
+.ap-score-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px 16px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  margin-bottom: 16px;
+}
+
+.ap-score-val {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.ap-score-sub {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.5rem;
+}
+
+.ap-risk-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 12px;
+}
+
+.ap-risk-pill.risk-low {
+  background: var(--success-bg, rgba(16, 185, 129, 0.12));
+  color: var(--success, #10B981);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.ap-risk-pill.risk-moderate {
+  background: rgba(245, 158, 11, 0.12);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.ap-risk-pill.risk-high {
+  background: var(--brand-red-soft);
+  color: var(--brand-red);
+  border: 1px solid var(--accent-border);
+}
+
+.ap-recommendation-box {
+  background: var(--brand-red-soft);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+}
+
+.ap-recommendation-text {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Metrics List & Progress Bars */
+.ap-metrics-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ap-metric-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ap-metric-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.ap-metric-label {
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+  font-size: 11px;
+}
+
+.ap-metric-val {
+  font-weight: 800;
+  font-size: 13px;
+  font-family: monospace;
+}
+
+.val-emerald { color: var(--success); }
+.val-blue { color: #3b82f6; }
+.val-red { color: var(--brand-red); }
+
+.ap-progress-track {
+  width: 100%;
+  height: 8px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.ap-progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fill-emerald {
+  background: var(--success);
+}
+
+.fill-blue {
+  background: #3b82f6;
+}
+
+.fill-red {
+  background: var(--brand-red);
+}
+
+/* 14-Day AI Personalized Study Intervention Plan */
+.ap-plan-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.ap-plan-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ap-plan-item {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  padding: 16px 18px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.ap-plan-item:hover {
+  border-color: var(--accent-border);
+  transform: translateX(2px);
+}
+
+.ap-plan-top-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ap-plan-day-badge {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--brand-red);
+  background: var(--brand-red-soft);
+  border: 1px solid var(--accent-border);
+  padding: 2px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.ap-plan-focus {
+  font-size: 14px;
+  font-weight: 750;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.ap-plan-action-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.ap-plan-arrow {
+  color: var(--brand-red);
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+.ap-plan-action {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+

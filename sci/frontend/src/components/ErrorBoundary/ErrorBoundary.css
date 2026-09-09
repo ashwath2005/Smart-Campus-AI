@@ -1,0 +1,61 @@
+/* ErrorBoundary Styling */
+.error-boundary-container {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-color: var(--bg-primary);
+  font-family: var(--font-sans);
+}
+
+.error-boundary-card {
+  width: 100%;
+  max-width: 448px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  background-color: var(--bg-secondary);
+  padding: 32px;
+  text-align: center;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.error-boundary-icon-wrapper {
+  display: inline-flex;
+  padding: 16px;
+  border-radius: 50%;
+  background-color: rgba(239, 68, 68, 0.05);
+  color: var(--danger);
+  margin-bottom: 16px;
+}
+
+.error-boundary-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.error-boundary-text {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.error-boundary-pre {
+  text-align: left;
+  font-size: 12px;
+  background-color: rgba(0, 0, 0, 0.03);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  overflow: auto;
+  max-height: 144px;
+  margin-bottom: 24px;
+  white-space: pre-wrap;
+  border: 1px solid var(--border-color);
+}
+
+.dark .error-boundary-pre {
+  background-color: rgba(255, 255, 255, 0.05);
+}

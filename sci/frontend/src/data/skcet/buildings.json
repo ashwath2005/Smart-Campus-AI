@@ -1,0 +1,1803 @@
+[
+  {
+    "id": "bldg-eee-core",
+    "osmId": 93418964,
+    "name": "EEE & Core Academic Block",
+    "code": "EEE",
+    "department": "Electrical & Electronics Engineering",
+    "latitude": 10.936717,
+    "longitude": 76.956356,
+    "footprint": [
+      [
+        10.936863,
+        76.956097
+      ],
+      [
+        10.936859,
+        76.956182
+      ],
+      [
+        10.936816,
+        76.956184
+      ],
+      [
+        10.936812,
+        76.956268
+      ],
+      [
+        10.936836,
+        76.956272
+      ],
+      [
+        10.936832,
+        76.956349
+      ],
+      [
+        10.936652,
+        76.956352
+      ],
+      [
+        10.936653,
+        76.956366
+      ],
+      [
+        10.936654,
+        76.956381
+      ],
+      [
+        10.936707,
+        76.956379
+      ],
+      [
+        10.936709,
+        76.956444
+      ],
+      [
+        10.936837,
+        76.956434
+      ],
+      [
+        10.936847,
+        76.956753
+      ],
+      [
+        10.936555,
+        76.956764
+      ],
+      [
+        10.936543,
+        76.956604
+      ],
+      [
+        10.936526,
+        76.956378
+      ],
+      [
+        10.936527,
+        76.956346
+      ],
+      [
+        10.936529,
+        76.956106
+      ],
+      [
+        10.936863,
+        76.956097
+      ]
+    ],
+    "floors": 3,
+    "estimatedHeight": 12,
+    "archetype": "academic",
+    "aliases": [
+      "EEE block",
+      "Electrical Block",
+      "EEE"
+    ],
+    "confidence": "high",
+    "description": "Power Electronics Testing Bay, Electric Vehicle (EV) Powertrain Lab, Smart Grid Emulators, and Industrial Drives Center.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-east-campus-complex",
+    "osmId": 93419158,
+    "name": "East Campus Academic Complex",
+    "code": "ECC",
+    "department": "Arts, Science & Engineering Common Hub",
+    "latitude": 10.937742,
+    "longitude": 76.959529,
+    "footprint": [
+      [
+        10.936988,
+        76.959869
+      ],
+      [
+        10.937041,
+        76.960239
+      ],
+      [
+        10.937281,
+        76.960195
+      ],
+      [
+        10.937312,
+        76.960525
+      ],
+      [
+        10.937768,
+        76.960456
+      ],
+      [
+        10.937685,
+        76.96002
+      ],
+      [
+        10.937361,
+        76.960057
+      ],
+      [
+        10.93734,
+        76.959935
+      ],
+      [
+        10.937543,
+        76.959885
+      ],
+      [
+        10.937525,
+        76.959665
+      ],
+      [
+        10.937833,
+        76.959643
+      ],
+      [
+        10.937999,
+        76.959611
+      ],
+      [
+        10.938005,
+        76.959787
+      ],
+      [
+        10.938116,
+        76.959778
+      ],
+      [
+        10.938129,
+        76.959935
+      ],
+      [
+        10.93832,
+        76.959872
+      ],
+      [
+        10.938332,
+        76.959969
+      ],
+      [
+        10.938434,
+        76.959947
+      ],
+      [
+        10.938434,
+        76.959866
+      ],
+      [
+        10.938748,
+        76.959809
+      ],
+      [
+        10.938726,
+        76.959706
+      ],
+      [
+        10.938418,
+        76.959746
+      ],
+      [
+        10.938409,
+        76.959637
+      ],
+      [
+        10.938816,
+        76.95959
+      ],
+      [
+        10.938748,
+        76.959282
+      ],
+      [
+        10.93844,
+        76.959332
+      ],
+      [
+        10.938428,
+        76.959219
+      ],
+      [
+        10.938267,
+        76.959241
+      ],
+      [
+        10.93823,
+        76.959053
+      ],
+      [
+        10.938119,
+        76.959087
+      ],
+      [
+        10.938085,
+        76.958968
+      ],
+      [
+        10.937944,
+        76.958996
+      ],
+      [
+        10.937913,
+        76.958817
+      ],
+      [
+        10.937783,
+        76.958842
+      ],
+      [
+        10.937793,
+        76.959009
+      ],
+      [
+        10.937728,
+        76.959018
+      ],
+      [
+        10.93774,
+        76.959159
+      ],
+      [
+        10.937639,
+        76.959175
+      ],
+      [
+        10.937651,
+        76.959238
+      ],
+      [
+        10.937478,
+        76.959282
+      ],
+      [
+        10.937438,
+        76.959084
+      ],
+      [
+        10.937247,
+        76.959106
+      ],
+      [
+        10.937219,
+        76.95894
+      ],
+      [
+        10.937074,
+        76.958962
+      ],
+      [
+        10.937099,
+        76.959125
+      ],
+      [
+        10.936951,
+        76.959159
+      ],
+      [
+        10.93697,
+        76.959316
+      ],
+      [
+        10.937127,
+        76.959269
+      ],
+      [
+        10.937173,
+        76.959495
+      ],
+      [
+        10.937367,
+        76.959429
+      ],
+      [
+        10.937373,
+        76.959583
+      ],
+      [
+        10.93729,
+        76.959593
+      ],
+      [
+        10.937309,
+        76.959721
+      ],
+      [
+        10.937192,
+        76.959728
+      ],
+      [
+        10.937192,
+        76.9598
+      ],
+      [
+        10.936988,
+        76.959869
+      ]
+    ],
+    "floors": 4,
+    "estimatedHeight": 16,
+    "archetype": "academic-quad",
+    "aliases": [
+      "Sri Krishna Arts and Science College",
+      "SKASC Hub"
+    ],
+    "confidence": "high",
+    "description": "Extensive academic wing with multi-disciplinary laboratories, research suites, and lecture halls.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-mech",
+    "osmId": 93419159,
+    "name": "Mechanical Sciences Block & Workshops",
+    "code": "ME",
+    "department": "Mechanical & Automobile Engineering",
+    "latitude": 10.936006,
+    "longitude": 76.956322,
+    "footprint": [
+      [
+        10.936099,
+        76.956003
+      ],
+      [
+        10.935796,
+        76.956021
+      ],
+      [
+        10.935803,
+        76.956754
+      ],
+      [
+        10.936124,
+        76.956744
+      ],
+      [
+        10.936113,
+        76.956407
+      ],
+      [
+        10.936099,
+        76.956003
+      ]
+    ],
+    "floors": 3,
+    "estimatedHeight": 12,
+    "archetype": "academic-quad",
+    "aliases": [
+      "mechanical block",
+      "ME Block",
+      "Mechanical Block",
+      "ME"
+    ],
+    "confidence": "high",
+    "description": "Heavy engineering workshop bays, 5-Axis CNC Machining Center, Formula Student Racing Garage, and Wind Tunnel Aerodynamics Lab.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-c1-c2",
+    "osmId": 93419160,
+    "name": "C1-C2 Academic Complex",
+    "code": "C1-C2",
+    "department": "Computer Science & Engineering",
+    "latitude": 10.937207,
+    "longitude": 76.956407,
+    "footprint": [
+      [
+        10.937316,
+        76.956097
+      ],
+      [
+        10.937287,
+        76.956099
+      ],
+      [
+        10.937206,
+        76.956104
+      ],
+      [
+        10.937051,
+        76.956113
+      ],
+      [
+        10.937042,
+        76.956207
+      ],
+      [
+        10.936955,
+        76.95622
+      ],
+      [
+        10.936962,
+        76.956317
+      ],
+      [
+        10.937051,
+        76.95632
+      ],
+      [
+        10.937053,
+        76.956424
+      ],
+      [
+        10.937057,
+        76.956599
+      ],
+      [
+        10.936971,
+        76.956599
+      ],
+      [
+        10.936958,
+        76.956709
+      ],
+      [
+        10.937063,
+        76.956716
+      ],
+      [
+        10.937066,
+        76.956806
+      ],
+      [
+        10.937344,
+        76.956797
+      ],
+      [
+        10.937334,
+        76.956684
+      ],
+      [
+        10.937433,
+        76.956697
+      ],
+      [
+        10.937433,
+        76.956558
+      ],
+      [
+        10.937341,
+        76.956562
+      ],
+      [
+        10.937334,
+        76.956483
+      ],
+      [
+        10.937333,
+        76.956395
+      ],
+      [
+        10.937325,
+        76.956301
+      ],
+      [
+        10.937421,
+        76.956298
+      ],
+      [
+        10.937411,
+        76.956191
+      ],
+      [
+        10.937319,
+        76.956194
+      ],
+      [
+        10.937316,
+        76.956097
+      ]
+    ],
+    "floors": 4,
+    "estimatedHeight": 16,
+    "archetype": "academic-quad",
+    "aliases": [
+      "c1,c2 block",
+      "CS Block",
+      "C1 C2 Block",
+      "CSE Complex"
+    ],
+    "confidence": "high",
+    "description": "Flagship 4-story quadrangle complex with landscaped inner courtyard. Houses AI & Deep Learning Labs, NVIDIA RTX Supercomputing Cluster, and Smart Lecture Theatres.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-east-seminar",
+    "osmId": 93419161,
+    "name": "East Seminar Pavilion",
+    "code": "ESP",
+    "department": "Academic Conventions",
+    "latitude": 10.93824,
+    "longitude": 76.958599,
+    "footprint": [
+      [
+        10.938371,
+        76.958437
+      ],
+      [
+        10.937986,
+        76.958503
+      ],
+      [
+        10.938052,
+        76.958825
+      ],
+      [
+        10.938421,
+        76.958794
+      ],
+      [
+        10.938371,
+        76.958437
+      ]
+    ],
+    "floors": 2,
+    "estimatedHeight": 8,
+    "archetype": "academic",
+    "aliases": [
+      "East Seminar"
+    ],
+    "confidence": "medium",
+    "description": "Multi-disciplinary seminar facilities and research discussion suites.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-hostel-mess",
+    "osmId": 93419162,
+    "name": "Arts Hostel & Dining Mess",
+    "code": "AHM",
+    "department": "Student Housing",
+    "latitude": 10.939766,
+    "longitude": 76.959989,
+    "footprint": [
+      [
+        10.939523,
+        76.959865
+      ],
+      [
+        10.939535,
+        76.96025
+      ],
+      [
+        10.939777,
+        76.960234
+      ],
+      [
+        10.939774,
+        76.960359
+      ],
+      [
+        10.94007,
+        76.960407
+      ],
+      [
+        10.94007,
+        76.959798
+      ],
+      [
+        10.939851,
+        76.959826
+      ],
+      [
+        10.939835,
+        76.959716
+      ],
+      [
+        10.939735,
+        76.95972
+      ],
+      [
+        10.939735,
+        76.959838
+      ],
+      [
+        10.939523,
+        76.959865
+      ]
+    ],
+    "floors": 4,
+    "estimatedHeight": 16,
+    "archetype": "academic",
+    "aliases": [
+      "SKCET ARTS HOSTEL AND MESS"
+    ],
+    "confidence": "high",
+    "description": "Hostel block with integrated dining mess.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-temple",
+    "osmId": 503500297,
+    "name": "Sri Krishna Campus Temple",
+    "code": "TMP",
+    "department": "Campus Sanctuary & Heritage",
+    "latitude": 10.938452,
+    "longitude": 76.952616,
+    "footprint": [
+      [
+        10.938563,
+        76.95237
+      ],
+      [
+        10.9386,
+        76.952971
+      ],
+      [
+        10.938282,
+        76.952984
+      ],
+      [
+        10.938253,
+        76.952386
+      ],
+      [
+        10.938563,
+        76.95237
+      ]
+    ],
+    "floors": 1,
+    "estimatedHeight": 4,
+    "archetype": "admin",
+    "aliases": [
+      "Sreekrishna College Temple"
+    ],
+    "confidence": "high",
+    "description": "Campus spiritual sanctuary and heritage monument.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-boys-hostel-ab",
+    "osmId": 570580462,
+    "name": "Boys Hostel A & B Block",
+    "code": "BH-AB",
+    "department": "Student Residential Housing",
+    "latitude": 10.940012,
+    "longitude": 76.960947,
+    "footprint": [
+      [
+        10.940105,
+        76.960592
+      ],
+      [
+        10.93974,
+        76.960597
+      ],
+      [
+        10.939801,
+        76.961376
+      ],
+      [
+        10.940153,
+        76.961303
+      ],
+      [
+        10.940166,
+        76.961222
+      ],
+      [
+        10.940105,
+        76.960592
+      ]
+    ],
+    "floors": 5,
+    "estimatedHeight": 20,
+    "archetype": "academic",
+    "aliases": [
+      "SKCET BOYS HOSTEL A and B block"
+    ],
+    "confidence": "high",
+    "description": "Multi-story student residential housing complex.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-boys-hostel-de",
+    "osmId": 570580511,
+    "name": "Boys Hostel D & E Block",
+    "code": "BH-DE",
+    "department": "Student Residential Housing",
+    "latitude": 10.939491,
+    "longitude": 76.961656,
+    "footprint": [
+      [
+        10.939616,
+        76.961329
+      ],
+      [
+        10.939124,
+        76.961368
+      ],
+      [
+        10.939217,
+        76.962134
+      ],
+      [
+        10.939688,
+        76.961987
+      ],
+      [
+        10.939688,
+        76.961789
+      ],
+      [
+        10.939616,
+        76.961329
+      ]
+    ],
+    "floors": 5,
+    "estimatedHeight": 20,
+    "archetype": "academic",
+    "aliases": [
+      "skcet boys hostel D and E block"
+    ],
+    "confidence": "high",
+    "description": "Residential housing blocks with student commons.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-boys-hostel-c",
+    "osmId": 570580602,
+    "name": "Boys Hostel C Block",
+    "code": "BH-C",
+    "department": "Student Residential Housing",
+    "latitude": 10.939399,
+    "longitude": 76.960984,
+    "footprint": [
+      [
+        10.939554,
+        76.960842
+      ],
+      [
+        10.939127,
+        76.960885
+      ],
+      [
+        10.939179,
+        76.961259
+      ],
+      [
+        10.939583,
+        76.961089
+      ],
+      [
+        10.939554,
+        76.960842
+      ]
+    ],
+    "floors": 5,
+    "estimatedHeight": 20,
+    "archetype": "academic",
+    "aliases": [
+      "skcet boys hostel C block"
+    ],
+    "confidence": "high",
+    "description": "Residential block with study halls and indoor recreation.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-c5",
+    "osmId": 571426527,
+    "name": "C5 Block",
+    "code": "C5",
+    "department": "Applied Sciences & First Year Labs",
+    "latitude": 10.937034,
+    "longitude": 76.955387,
+    "footprint": [
+      [
+        10.937137,
+        76.955281
+      ],
+      [
+        10.93719,
+        76.955533
+      ],
+      [
+        10.936847,
+        76.955527
+      ],
+      [
+        10.936858,
+        76.955313
+      ],
+      [
+        10.937137,
+        76.955281
+      ]
+    ],
+    "floors": 3,
+    "estimatedHeight": 12,
+    "archetype": "academic",
+    "aliases": [
+      "C5 block"
+    ],
+    "confidence": "high",
+    "description": "First-year engineering graphics computer centre and physics research instrumentation suites.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-mba",
+    "osmId": 571426529,
+    "name": "School of Management (MBA Block)",
+    "code": "SOM",
+    "department": "School of Management",
+    "latitude": 10.937554,
+    "longitude": 76.955732,
+    "footprint": [
+      [
+        10.937664,
+        76.955828
+      ],
+      [
+        10.937706,
+        76.95557
+      ],
+      [
+        10.937564,
+        76.955554
+      ],
+      [
+        10.937479,
+        76.955592
+      ],
+      [
+        10.937485,
+        76.955651
+      ],
+      [
+        10.937353,
+        76.955667
+      ],
+      [
+        10.937421,
+        76.955962
+      ],
+      [
+        10.937653,
+        76.95594
+      ],
+      [
+        10.937664,
+        76.955828
+      ]
+    ],
+    "floors": 3,
+    "estimatedHeight": 12,
+    "archetype": "academic",
+    "aliases": [
+      "MBA block",
+      "School of Management",
+      "SOM"
+    ],
+    "confidence": "high",
+    "description": "Executive Management Case Discussion Theatres, Bloomberg Financial Terminal Lab, and Corporate Seminar Hall.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-mca",
+    "osmId": 571426530,
+    "name": "MCA Block & Seminar Hall",
+    "code": "MCA",
+    "department": "Computer Applications",
+    "latitude": 10.937174,
+    "longitude": 76.955751,
+    "footprint": [
+      [
+        10.937,
+        76.955645
+      ],
+      [
+        10.937148,
+        76.95564
+      ],
+      [
+        10.937242,
+        76.95557
+      ],
+      [
+        10.937237,
+        76.955651
+      ],
+      [
+        10.93729,
+        76.955656
+      ],
+      [
+        10.937292,
+        76.955704
+      ],
+      [
+        10.937295,
+        76.955747
+      ],
+      [
+        10.937247,
+        76.955747
+      ],
+      [
+        10.937226,
+        76.955828
+      ],
+      [
+        10.937316,
+        76.955833
+      ],
+      [
+        10.937342,
+        76.955957
+      ],
+      [
+        10.937005,
+        76.955967
+      ],
+      [
+        10.937021,
+        76.955817
+      ],
+      [
+        10.937174,
+        76.955828
+      ],
+      [
+        10.937142,
+        76.955758
+      ],
+      [
+        10.936974,
+        76.95578
+      ],
+      [
+        10.937,
+        76.955645
+      ]
+    ],
+    "floors": 3,
+    "estimatedHeight": 12,
+    "archetype": "academic",
+    "aliases": [
+      "MCA block",
+      "MCA seminarHALL",
+      "MCA"
+    ],
+    "confidence": "high",
+    "description": "Software Design Labs, Advanced Algorithms Research Wing, and MCA Central Seminar Hall.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-ece",
+    "osmId": 571426531,
+    "name": "ECE Block",
+    "code": "ECE",
+    "department": "Electronics & Communication Engineering",
+    "latitude": 10.936348,
+    "longitude": 76.956228,
+    "footprint": [
+      [
+        10.936147,
+        76.956118
+      ],
+      [
+        10.936384,
+        76.956091
+      ],
+      [
+        10.936368,
+        76.956134
+      ],
+      [
+        10.936457,
+        76.956128
+      ],
+      [
+        10.936452,
+        76.956193
+      ],
+      [
+        10.9364,
+        76.956241
+      ],
+      [
+        10.936463,
+        76.956278
+      ],
+      [
+        10.936432,
+        76.956403
+      ],
+      [
+        10.936421,
+        76.95645
+      ],
+      [
+        10.936157,
+        76.956359
+      ],
+      [
+        10.936147,
+        76.956118
+      ]
+    ],
+    "floors": 4,
+    "estimatedHeight": 16,
+    "archetype": "academic",
+    "aliases": [
+      "ECE block",
+      "Electronics Block",
+      "ECE"
+    ],
+    "confidence": "high",
+    "description": "VLSI Cadence Design Center, Anechoic RF & Antenna Testing Chamber, Embedded IoT Sandbox, and High-Speed Signal Processing Lab.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-mechatronics",
+    "osmId": 571426532,
+    "name": "Mechatronics Block",
+    "code": "MCT",
+    "department": "Mechatronics & Autonomous Systems",
+    "latitude": 10.936373,
+    "longitude": 76.956563,
+    "footprint": [
+      [
+        10.936421,
+        76.95645
+      ],
+      [
+        10.936479,
+        76.956504
+      ],
+      [
+        10.936415,
+        76.956563
+      ],
+      [
+        10.936436,
+        76.956632
+      ],
+      [
+        10.936489,
+        76.956729
+      ],
+      [
+        10.936173,
+        76.956729
+      ],
+      [
+        10.936152,
+        76.95645
+      ],
+      [
+        10.936421,
+        76.95645
+      ]
+    ],
+    "floors": 3,
+    "estimatedHeight": 12,
+    "archetype": "academic",
+    "aliases": [
+      "mechatronics block",
+      "MCT Block",
+      "Robotics Bay"
+    ],
+    "confidence": "high",
+    "description": "Industrial Automation Cell, 6-Axis KUKA Robotic Arms, Electro-Hydraulics & Pneumatics Testbench, and Sensor Fusion Arena.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-c3-science",
+    "osmId": 571426539,
+    "name": "C3 Science & Humanities Block",
+    "code": "SCI",
+    "department": "Basic Sciences & Humanities",
+    "latitude": 10.936726,
+    "longitude": 76.955815,
+    "footprint": [
+      [
+        10.936555,
+        76.955667
+      ],
+      [
+        10.936706,
+        76.955655
+      ],
+      [
+        10.93686,
+        76.955643
+      ],
+      [
+        10.936853,
+        76.955758
+      ],
+      [
+        10.936816,
+        76.955771
+      ],
+      [
+        10.936795,
+        76.955785
+      ],
+      [
+        10.936797,
+        76.955817
+      ],
+      [
+        10.936842,
+        76.955825
+      ],
+      [
+        10.936847,
+        76.955847
+      ],
+      [
+        10.936887,
+        76.955847
+      ],
+      [
+        10.93686,
+        76.955946
+      ],
+      [
+        10.936853,
+        76.955965
+      ],
+      [
+        10.936658,
+        76.955967
+      ],
+      [
+        10.936639,
+        76.955994
+      ],
+      [
+        10.936539,
+        76.956005
+      ],
+      [
+        10.93651,
+        76.955817
+      ],
+      [
+        10.936505,
+        76.955702
+      ],
+      [
+        10.936555,
+        76.955667
+      ]
+    ],
+    "floors": 3,
+    "estimatedHeight": 12,
+    "archetype": "academic",
+    "aliases": [
+      "c3 block",
+      "Science Block",
+      "C3 Block",
+      "SCI"
+    ],
+    "confidence": "high",
+    "description": "Nanotechnology Research Laboratories, Material Physics Facility, Advanced Synthetic Chemistry Labs, and Digital Language Testing Theatres.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-science-annex",
+    "osmId": 571426540,
+    "name": "Science Research Annex",
+    "code": "SRA",
+    "department": "Applied Sciences",
+    "latitude": 10.936639,
+    "longitude": 76.955546,
+    "footprint": [
+      [
+        10.936697,
+        76.955468
+      ],
+      [
+        10.936706,
+        76.955655
+      ],
+      [
+        10.936547,
+        76.955651
+      ],
+      [
+        10.93655,
+        76.95549
+      ],
+      [
+        10.936697,
+        76.955468
+      ]
+    ],
+    "floors": 2,
+    "estimatedHeight": 8,
+    "archetype": "academic",
+    "aliases": [
+      "Science Annex"
+    ],
+    "confidence": "medium",
+    "description": "Specialized laboratory and instrumentation research suites.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-civil",
+    "osmId": 571426541,
+    "name": "Civil Engineering Block",
+    "code": "CIVIL",
+    "department": "Civil & Environmental Engineering",
+    "latitude": 10.93627,
+    "longitude": 76.955827,
+    "footprint": [
+      [
+        10.936141,
+        76.955997
+      ],
+      [
+        10.936128,
+        76.955675
+      ],
+      [
+        10.936363,
+        76.955664
+      ],
+      [
+        10.936363,
+        76.955699
+      ],
+      [
+        10.936484,
+        76.95593
+      ],
+      [
+        10.936141,
+        76.955997
+      ]
+    ],
+    "floors": 3,
+    "estimatedHeight": 12,
+    "archetype": "academic",
+    "aliases": [
+      "civil block",
+      "Civil Block",
+      "CIVIL"
+    ],
+    "confidence": "high",
+    "description": "Structural Dynamics Shake Table, Soil Mechanics Research Center, Environmental Quality Analysis Lab, and GIS Total Station Station.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-vankatram-library",
+    "osmId": 571426542,
+    "name": "Vankatram Learning Centre",
+    "code": "VLC",
+    "department": "Central Digital Library & Research Commons",
+    "latitude": 10.938588,
+    "longitude": 76.956047,
+    "footprint": [
+      [
+        10.938371,
+        76.955836
+      ],
+      [
+        10.938755,
+        76.955831
+      ],
+      [
+        10.938761,
+        76.956068
+      ],
+      [
+        10.938834,
+        76.956072
+      ],
+      [
+        10.93884,
+        76.956267
+      ],
+      [
+        10.938487,
+        76.956269
+      ],
+      [
+        10.93844,
+        76.956149
+      ],
+      [
+        10.938429,
+        76.956098
+      ],
+      [
+        10.938371,
+        76.955836
+      ]
+    ],
+    "floors": 3,
+    "estimatedHeight": 12,
+    "archetype": "library",
+    "aliases": [
+      "vankatram library center",
+      "Central Library",
+      "Library",
+      "VLC"
+    ],
+    "confidence": "high",
+    "description": "Iconic circular rotunda & digital library housing 64,000+ volumes, IEEE/ACM digital access, 500-seat reading hall, and 24/7 research bay.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-convention-center",
+    "osmId": 571426543,
+    "name": "Convention Centre",
+    "code": "CC",
+    "department": "Institutional Events & Symposiums",
+    "latitude": 10.938284,
+    "longitude": 76.956641,
+    "footprint": [
+      [
+        10.938196,
+        76.956565
+      ],
+      [
+        10.938237,
+        76.956563
+      ],
+      [
+        10.938506,
+        76.956547
+      ],
+      [
+        10.938512,
+        76.956801
+      ],
+      [
+        10.938185,
+        76.956831
+      ],
+      [
+        10.938154,
+        76.956611
+      ],
+      [
+        10.938196,
+        76.956565
+      ]
+    ],
+    "floors": 2,
+    "estimatedHeight": 8,
+    "archetype": "auditorium",
+    "aliases": [
+      "convention center"
+    ],
+    "confidence": "high",
+    "description": "Tiered convention halls and air-conditioned symposia suites for national symposia and academic conventions.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-food-court",
+    "osmId": 571426544,
+    "name": "SKCET Food Court & JMR Cafe",
+    "code": "FC",
+    "department": "Campus Dining & Amenities",
+    "latitude": 10.938761,
+    "longitude": 76.956599,
+    "footprint": [
+      [
+        10.938664,
+        76.956405
+      ],
+      [
+        10.938676,
+        76.956658
+      ],
+      [
+        10.938685,
+        76.956861
+      ],
+      [
+        10.93893,
+        76.956863
+      ],
+      [
+        10.938944,
+        76.956402
+      ],
+      [
+        10.938664,
+        76.956405
+      ]
+    ],
+    "floors": 2,
+    "estimatedHeight": 8,
+    "archetype": "sports-food",
+    "aliases": [
+      "food court",
+      "JMR cafe",
+      "Cafeteria",
+      "Dining"
+    ],
+    "confidence": "high",
+    "description": "Multi-cuisine student and faculty dining commons with 1,200 capacity, open terrace cafe, and health juice bars.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-sri-krishna-hall",
+    "osmId": 571426547,
+    "name": "Sri Krishna Hall",
+    "code": "SKH",
+    "department": "Institutional Auditorium & Convocation Centre",
+    "latitude": 10.939411,
+    "longitude": 76.958852,
+    "footprint": [
+      [
+        10.939568,
+        76.958655
+      ],
+      [
+        10.938959,
+        76.95877
+      ],
+      [
+        10.939028,
+        76.959264
+      ],
+      [
+        10.939705,
+        76.95913
+      ],
+      [
+        10.939641,
+        76.958641
+      ],
+      [
+        10.939568,
+        76.958655
+      ]
+    ],
+    "floors": 2,
+    "estimatedHeight": 8,
+    "archetype": "auditorium",
+    "aliases": [
+      "SRI krishna Hall",
+      "Auditorium",
+      "SKH"
+    ],
+    "confidence": "high",
+    "description": "Grand institutional auditorium with 3,500-seat capacity, state-of-the-art acoustic treatment, stage lighting, and presidential convention facilities.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-bank-atm",
+    "osmId": 572762980,
+    "name": "Axis Bank & Banking Centre",
+    "code": "BNK",
+    "department": "Campus Financial Amenities",
+    "latitude": 10.938781,
+    "longitude": 76.952252,
+    "footprint": [
+      [
+        10.938872,
+        76.952184
+      ],
+      [
+        10.938682,
+        76.952227
+      ],
+      [
+        10.938635,
+        76.952312
+      ],
+      [
+        10.938846,
+        76.952355
+      ],
+      [
+        10.938872,
+        76.952184
+      ]
+    ],
+    "floors": 2,
+    "estimatedHeight": 8,
+    "archetype": "sports-food",
+    "aliases": [
+      "Axis Bank"
+    ],
+    "confidence": "high",
+    "description": "On-campus banking facility and 24/7 ATM.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-girls-hostel-1",
+    "osmId": 572762983,
+    "name": "Girls Hostel Block 1",
+    "code": "GH-1",
+    "department": "Student Residential Housing",
+    "latitude": 10.934519,
+    "longitude": 76.953516,
+    "footprint": [
+      [
+        10.934529,
+        76.95333
+      ],
+      [
+        10.934379,
+        76.953459
+      ],
+      [
+        10.934463,
+        76.953778
+      ],
+      [
+        10.934697,
+        76.953684
+      ],
+      [
+        10.934529,
+        76.95333
+      ]
+    ],
+    "floors": 4,
+    "estimatedHeight": 16,
+    "archetype": "academic",
+    "aliases": [
+      "girls hostel"
+    ],
+    "confidence": "high",
+    "description": "Secured residential campus housing for women students.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-girls-hostel-2",
+    "osmId": 572762984,
+    "name": "Girls Hostel Block 2",
+    "code": "GH-2",
+    "department": "Student Residential Housing",
+    "latitude": 10.934267,
+    "longitude": 76.952987,
+    "footprint": [
+      [
+        10.934247,
+        76.952842
+      ],
+      [
+        10.934284,
+        76.952831
+      ],
+      [
+        10.934455,
+        76.953161
+      ],
+      [
+        10.934363,
+        76.953215
+      ],
+      [
+        10.934281,
+        76.953043
+      ],
+      [
+        10.934168,
+        76.953099
+      ],
+      [
+        10.9341,
+        76.952965
+      ],
+      [
+        10.93426,
+        76.952885
+      ],
+      [
+        10.934247,
+        76.952842
+      ]
+    ],
+    "floors": 4,
+    "estimatedHeight": 16,
+    "archetype": "academic",
+    "aliases": [
+      "girls hostel-block2"
+    ],
+    "confidence": "high",
+    "description": "Multi-story residential hall with gymnasium and dining.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-amenity-east",
+    "osmId": 572762988,
+    "name": "East Amenities & Staff Block",
+    "code": "EAB",
+    "department": "Staff Amenities",
+    "latitude": 10.938428,
+    "longitude": 76.958971,
+    "footprint": [
+      [
+        10.938524,
+        76.958888
+      ],
+      [
+        10.938553,
+        76.95907
+      ],
+      [
+        10.938463,
+        76.959126
+      ],
+      [
+        10.938295,
+        76.959078
+      ],
+      [
+        10.938253,
+        76.95893
+      ],
+      [
+        10.938384,
+        76.958821
+      ],
+      [
+        10.938524,
+        76.958888
+      ]
+    ],
+    "floors": 2,
+    "estimatedHeight": 8,
+    "archetype": "academic",
+    "aliases": [
+      "Staff Quarters"
+    ],
+    "confidence": "medium",
+    "description": "Staff residential quarters and auxiliary amenities.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-admin-block",
+    "osmId": 1067550468,
+    "name": "Administrative Block",
+    "code": "ADM",
+    "department": "Institutional Administration & Governance",
+    "latitude": 10.937717,
+    "longitude": 76.956306,
+    "footprint": [
+      [
+        10.937918,
+        76.956097
+      ],
+      [
+        10.937686,
+        76.9561
+      ],
+      [
+        10.937687,
+        76.956182
+      ],
+      [
+        10.937612,
+        76.956183
+      ],
+      [
+        10.937613,
+        76.956245
+      ],
+      [
+        10.93755,
+        76.956246
+      ],
+      [
+        10.937553,
+        76.956495
+      ],
+      [
+        10.93759,
+        76.956495
+      ],
+      [
+        10.937591,
+        76.956551
+      ],
+      [
+        10.937648,
+        76.95655
+      ],
+      [
+        10.937648,
+        76.956479
+      ],
+      [
+        10.937707,
+        76.956478
+      ],
+      [
+        10.937705,
+        76.956337
+      ],
+      [
+        10.937763,
+        76.956337
+      ],
+      [
+        10.937762,
+        76.95626
+      ],
+      [
+        10.937877,
+        76.956259
+      ],
+      [
+        10.937876,
+        76.956216
+      ],
+      [
+        10.93792,
+        76.956215
+      ],
+      [
+        10.937918,
+        76.956097
+      ]
+    ],
+    "floors": 3,
+    "estimatedHeight": 12,
+    "archetype": "admin",
+    "aliases": [
+      "ADMIN block",
+      "Admin Block",
+      "Administrative Block",
+      "ADM"
+    ],
+    "confidence": "high",
+    "description": "Principal's Office, Governing Council Hall, Controller of Examinations, Dean of Academics, and Institutional Registry.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  },
+  {
+    "id": "bldg-c6",
+    "osmId": 1552739786,
+    "name": "C6 Block",
+    "code": "C6",
+    "department": "Computer Technology & Applied Studies",
+    "latitude": 10.936681,
+    "longitude": 76.9553,
+    "footprint": [
+      [
+        10.936736,
+        76.955187
+      ],
+      [
+        10.936784,
+        76.95543
+      ],
+      [
+        10.936593,
+        76.95543
+      ],
+      [
+        10.936554,
+        76.955268
+      ],
+      [
+        10.936736,
+        76.955187
+      ]
+    ],
+    "floors": 3,
+    "estimatedHeight": 12,
+    "archetype": "academic",
+    "aliases": [
+      "c6"
+    ],
+    "confidence": "high",
+    "description": "Computing facilities and academic seminar halls.",
+    "source": "Google Maps satellite + OpenStreetMap official survey"
+  }
+]

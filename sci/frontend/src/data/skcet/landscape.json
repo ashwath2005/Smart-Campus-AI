@@ -1,0 +1,111 @@
+{
+  "lawns": [
+    {
+      "id": "lawn-admin",
+      "name": "Central Administration Quadrangle Lawn",
+      "center": [
+        10.9375,
+        76.95625
+      ],
+      "dimensions": [
+        24,
+        18
+      ],
+      "confidence": "verified"
+    },
+    {
+      "id": "lawn-vlc-circle",
+      "name": "Vankatram Library Forecourt Rotunda Lawn",
+      "center": [
+        10.93835,
+        76.95605
+      ],
+      "radius": 10,
+      "confidence": "verified"
+    },
+    {
+      "id": "lawn-c1-courtyard",
+      "name": "C1-C2 Central Courtyard Garden",
+      "center": [
+        10.9372,
+        76.9564
+      ],
+      "dimensions": [
+        14,
+        14
+      ],
+      "confidence": "verified"
+    },
+    {
+      "id": "lawn-krishna-square",
+      "name": "Krishna Square Sunken Amphitheatre Lawn",
+      "center": [
+        10.93762,
+        76.95533
+      ],
+      "dimensions": [
+        26,
+        22
+      ],
+      "confidence": "verified"
+    }
+  ],
+  "treeAvenues": [
+    {
+      "id": "ave-palakkad-entry",
+      "name": "Main Boulevard Royal Palms",
+      "treeType": "palm",
+      "count": 18,
+      "start": [
+        10.93816,
+        76.95251
+      ],
+      "end": [
+        10.9378,
+        76.9553
+      ]
+    },
+    {
+      "id": "ave-academic-corridor",
+      "name": "Academic Quad Rain Trees & Gulmohar",
+      "treeType": "canopy_large",
+      "count": 24,
+      "start": [
+        10.9378,
+        76.9553
+      ],
+      "end": [
+        10.936,
+        76.956
+      ]
+    },
+    {
+      "id": "ave-stadium-perimeter",
+      "name": "Stadium Perimeter Shade Trees",
+      "treeType": "canopy_medium",
+      "count": 32,
+      "start": [
+        10.936,
+        76.9572
+      ],
+      "end": [
+        10.9381,
+        76.9572
+      ]
+    },
+    {
+      "id": "ave-hostel-border",
+      "name": "East Hostel Avenue & Hedges",
+      "treeType": "hedge_avenue",
+      "count": 20,
+      "start": [
+        10.9385,
+        76.9585
+      ],
+      "end": [
+        10.94,
+        76.961
+      ]
+    }
+  ]
+}

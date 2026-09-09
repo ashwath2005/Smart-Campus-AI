@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+venv/
+.venv/
+env/
+
+# Python Cache & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Build & Bundler Output
+dist/
+build/
+.vite/
+*.local
+
+# Environment & Config
+.env
+.env.*
+!.env.example
+.vscode/
+
+# Database & SQLite files
+*.sqlite3
+*.db
+*.db-journal
+
+# Archives & Temporary Uploads
+*.zip
+*.tar.gz
+*.rar
+sci/backend/uploads/timetables/*.xlsx
+
+# OS generated files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# AI Development Toolchain Run State & Logs
+.agents/
+.ralph/logs/
+.ralph/state.json
+.ralph/EMERGENCY_STOP
+.ai-toolchain-backup/

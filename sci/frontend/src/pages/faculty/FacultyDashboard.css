@@ -1,0 +1,169 @@
+/* FacultyDashboard.css */
+
+.pg-facultydashboard-2 {
+  height: 2rem;
+  width: calc(1 / 3 * 100%);
+}
+
+.pg-facultydashboard-3 {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .pg-facultydashboard-3 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.pg-facultydashboard-4 {
+  font-family: var(--font-sans);
+  padding-bottom: 2rem;
+  margin-left: auto; margin-right: auto;
+  width: 100%;
+}
+
+.pg-facultydashboard-5 {
+  user-select: none;
+}
+
+.pg-facultydashboard-6 {
+  font-size: 1.5rem; line-height: 2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.025em;
+}
+
+.pg-facultydashboard-7 {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+.pg-facultydashboard-8 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .pg-facultydashboard-8 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.pg-facultydashboard-9 {
+  flex-shrink: 0;
+  display: flex;
+  padding-bottom: 0.25rem;
+  overflow-x: auto;
+  justify-content: flex-start;
+  user-select: none;
+}
+
+.pg-facultydashboard-10 {
+  padding-top: 0.5rem;
+}
+
+.pg-facultydashboard-11 {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .pg-facultydashboard-11 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.pg-facultydashboard-12 {
+  padding: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .pg-facultydashboard-12 {
+    grid-column: span 2 / span 2;
+  }
+}
+
+.pg-facultydashboard-13 {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 15px;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.025em;
+}
+
+.pg-facultydashboard-14 {
+  font-size: 0.75rem; line-height: 1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
+  user-select: none;
+}
+
+.pg-facultydashboard-16 {
+  padding-top: 1rem; padding-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pg-facultydashboard-17 {
+  font-weight: 700;
+  font-size: 0.875rem; line-height: 1.25rem;
+  color: var(--text-primary);
+  letter-spacing: -0.025em;
+}
+
+.pg-facultydashboard-18 {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+  font-weight: 600;
+  user-select: none;
+}
+
+.pg-facultydashboard-19 {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  padding-left: 0.875rem; padding-right: 0.875rem;
+  padding-top: 0.375rem; padding-bottom: 0.375rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border-color);
+  user-select: none;
+}
+
+.pg-facultydashboard-20 {
+  padding: 1.5rem;
+}
+
+.pg-facultydashboard-21 {
+  font-size: 0.75rem; line-height: 1rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.625;
+}
+
+.pg-facultydashboard-22 {
+  padding: 2rem;
+  margin-left: auto; margin-right: auto;
+}
+
+.pg-facultydashboard-23 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.025em;
+}
+
+.pg-facultydashboard-25 {
+  width: 100%;
+  margin-top: 1.5rem;
+}
+

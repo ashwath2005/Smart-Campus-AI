@@ -1,0 +1,193 @@
+/* variables.css - Institutional Enterprise Design Tokens (Light & Dark System) */
+
+:root {
+  /* Canvas & Shell Foundation */
+  --bg-canvas: #EAE9EE;
+  --bg-shell: #F4F4F6;
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #FFFFFF;
+  --bg-tertiary: #EEF0F4;
+  --bg-card: #FFFFFF;
+  --bg-card-elevated: #FFFFFF;
+  --bg-surface: #FFFFFF;
+  --bg-elevated: #FAFAFC;
+  --bg-surface-hover: #FAFAFC;
+  --bg-surface-active: #F0F0F3;
+  --bg-hover: #FAFAFC;
+
+  /* Typography Hierarchy */
+  --text-primary: #111118;
+  --text-secondary: #4A4A52;
+  --text-muted: #8E8E93;
+  --text-disabled: #C4C4C8;
+
+  /* Borders & Dividers */
+  --border-color: rgba(0, 0, 0, 0.08);
+  --border-subtle: rgba(0, 0, 0, 0.05);
+  --border-strong: rgba(0, 0, 0, 0.14);
+  --glass-bg: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(0, 0, 0, 0.08);
+
+  /* Primary Brand Identity - Official Logo Red (#F21722) */
+  --brand: #F21722;
+  --brand-hover: #D9141E;
+  --brand-active: #BF111A;
+  --brand-soft: rgba(242, 23, 34, 0.08);
+  --brand-border: rgba(242, 23, 34, 0.22);
+  --brand-glow: rgba(242, 23, 34, 0.15);
+
+  /* Backward Compatibility Accents */
+  --accent: #F21722;
+  --accent-hover: #D9141E;
+  --accent-blue: #F21722;
+  --accent-light: rgba(242, 23, 34, 0.08);
+  --accent-border: rgba(242, 23, 34, 0.22);
+  --accent-glow: transparent;
+
+  /* Semantic Status Colors (Calm, Informational Signals) */
+  --success: #16A34A;
+  --success-light: rgba(22, 163, 74, 0.1);
+  --success-soft: #EDFBF2;
+  --success-border: #BBF7D0;
+
+  --warning: #D97706;
+  --warning-light: rgba(217, 119, 6, 0.1);
+  --warning-soft: #FFFBEB;
+  --warning-border: #FEF3C7;
+
+  --danger: #E5484D;
+  --danger-light: rgba(229, 72, 77, 0.1);
+  --danger-soft: #FEECEB;
+  --danger-border: #FCA5A5;
+
+  --info: #2563EB;
+  --info-light: rgba(37, 99, 235, 0.1);
+  --info-soft: #EFF6FF;
+  --info-border: #BFDBFE;
+
+  /* Elevation Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+  --shadow-elevated: 0 10px 25px -4px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.02);
+  --shadow-card-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+
+  /* Button Tokens */
+  --btn-primary-bg: #F21722;
+  --btn-primary-hover: #D9141E;
+  --btn-primary-text: #FFFFFF;
+  --btn-primary-shadow: 0 2px 8px rgba(242, 23, 34, 0.2);
+  --btn-primary-border: #F21722;
+
+  /* Geometry */
+  --radius-xl: 16px;
+  --radius-lg: 12px;
+  --radius-md: 8px;
+  --radius-sm: 4px;
+
+  /* Reference UI tokens (Mapped cleanly to semantics) */
+  --ref-bg-outer: var(--bg-canvas);
+  --ref-shell-bg: var(--bg-shell);
+  --ref-card-bg: var(--bg-card);
+  --ref-card-border: var(--border-subtle);
+  --ref-card-shadow: var(--shadow-card);
+  --ref-card-elevated-shadow: var(--shadow-elevated);
+  --ref-text-title: var(--text-primary);
+  --ref-text-body: var(--text-secondary);
+  --ref-text-muted: var(--text-muted);
+  --ref-pill-btn: #1C1C1E;
+  --ref-accent-green: #22C55E;
+  --ref-accent-red: #FF6A60;
+
+  --transition-normal: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 0.12s ease;
+}
+
+.dark {
+  /* Pitch Black Foundation (#000000 OLED True Black) */
+  --bg-canvas: #000000;
+  --bg-shell: #000000;
+  --bg-primary: #000000;
+  --bg-secondary: #0A0A0C;
+  --bg-tertiary: #101013;
+  --bg-card: #0A0A0C;
+  --bg-card-elevated: #141418;
+  --bg-surface: #0A0A0C;
+  --bg-elevated: #141418;
+  --bg-surface-hover: #17171D;
+  --bg-surface-active: #202028;
+  --bg-hover: #17171D;
+
+  /* Controlled Non-Glaring Typography */
+  --text-primary: #F4F4F6;
+  --text-secondary: #A0A1AA;
+  --text-muted: #6B6D77;
+  --text-disabled: #464852;
+
+  /* Subtle Low-Contrast Borders */
+  --border-color: rgba(255, 255, 255, 0.09);
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --glass-bg: rgba(0, 0, 0, 0.92);
+  --glass-border: rgba(255, 255, 255, 0.08);
+
+  /* Primary Brand Identity - Official Logo Red in Dark Mode */
+  --brand: #F21722;
+  --brand-hover: #FF2E39;
+  --brand-active: #E0131E;
+  --brand-light: rgba(242, 23, 34, 0.15);
+  --brand-border: rgba(242, 23, 34, 0.35);
+  --brand-glow: rgba(242, 23, 34, 0.25);
+
+  --accent: #F21722;
+  --accent-hover: #FF2E39;
+  --accent-blue: #F21722;
+  --accent-light: rgba(242, 23, 34, 0.15);
+  --accent-border: rgba(242, 23, 34, 0.35);
+  --accent-glow: rgba(242, 23, 34, 0.25);
+
+  /* Restrained Informational Status Colors in Dark */
+  --success: #34D399;
+  --success-light: rgba(52, 211, 153, 0.12);
+  --success-soft: rgba(52, 211, 153, 0.12);
+  --success-border: rgba(52, 211, 153, 0.25);
+
+  --warning: #FBBF24;
+  --warning-light: rgba(251, 191, 36, 0.12);
+  --warning-soft: rgba(251, 191, 36, 0.12);
+  --warning-border: rgba(251, 191, 36, 0.25);
+
+  --danger: #F87171;
+  --danger-light: rgba(248, 113, 113, 0.12);
+  --danger-soft: rgba(248, 113, 113, 0.12);
+  --danger-border: rgba(248, 113, 113, 0.25);
+
+  --info: #60A5FA;
+  --info-light: rgba(96, 165, 250, 0.12);
+  --info-soft: rgba(96, 165, 250, 0.12);
+  --info-border: rgba(96, 165, 250, 0.25);
+
+  /* Shadows - Ambient Dark Depth */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.45);
+  --shadow-elevated: 0 12px 30px -4px rgba(0, 0, 0, 0.65);
+  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.7);
+
+  --btn-primary-bg: #F21722;
+  --btn-primary-hover: #FF2E39;
+  --btn-primary-text: #FFFFFF;
+  --btn-primary-shadow: 0 2px 10px rgba(242, 23, 34, 0.35);
+  --btn-primary-border: #F21722;
+
+  --ref-bg-outer: var(--bg-canvas);
+  --ref-shell-bg: var(--bg-shell);
+  --ref-card-bg: var(--bg-card);
+  --ref-card-border: var(--border-subtle);
+  --ref-card-shadow: var(--shadow-card);
+  --ref-card-elevated-shadow: var(--shadow-elevated);
+  --ref-text-title: var(--text-primary);
+  --ref-text-body: var(--text-secondary);
+  --ref-text-muted: var(--text-muted);
+  --ref-pill-btn: #18181D;
+  --ref-accent-green: #34D399;
+  --ref-accent-red: #F87171;
+}

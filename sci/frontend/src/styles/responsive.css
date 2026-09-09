@@ -1,0 +1,24 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   RESPONSIVE.CSS
+   Media queries mapping Tailwind breakpoints: sm (640px), md (768px), lg (1024px), xl (1280px)
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* Tailwind sm Breakpoint */
+@media (min-width: 640px) {
+  /* custom rules for sm layout */
+}
+
+/* Tailwind md Breakpoint */
+@media (min-width: 768px) {
+  /* custom rules for md layout */
+}
+
+/* Tailwind lg Breakpoint */
+@media (min-width: 1024px) {
+  /* custom rules for lg layout */
+}
+
+/* Tailwind xl Breakpoint */
+@media (min-width: 1280px) {
+  /* custom rules for xl layout */
+}

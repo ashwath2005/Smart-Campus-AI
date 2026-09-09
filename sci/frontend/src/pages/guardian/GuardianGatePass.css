@@ -1,0 +1,169 @@
+/* GuardianGatePass.css - Guardian Verification Hub */
+
+.gdn-container {
+  font-family: var(--font-sans, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 4rem 1rem;
+  color: var(--text-primary);
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .gdn-container {
+    padding: 1.5rem 2rem 4rem 2rem;
+  }
+}
+
+.gdn-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.gdn-title {
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #FFFFFF;
+  margin: 0 0 6px 0;
+}
+
+.gdn-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary, #9CA3AF);
+  margin: 0;
+}
+
+.gdn-card {
+  background: var(--bg-surface, #0A0A0C);
+  border: 1px solid var(--border-color, #1F1F24);
+  border-radius: var(--radius-xl, 16px);
+  padding: 1.25rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  margin-bottom: 1.5rem;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .gdn-card {
+    padding: 1.75rem;
+  }
+}
+
+.gdn-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 16px 0;
+}
+
+.gdn-key-icon {
+  color: var(--brand, #F21722);
+}
+
+.gdn-passes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.gdn-pass-item {
+  background: #111115;
+  border: 1px solid #222228;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.gdn-pass-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gdn-pass-heading {
+  font-size: 14px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.gdn-pass-subtext {
+  font-size: 12px;
+  color: #9CA3AF;
+}
+
+.gdn-status-badge {
+  font-size: 11px;
+  font-weight: 800;
+  color: #F59E0B;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.gdn-otp-section {
+  background: rgba(242, 23, 34, 0.06);
+  border: 1px solid rgba(242, 23, 34, 0.25);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 12px;
+}
+
+.gdn-otp-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--brand, #F21722);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.gdn-otp-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.gdn-otp-input {
+  background: #08080A;
+  border: 1px solid #272730;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-family: monospace;
+  letter-spacing: 0.25em;
+  color: #FFFFFF;
+  width: 160px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.gdn-otp-input:focus {
+  border-color: var(--brand, #F21722);
+  box-shadow: 0 0 0 2px rgba(242, 23, 34, 0.25);
+}
+
+.gdn-message {
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 10px;
+  color: #10B981;
+}
+
+.gdn-empty-text {
+  font-size: 13px;
+  color: #9CA3AF;
+  margin: 0;
+}

@@ -1,0 +1,58 @@
+/* Avatar Layout */
+.avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: 700;
+  font-family: var(--font-sans);
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
+  color: #ffffff;
+  background-image: linear-gradient(135deg, var(--accent), #5856d6);
+}
+
+.dark .avatar {
+  border-color: rgba(255, 255, 255, 0.08);
+  background-image: linear-gradient(135deg, var(--accent-hover), #7d7aff);
+}
+
+.avatar-img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+/* Avatar Sizes */
+.avatar-xs {
+  height: 24px;
+  width: 24px;
+  font-size: 10px;
+}
+
+.avatar-sm {
+  height: 32px;
+  width: 32px;
+  font-size: 12px;
+}
+
+.avatar-md {
+  height: 40px;
+  width: 40px;
+  font-size: 14px;
+}
+
+.avatar-lg {
+  height: 56px;
+  width: 56px;
+  font-size: 18px;
+}
+
+.avatar-xl {
+  height: 80px;
+  width: 80px;
+  font-size: 24px;
+}

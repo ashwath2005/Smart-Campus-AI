@@ -1,0 +1,49 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   TYPOGRAPHY.CSS
+   Clean, institutional typography system (Inter, System Sans-Serif).
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text-primary);
+  line-height: 1.5;
+  letter-spacing: -0.011em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: inherit;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  margin: 0;
+}
+
+h1 {
+  font-size: 1.65rem;
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: 1.35rem;
+  line-height: 1.3;
+}
+
+h3 {
+  font-size: 1.15rem;
+  line-height: 1.35;
+}
+
+h4 {
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* Metadata & Badges */
+.telemetry-label {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}

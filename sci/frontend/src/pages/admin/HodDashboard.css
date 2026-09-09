@@ -1,0 +1,229 @@
+/* HOD Dashboard Page Styles */
+
+.pg-hoddashboard-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: var(--font-sans);
+}
+
+.pg-hoddashboard-header {
+  margin-bottom: 24px;
+}
+
+.pg-hoddashboard-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 6px;
+}
+
+.pg-hoddashboard-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* Analytics Stats Grid */
+.pg-hoddashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+/* Tabs Navigation */
+.pg-hoddashboard-tabs {
+  margin-bottom: 20px;
+}
+
+/* Cards & Lists */
+.pg-hod-request-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pg-hod-card {
+  position: relative;
+  padding: 20px;
+  border-radius: var(--radius-xl);
+  background: rgba(13, 14, 18, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: var(--shadow-elevated);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.pg-hod-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 80%);
+  pointer-events: none;
+}
+
+.pg-hod-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(239, 68, 68, 0.2);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.pg-hod-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pg-hod-card-title-sec {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pg-hod-card-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.pg-hod-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  flex-wrap: wrap;
+}
+
+.pg-hod-card-type-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.pg-hod-card-body {
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.pg-hod-card-attachment {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  background: var(--accent-glow);
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-top: 8px;
+  transition: opacity 0.2s;
+}
+
+.pg-hod-card-attachment:hover {
+  opacity: 0.8;
+}
+
+/* Advisor Review Subcard */
+.pg-hod-advisor-sub {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  margin-bottom: 16px;
+  font-size: 12px;
+}
+
+.pg-hod-advisor-header {
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.pg-hod-advisor-comment {
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+/* Decision Review Area */
+.pg-hod-decision-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+.pg-hod-decision-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+/* Empty State styling */
+.pg-hod-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.pg-hod-empty-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-top: 12px;
+  margin-bottom: 4px;
+}
+
+.pg-hod-empty-subtitle {
+  font-size: 12px;
+}
+
+/* Status colors mapping */
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.status-badge.approved {
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  color: #4ade80;
+}
+
+.status-badge.rejected {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.status-badge.pending-faculty-review {
+  background: rgba(234, 179, 8, 0.1);
+  border: 1px solid rgba(234, 179, 8, 0.2);
+  color: #eab308;
+}
+
+.status-badge.pending-hod-approval {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+}

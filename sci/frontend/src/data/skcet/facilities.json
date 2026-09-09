@@ -1,0 +1,70 @@
+[
+  {
+    "id": "fac-powerhouse",
+    "name": "Campus Main Powerhouse & Substation",
+    "type": "utility",
+    "code": "PWR",
+    "latitude": 10.93621,
+    "longitude": 76.95542,
+    "description": "Central campus electrical HT substation with backup diesel generators, auto-synchronization panels, and solar grid tie-in.",
+    "confidence": "inferred",
+    "source": "SKCET SSR & satellite"
+  },
+  {
+    "id": "fac-stp",
+    "name": "Sewage Treatment Plant (STP) & Water Recycling",
+    "type": "utility",
+    "code": "STP",
+    "latitude": 10.93554,
+    "longitude": 76.95589,
+    "description": "Biological STP recycling campus greywater for sports field irrigation and botanical landscape maintenance.",
+    "confidence": "inferred",
+    "source": "SKCET SSR Criterion VII"
+  },
+  {
+    "id": "fac-temple",
+    "name": "Sri Krishna Campus Temple",
+    "type": "landmark",
+    "code": "TPL",
+    "latitude": 10.938452,
+    "longitude": 76.952616,
+    "description": "Campus temple dedicated to Lord Krishna near BK Pudur main entrance gate, surrounded by flowering gardens.",
+    "confidence": "verified",
+    "source": "Official Campus Map & OSM"
+  },
+  {
+    "id": "fac-idea-lab",
+    "name": "AICTE-IDEA Lab",
+    "type": "innovation",
+    "code": "IDEA",
+    "buildingId": "bldg-mech",
+    "latitude": 10.936006,
+    "longitude": 76.956322,
+    "description": "AICTE sponsored Innovation, Design, Enterprising and Apprenticeship (IDEA) Lab with 3D printers, laser cutters, CNC, and IoT workstations.",
+    "confidence": "verified",
+    "source": "SKCET Official & AICTE"
+  },
+  {
+    "id": "fac-bank-atm",
+    "name": "Axis Bank & 24/7 ATM Facility",
+    "type": "amenity",
+    "code": "ATM",
+    "latitude": 10.938781,
+    "longitude": 76.952252,
+    "description": "Full-service banking branch and 24/7 ATM kiosk located adjacent to campus main gate for students and faculty.",
+    "confidence": "verified",
+    "source": "OSM & Google Maps"
+  },
+  {
+    "id": "fac-health-center",
+    "name": "Campus Medical Health Centre",
+    "type": "health",
+    "code": "MED",
+    "latitude": 10.938428,
+    "longitude": 76.958971,
+    "buildingId": "bldg-amenity-east",
+    "description": "On-campus primary healthcare dispensary with resident medical officer, emergency care bed, and ambulance bay.",
+    "confidence": "verified",
+    "source": "SKCET SSR"
+  }
+]
