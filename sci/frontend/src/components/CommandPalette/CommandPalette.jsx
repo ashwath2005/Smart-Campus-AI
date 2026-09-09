@@ -26,9 +26,13 @@ import {
   Moon,
   LogOut,
   CornerDownLeft,
-  X
+  X,
+  Building2,
+  UserCheck,
+  Loader2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import api from '../../services/api';
 import './CommandPalette.css';
 
 export const CommandPalette = ({ isOpen, onClose }) => {
@@ -37,17 +41,67 @@ export const CommandPalette = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [dbResults, setDbResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
   const inputRef = useRef(null);
   const listRef = useRef(null);
+
+  const getCategoryIcon = (category) => {
+    switch (category?.toLowerCase()) {
+      case 'classroom': return Building2;
+      case 'subject': return BookOpen;
+      case 'event': return Calendar;
+      case 'placement': return Briefcase;
+      case 'faculty': return UserCheck;
+      case 'gate pass': return QrCode;
+      default: return MapPin;
+    }
+  };
 
   // Focus input when opened
   useEffect(() => {
     if (isOpen) {
       setQuery('');
+      setDbResults([]);
       setSelectedIndex(0);
       setTimeout(() => inputRef.current?.focus(), 50);
     }
   }, [isOpen]);
+
+  // Debounced backend global campus search
+  useEffect(() => {
+    if (!query.trim() || query.trim().length < 2) {
+      setDbResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+    const timer = setTimeout(async () => {
+      try {
+        const res = await api.get('/search', { params: { q: query.trim() } });
+        const raw = res.data?.results || [];
+        const mapped = raw.map((r, i) => ({
+          id: `db-${r.category}-${i}-${r.title}`,
+          category: r.category,
+          label: r.title,
+          desc: r.subtitle,
+          path: r.path,
+          badge: r.badge,
+          icon: getCategoryIcon(r.category),
+          isDbResult: true
+        }));
+        setDbResults(mapped);
+      } catch (err) {
+        console.error('Global campus search error:', err);
+        setDbResults([]);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [query]);
 
   // Build searchable items based on role
   const items = useMemo(() => {
@@ -177,6 +231,11 @@ export const CommandPalette = ({ isOpen, onClose }) => {
     );
   }, [items, query]);
 
+  // Combined live database entities + application navigation items
+  const displayItems = useMemo(() => {
+    return [...dbResults, ...filteredItems];
+  }, [dbResults, filteredItems]);
+
   // Handle execution of selected item
   const handleSelect = (item) => {
     onClose();
@@ -191,14 +250,14 @@ export const CommandPalette = ({ isOpen, onClose }) => {
   const handleKeyDown = (e) => {
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setSelectedIndex((prev) => (prev + 1) % (filteredItems.length || 1));
+      setSelectedIndex((prev) => (prev + 1) % (displayItems.length || 1));
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      setSelectedIndex((prev) => (prev - 1 + filteredItems.length) % (filteredItems.length || 1));
+      setSelectedIndex((prev) => (prev - 1 + displayItems.length) % (displayItems.length || 1));
     } else if (e.key === 'Enter') {
       e.preventDefault();
-      if (filteredItems[selectedIndex]) {
-        handleSelect(filteredItems[selectedIndex]);
+      if (displayItems[selectedIndex]) {
+        handleSelect(displayItems[selectedIndex]);
       }
     } else if (e.key === 'Escape') {
       e.preventDefault();
@@ -231,10 +290,13 @@ export const CommandPalette = ({ isOpen, onClose }) => {
                 setSelectedIndex(0);
               }}
               onKeyDown={handleKeyDown}
-              placeholder="Search features, navigation, AI tools, or type a command..."
+              placeholder="Search facilities, subjects, faculty, gate passes, or enter a command..."
               className="cmd-palette-input"
             />
-            {query && (
+            {isSearching && (
+              <Loader2 size={16} className="cmd-palette-spinner" />
+            )}
+            {query && !isSearching && (
               <button onClick={() => setQuery('')} className="cmd-palette-clear-btn">
                 <X size={14} />
               </button>
@@ -244,13 +306,13 @@ export const CommandPalette = ({ isOpen, onClose }) => {
 
           {/* Results List */}
           <div className="cmd-palette-list custom-scrollbar" ref={listRef}>
-            {filteredItems.length === 0 ? (
+            {displayItems.length === 0 ? (
               <div className="cmd-palette-empty">
-                <p className="cmd-palette-empty-title">No matching campus commands</p>
-                <p className="cmd-palette-empty-desc">Try searching for "Attendance", "Gate Pass", "SGPA", or "Timetable"</p>
+                <p className="cmd-palette-empty-title">No matching campus commands or records</p>
+                <p className="cmd-palette-empty-desc">Try searching for "Lab", "CS301", "Gate Pass", "Attendance", or "Faculty"</p>
               </div>
             ) : (
-              filteredItems.map((item, idx) => {
+              displayItems.map((item, idx) => {
                 const Icon = item.icon;
                 const isSelected = idx === selectedIndex;
                 return (
@@ -276,6 +338,9 @@ export const CommandPalette = ({ isOpen, onClose }) => {
                         <span className="cmd-palette-item-desc">{item.desc}</span>
                       )}
                     </div>
+                    {item.badge && (
+                      <span className="cmd-palette-item-badge">{item.badge}</span>
+                    )}
                     {isSelected && (
                       <div className="cmd-palette-item-enter">
                         <span>Select</span>

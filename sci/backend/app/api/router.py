@@ -33,6 +33,7 @@ from app.routes import (
     ai_copilot,
     guardian,
     incidents,
+    search,
 )
 
 api_router = APIRouter()
@@ -66,4 +67,5 @@ api_router.include_router(placement_matchmaker.router)
 api_router.include_router(ai_copilot.router)
 api_router.include_router(guardian.router)
 api_router.include_router(incidents.router)
+api_router.include_router(search.router)
 

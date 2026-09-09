@@ -238,7 +238,36 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-top: 1px;
+}
+
+.cmd-palette-item-badge {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(227, 27, 35, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(227, 27, 35, 0.25);
+  margin-left: auto;
+  flex-shrink: 0;
+  letter-spacing: 0.3px;
+}
+
+:root:not(.dark) .cmd-palette-item-badge {
+  background: rgba(227, 27, 35, 0.08);
+  color: #dc2626;
+  border-color: rgba(227, 27, 35, 0.2);
+}
+
+.cmd-palette-spinner {
+  animation: cmd-spin 0.8s linear infinite;
+  color: var(--crimson-accent, #b91c1c);
+  flex-shrink: 0;
+}
+
+@keyframes cmd-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 :root:not(.dark) .cmd-palette-item-desc {
