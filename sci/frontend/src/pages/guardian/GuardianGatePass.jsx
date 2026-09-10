@@ -131,7 +131,7 @@ export function GuardianGatePass() {
         </div>
         <button
           onClick={fetchWardData}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-slate-300 hover:bg-white/10 transition"
+          className="gdn-btn-refresh"
         >
           <RefreshCw size={13} />
           <span>Refresh Live State</span>
@@ -139,22 +139,22 @@ export function GuardianGatePass() {
       </div>
 
       {/* Ward Profile & Real-Time Safety Status Card */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div className="gdn-telemetry-grid">
         {/* Ward Info */}
         <div className="gdn-card flex flex-col justify-between">
           <div>
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-full bg-red-950/60 border border-red-500/30 flex items-center justify-center text-red-400">
+              <div style={{ width: 40, height: 40, borderRadius: "50%", background: "var(--brand-soft)", border: "1px solid var(--brand-border)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--brand)" }}>
                 <User size={20} />
               </div>
               <div>
-                <h3 className="text-base font-bold text-white m-0">{ward?.name || 'Student Ward'}</h3>
-                <span className="text-xs text-slate-400">{ward?.roll_number} • {ward?.department}</span>
+                <h3 className="text-base font-bold m-0" style={{ color: "var(--text-primary)" }}>{ward?.name || 'Student Ward'}</h3>
+                <span className="text-xs" style={{ color: "var(--text-secondary)" }}>{ward?.roll_number} • {ward?.department}</span>
               </div>
             </div>
-            <div className="text-xs text-slate-400 space-y-1 bg-black/40 p-3 rounded-lg border border-white/5">
-              <div>Semester: <strong className="text-white">Semester {ward?.semester || 4} (Sec {ward?.section || 'A'})</strong></div>
-              <div>Registered Email: <strong className="text-white">{ward?.email}</strong></div>
+            <div className="text-xs space-y-1 p-3 rounded-lg" style={{ background: "var(--bg-surface-elevated, var(--bg-shell))", border: "1px solid var(--border-color)", color: "var(--text-secondary)" }}>
+              <div>Semester: <strong style={{ color: "var(--text-primary)" }}>Semester {ward?.semester || 4} (Sec {ward?.section || 'A'})</strong></div>
+              <div>Registered Email: <strong style={{ color: "var(--text-primary)" }}>{ward?.email}</strong></div>
             </div>
           </div>
         </div>
@@ -162,28 +162,28 @@ export function GuardianGatePass() {
         {/* Safety Telemetry */}
         <div className="gdn-card flex flex-col justify-between">
           <div>
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">
+            <span className="text-xs font-bold uppercase tracking-wider block mb-2" style={{ color: "var(--text-secondary)" }}>
               Current Campus Status
             </span>
             <div className="flex items-center gap-3 mb-2">
               {safety?.status === 'INSIDE_CAMPUS' ? (
-                <div className="px-3 py-1.5 rounded-lg bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 text-sm font-bold flex items-center gap-2">
+                <div style={{ padding: "6px 12px", borderRadius: "8px", background: "rgba(16, 185, 129, 0.12)", border: "1px solid rgba(16, 185, 129, 0.3)", color: "#10b981", fontSize: "13px", fontWeight: 700, display: "flex", alignItems: "center", gap: "8px" }}>
                   <CheckCircle2 size={16} />
                   <span>INSIDE CAMPUS</span>
                 </div>
               ) : safety?.status === 'OUTSIDE_CAMPUS' ? (
-                <div className="px-3 py-1.5 rounded-lg bg-amber-950/60 border border-amber-500/40 text-amber-400 text-sm font-bold flex items-center gap-2">
+                <div style={{ padding: "6px 12px", borderRadius: "8px", background: "rgba(245, 158, 11, 0.12)", border: "1px solid rgba(245, 158, 11, 0.3)", color: "#f59e0b", fontSize: "13px", fontWeight: 700, display: "flex", alignItems: "center", gap: "8px" }}>
                   <Navigation size={16} />
                   <span>OUTSIDE CAMPUS</span>
                 </div>
               ) : (
-                <div className="px-3 py-1.5 rounded-lg bg-rose-950/60 border border-rose-500/40 text-rose-400 text-sm font-bold flex items-center gap-2 animate-pulse">
+                <div style={{ padding: "6px 12px", borderRadius: "8px", background: "rgba(239, 68, 68, 0.12)", border: "1px solid rgba(239, 68, 68, 0.3)", color: "#ef4444", fontSize: "13px", fontWeight: 700, display: "flex", alignItems: "center", gap: "8px" }}>
                   <AlertOctagon size={16} />
                   <span>OVERDUE RETURN</span>
                 </div>
               )}
             </div>
-            <p className="text-xs text-slate-400 mt-2">
+            <p className="text-xs mt-2" style={{ color: "var(--text-secondary)" }}>
               {safety?.status === 'INSIDE_CAMPUS'
                 ? 'Ward is presently inside the campus boundary.'
                 : safety?.status === 'OUTSIDE_CAMPUS'
@@ -196,18 +196,18 @@ export function GuardianGatePass() {
         {/* Attendance Summary */}
         <div className="gdn-card flex flex-col justify-between">
           <div>
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">
+            <span className="text-xs font-bold uppercase tracking-wider block mb-2" style={{ color: "var(--text-secondary)" }}>
               Attendance Health
             </span>
             <div className="flex items-baseline gap-2 mb-1">
-              <span className={`text-3xl font-black ${attendance?.overall_percentage >= 75 ? 'text-emerald-400' : 'text-rose-400'}`}>
+              <span className={`text-3xl font-black ${attendance?.overall_percentage >= 75 ? 'text-emerald-500' : 'text-rose-500'}`}>
                 {attendance?.overall_percentage ?? 85}%
               </span>
-              <span className="text-xs text-slate-400">
+              <span className="text-xs" style={{ color: "var(--text-secondary)" }}>
                 ({attendance?.total_attended ?? 0}/{attendance?.total_conducted ?? 0} sessions)
               </span>
             </div>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
               {attendance?.overall_percentage >= 75
                 ? 'Attendance meets minimum institutional 75% threshold.'
                 : '⚠️ Attendance is below 75% requirement. Academic review advised.'}
@@ -218,10 +218,10 @@ export function GuardianGatePass() {
 
       {/* Critical Alerts Banner if any */}
       {data?.alerts && data.alerts.length > 0 && (
-        <div className="mb-6 space-y-2">
+        <div style={{ marginBottom: "20px" }}>
           {data.alerts.map((alert, idx) => (
-            <div key={idx} className="p-3 rounded-xl bg-amber-950/40 border border-amber-500/30 text-amber-300 text-xs flex items-center gap-2">
-              <AlertTriangle size={15} className="shrink-0 text-amber-400" />
+            <div key={idx} className="gdn-alert-banner">
+              <AlertTriangle size={15} style={{ flexShrink: 0, color: "#f59e0b" }} />
               <span>{alert}</span>
             </div>
           ))}
@@ -236,31 +236,31 @@ export function GuardianGatePass() {
         </h3>
 
         {activePass && (activePass.status === 'PENDING_PARENT_OTP' || !activePass.parent_verified) ? (
-          <div className="p-4 rounded-xl bg-black/40 border border-white/10 space-y-4">
+          <div className="p-4 rounded-xl space-y-4" style={{ background: "var(--bg-surface-elevated, var(--bg-shell))", border: "1px solid var(--border-color)" }}>
             <div className="flex justify-between items-start flex-wrap gap-2">
               <div>
-                <span className="text-sm font-bold text-white block">
+                <span className="text-sm font-bold block" style={{ color: "var(--text-primary)" }}>
                   {activePass.pass_type.replace(/_/g, ' ')} — Pass #{activePass.id}
                 </span>
-                <span className="text-xs text-slate-400">
-                  Destination: <strong className="text-white">{activePass.destination}</strong> &bull; Reason: <strong className="text-white">{activePass.reason}</strong>
+                <span className="text-xs" style={{ color: "var(--text-secondary)" }}>
+                  Destination: <strong style={{ color: "var(--text-primary)" }}>{activePass.destination}</strong> &bull; Reason: <strong style={{ color: "var(--text-primary)" }}>{activePass.reason}</strong>
                 </span>
               </div>
-              <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+              <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-500 border border-amber-500/30">
                 AWAITING PARENT CONSENT
               </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs bg-white/5 p-3 rounded-lg border border-white/5">
-              <div>Expected Departure: <strong>{activePass.leave_time ? new Date(activePass.leave_time).toLocaleString() : 'Immediate'}</strong></div>
-              <div>Expected Return: <strong>{activePass.expected_return_time ? new Date(activePass.expected_return_time).toLocaleString() : 'End of day'}</strong></div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs p-3 rounded-lg" style={{ background: "var(--bg-card)", border: "1px solid var(--border-color)", color: "var(--text-secondary)" }}>
+              <div>Expected Departure: <strong style={{ color: "var(--text-primary)" }}>{activePass.leave_time ? new Date(activePass.leave_time).toLocaleString() : 'Immediate'}</strong></div>
+              <div>Expected Return: <strong style={{ color: "var(--text-primary)" }}>{activePass.expected_return_time ? new Date(activePass.expected_return_time).toLocaleString() : 'End of day'}</strong></div>
             </div>
 
             {/* 2 Ways to Authorize */}
             <div className="space-y-3 pt-2">
               {/* Method 1: 6-Digit SMS OTP verification */}
               <div>
-                <label className="text-xs font-semibold text-slate-300 block mb-1">
+                <label className="text-xs font-semibold block mb-1" style={{ color: "var(--text-secondary)" }}>
                   Method 1: Enter 6-Digit SMS OTP Code
                 </label>
                 <div className="flex gap-2">
@@ -285,8 +285,8 @@ export function GuardianGatePass() {
               </div>
 
               {/* Method 2: One-Click Parent Approval with Remarks */}
-              <div className="border-t border-white/10 pt-3">
-                <label className="text-xs font-semibold text-slate-300 block mb-1">
+              <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "12px" }}>
+                <label className="text-xs font-semibold block mb-1" style={{ color: "var(--text-secondary)" }}>
                   Method 2: One-Click Direct Approval / Rejection
                 </label>
                 <div className="flex flex-col sm:flex-row gap-2">
@@ -295,7 +295,7 @@ export function GuardianGatePass() {
                     placeholder="Parent remarks (e.g. Approved for family festival transit)..."
                     value={remarksInput}
                     onChange={(e) => setRemarksInput(e.target.value)}
-                    className="bg-black/60 border border-white/10 rounded-lg px-3 py-2 text-xs text-white grow"
+                    className="gdn-input-remarks"
                   />
                   <div className="flex gap-2 shrink-0">
                     <Button
@@ -321,10 +321,10 @@ export function GuardianGatePass() {
             </div>
           </div>
         ) : (
-          <div className="p-6 text-center text-slate-400 bg-black/20 rounded-xl border border-white/5">
-            <CheckCircle2 size={32} className="mx-auto mb-2 text-emerald-400/60" />
-            <p className="text-sm font-semibold text-white">All Clear!</p>
-            <p className="text-xs text-slate-400">No pending leave requests require parent authorization at this time.</p>
+          <div className="p-6 text-center rounded-xl" style={{ background: "var(--bg-surface-elevated, var(--bg-shell))", border: "1px solid var(--border-color)" }}>
+            <CheckCircle2 size={32} className="mx-auto mb-2 text-emerald-500" />
+            <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>All Clear!</p>
+            <p className="text-xs" style={{ color: "var(--text-secondary)" }}>No pending leave requests require parent authorization at this time.</p>
           </div>
         )}
       </div>
@@ -338,8 +338,8 @@ export function GuardianGatePass() {
 
         {recentPasses.length > 0 ? (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="border-b border-white/10 text-slate-400 uppercase tracking-wider">
+            <table className="w-full text-left text-xs" style={{ color: "var(--text-secondary)" }}>
+              <thead className="uppercase tracking-wider" style={{ borderBottom: "1px solid var(--border-color)", color: "var(--text-secondary)" }}>
                 <tr>
                   <th className="py-2.5 px-3">Pass ID</th>
                   <th className="py-2.5 px-3">Type</th>
@@ -349,28 +349,40 @@ export function GuardianGatePass() {
                   <th className="py-2.5 px-3">Terminal Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody style={{ borderTop: "1px solid var(--border-color)" }}>
                 {recentPasses.map((p) => (
-                  <tr key={p.id}>
-                    <td className="py-3 px-3 font-mono font-bold text-white">#{p.id}</td>
+                  <tr key={p.id} style={{ borderBottom: "1px solid var(--border-color)" }}>
+                    <td className="py-3 px-3 font-mono font-bold" style={{ color: "var(--text-primary)" }}>#{p.id}</td>
                     <td className="py-3 px-3">{p.pass_type}</td>
-                    <td className="py-3 px-3 text-white font-medium">{p.destination}</td>
+                    <td className="py-3 px-3 font-medium" style={{ color: "var(--text-primary)" }}>{p.destination}</td>
                     <td className="py-3 px-3 max-w-[200px] truncate">{p.reason}</td>
                     <td className="py-3 px-3">
                       {p.parent_verified ? (
-                        <span className="text-emerald-400 font-semibold">✓ Verified</span>
+                        <span className="text-emerald-500 font-semibold">✓ Verified</span>
                       ) : (
-                        <span className="text-slate-500">Not required</span>
+                        <span style={{ color: "var(--text-muted)" }}>Not required</span>
                       )}
                     </td>
                     <td className="py-3 px-3">
-                      <span className={`px-2 py-0.5 rounded font-bold text-[11px] ${
-                        p.status === 'RETURNED' ? 'bg-slate-800 text-slate-300' :
-                        p.status === 'OUT' ? 'bg-amber-950 text-amber-400 border border-amber-500/30' :
-                        p.status === 'APPROVED' ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/30' :
-                        p.status === 'REJECTED' ? 'bg-rose-950 text-rose-400 border border-rose-500/30' :
-                        'bg-blue-950 text-blue-400 border border-blue-500/30'
-                      }`}>
+                      <span className="px-2 py-0.5 rounded font-bold text-[11px]" style={{
+                        background: p.status === 'RETURNED' ? 'var(--bg-surface-hover)' :
+                                   p.status === 'OUT' ? 'rgba(245, 158, 11, 0.12)' :
+                                   p.status === 'APPROVED' ? 'rgba(16, 185, 129, 0.12)' :
+                                   p.status === 'REJECTED' ? 'rgba(239, 68, 68, 0.12)' :
+                                   'rgba(59, 130, 246, 0.12)',
+                        color: p.status === 'RETURNED' ? 'var(--text-secondary)' :
+                               p.status === 'OUT' ? '#f59e0b' :
+                               p.status === 'APPROVED' ? '#10b981' :
+                               p.status === 'REJECTED' ? '#ef4444' :
+                               '#3b82f6',
+                        border: `1px solid ${
+                          p.status === 'RETURNED' ? 'var(--border-color)' :
+                          p.status === 'OUT' ? 'rgba(245, 158, 11, 0.3)' :
+                          p.status === 'APPROVED' ? 'rgba(16, 185, 129, 0.3)' :
+                          p.status === 'REJECTED' ? 'rgba(239, 68, 68, 0.3)' :
+                          'rgba(59, 130, 246, 0.3)'
+                        }`
+                      }}>
                         {p.status}
                       </span>
                     </td>
@@ -380,7 +392,7 @@ export function GuardianGatePass() {
             </table>
           </div>
         ) : (
-          <p className="text-xs text-slate-400">No previous gate passes recorded for ward.</p>
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>No previous gate passes recorded for ward.</p>
         )}
       </div>
     </motion.div>

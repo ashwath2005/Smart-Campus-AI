@@ -154,7 +154,7 @@ export function CampusDigitalTwin3D({
         <div className="dt-top-hud-left">
           <div className="dt-title-badge">
             <Box size={14} style={{ color: "var(--brand, #F21722)" }} />
-            <span>SKCET Digital Twin</span>
+            <span>Campus Digital Twin 3D</span>
             <span className={`dt-live-pill ${isLiveConnected ? "live" : "simulation"}`}>
               <span className={`dt-live-dot ${isLiveConnected ? "live" : "simulation"}`} />
               {isLiveConnected ? "LIVE TELEMETRY" : "SIMULATION MODE"}
@@ -166,7 +166,7 @@ export function CampusDigitalTwin3D({
             <button
               onClick={() => handleSelectPreset("overview")}
               className={`dt-btn ${cameraMode === "overview" && !isPatrolActive && !selectedBuilding ? "active" : ""}`}
-              title="Overview of SKCET Campus"
+              title="Overview of Campus"
             >
               <RotateCcw size={11} />
               <span>Overview</span>
@@ -224,7 +224,7 @@ export function CampusDigitalTwin3D({
             <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
               className={`dt-btn ${isSearchOpen ? "active" : ""}`}
-              title="Search SKCET Buildings, Labs, Sports & Facilities"
+              title="Search Campus Buildings, Labs, Sports & Facilities"
               style={{ gap: "6px" }}
             >
               <Search size={12} />
@@ -427,7 +427,7 @@ export function CampusDigitalTwin3D({
 
       {/* Accessibility Table for Screen Readers */}
       <table className="sr-only">
-        <caption>SKCET Campus Real-time Density Statistics</caption>
+        <caption>Campus Real-time Density Statistics</caption>
         <thead>
           <tr>
             <th scope="col">Building</th>

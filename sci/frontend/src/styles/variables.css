@@ -18,8 +18,8 @@
   /* Typography Hierarchy */
   --text-primary: #111118;
   --text-secondary: #4A4A52;
-  --text-muted: #8E8E93;
-  --text-disabled: #C4C4C8;
+  --text-muted: #64748B;
+  --text-disabled: #94A3B8;
 
   /* Borders & Dividers */
   --border-color: rgba(0, 0, 0, 0.08);
@@ -103,25 +103,25 @@
 }
 
 .dark {
-  /* Pitch Black Foundation (#000000 OLED True Black) */
-  --bg-canvas: #000000;
-  --bg-shell: #000000;
-  --bg-primary: #000000;
-  --bg-secondary: #0A0A0C;
-  --bg-tertiary: #101013;
-  --bg-card: #0A0A0C;
-  --bg-card-elevated: #141418;
-  --bg-surface: #0A0A0C;
-  --bg-elevated: #141418;
-  --bg-surface-hover: #17171D;
-  --bg-surface-active: #202028;
-  --bg-hover: #17171D;
+  /* Enterprise Obsidian Dark Hierarchy (Deep background -> Shell -> Card -> Elevated) */
+  --bg-canvas: #090A0F;
+  --bg-shell: #0F1117;
+  --bg-primary: #0F1117;
+  --bg-secondary: #151821;
+  --bg-tertiary: #1C202C;
+  --bg-card: #151821;
+  --bg-card-elevated: #1C202C;
+  --bg-surface: #151821;
+  --bg-elevated: #1C202C;
+  --bg-surface-hover: #232838;
+  --bg-surface-active: #2A3042;
+  --bg-hover: #232838;
 
   /* Controlled Non-Glaring Typography */
   --text-primary: #F4F4F6;
   --text-secondary: #A0A1AA;
-  --text-muted: #6B6D77;
-  --text-disabled: #464852;
+  --text-muted: #71717A;
+  --text-disabled: #52525B;
 
   /* Subtle Low-Contrast Borders */
   --border-color: rgba(255, 255, 255, 0.09);

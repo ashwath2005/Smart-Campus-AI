@@ -39,7 +39,7 @@
   width: 100%;
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-color);
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: var(--bg-surface-elevated, var(--bg-shell));
   color: var(--text-primary);
   font-size: 13.5px;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -51,8 +51,8 @@
 }
 
 .dark .input-field {
-  background-color: #07080b;
-  border-color: rgba(255, 255, 255, 0.03);
+  background-color: var(--bg-canvas);
+  border-color: var(--border-color);
 }
 
 /* Autofill overrides to prevent light background in dark mode */

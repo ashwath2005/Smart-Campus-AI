@@ -14,7 +14,7 @@
 .pg-hoddashboard-title {
   font-size: 24px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-primary);
   margin-bottom: 6px;
 }
 
@@ -47,24 +47,16 @@
   position: relative;
   padding: 20px;
   border-radius: var(--radius-xl);
-  background: rgba(13, 14, 18, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  box-shadow: var(--shadow-elevated);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-card);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
 }
 
-.pg-hod-card::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 80%);
-  pointer-events: none;
-}
-
 .pg-hod-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(239, 68, 68, 0.2);
+  border-color: var(--brand-border);
   box-shadow: var(--shadow-card-hover);
 }
 
@@ -83,10 +75,22 @@
   gap: 4px;
 }
 
+.pg-hod-card-student-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .pg-hod-card-name {
   font-size: 15px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
+}
+
+.pg-hod-roll {
+  font-size: 12px;
+  color: var(--text-muted);
 }
 
 .pg-hod-card-meta {
@@ -105,14 +109,14 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background: var(--bg-surface-hover);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
 }
 
 .pg-hod-card-body {
   font-size: 13px;
-  color: var(--text-primary);
+  color: var(--text-secondary);
   line-height: 1.5;
   margin-bottom: 16px;
 }
@@ -138,8 +142,8 @@
 
 /* Advisor Review Subcard */
 .pg-hod-advisor-sub {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px dashed rgba(255, 255, 255, 0.1);
+  background: var(--bg-surface-elevated, var(--bg-shell));
+  border: 1px dashed var(--border-color);
   border-radius: var(--radius-md);
   padding: 12px;
   margin-bottom: 16px;
@@ -148,7 +152,7 @@
 
 .pg-hod-advisor-header {
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
   margin-bottom: 4px;
 }
 
@@ -186,7 +190,7 @@
 .pg-hod-empty-title {
   font-size: 15px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
   margin-top: 12px;
   margin-bottom: 4px;
 }

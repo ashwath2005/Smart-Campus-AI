@@ -713,67 +713,70 @@
 
 .console-stat-card {
   position: relative;
-  background: rgba(13, 14, 18, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-xl);
-  padding: 24px;
-  min-height: 125px;
+  padding: 18px 20px;
+  min-height: 140px;
   overflow: hidden;
   text-align: left;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: flex-end;
-  transition: border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.console-stat-card::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 80%);
-  pointer-events: none;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
 }
 
 .console-stat-card:hover {
-  border-color: rgba(239, 68, 68, 0.25);
+  border-color: var(--brand-border);
   box-shadow: var(--shadow-card-hover);
   transform: translateY(-2px);
 }
 
-.console-stat-card-left {
+.console-stat-card-top {
   display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-width: 0;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
-.console-stat-card-right {
+.console-stat-sparkline {
   display: flex;
-  align-items: flex-end;
-  margin-left: 12px;
-  flex-shrink: 0;
+  align-items: center;
+}
+
+.console-stat-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 10px;
+  margin-bottom: 8px;
+}
+
+.console-stat-footer {
+  display: flex;
+  align-items: center;
+  padding-top: 4px;
 }
 
 .console-stat-icon-wrapper {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 12px;
-  background: rgba(239, 68, 68, 0.03);
-  border: 1px solid rgba(239, 68, 68, 0.1);
-  color: #ef4444;
+  margin-bottom: 8px;
+  background: var(--brand-soft);
+  border: 1px solid var(--brand-border);
+  color: var(--brand);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .console-stat-card:hover .console-stat-icon-wrapper {
-  background-color: rgba(239, 68, 68, 0.08);
-  border-color: rgba(239, 68, 68, 0.25);
-  transform: scale(1.06) rotate(3deg);
+  background-color: var(--brand-soft);
+  border-color: var(--brand);
+  transform: scale(1.06);
 }
 
 .console-stat-label {
@@ -785,12 +788,11 @@
 }
 
 .console-stat-value {
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 800;
-  color: #ffffff;
-  line-height: 1;
-  margin-top: 6px;
-  letter-spacing: -0.025em;
+  color: var(--text-primary);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
 .console-stat-trend {
@@ -804,26 +806,18 @@
 
 .console-card-dark {
   position: relative;
-  background: rgba(13, 14, 18, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-xl);
   padding: 24px;
-  box-shadow: var(--shadow-elevated);
-}
-
-.console-card-dark::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0) 80%);
-  pointer-events: none;
+  box-shadow: var(--shadow-card);
 }
 
 .console-section-title-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 12px;
   margin-bottom: 16px;
 }
@@ -831,27 +825,27 @@
 .console-section-title {
   font-size: 12px;
   font-weight: 750;
-  color: #ffffff;
+  color: var(--text-primary);
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .console-btn-red {
-  color: #ef4444;
-  background: rgba(239, 68, 68, 0.05);
-  border: 1px solid rgba(239, 68, 68, 0.15);
+  color: var(--brand);
+  background: var(--brand-soft);
+  border: 1px solid var(--brand-border);
   font-size: 11px;
   font-weight: 700;
   padding: 5px 14px;
   border-radius: 9999px; /* Capsule buttons */
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s ease;
   cursor: pointer;
 }
 
 .console-btn-red:hover {
-  background: rgba(239, 68, 68, 0.12);
-  border-color: rgba(239, 68, 68, 0.3);
+  background: var(--brand);
+  border-color: var(--brand);
   color: #ffffff;
 }
 
@@ -898,7 +892,7 @@
 
 .circular-legend-value {
   font-weight: 700;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .system-status-list {
@@ -912,7 +906,7 @@
   align-items: center;
   justify-content: space-between;
   padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .system-status-name {
@@ -923,12 +917,12 @@
 
 .system-status-badge {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .status-indicator-green {
-  color: #34d399;
+  color: var(--success, #10B981);
 }
 
 .quick-actions-grid {
@@ -944,22 +938,22 @@
   justify-content: center;
   gap: 8px;
   padding: 16px 8px;
-  background: rgba(255, 255, 255, 0.01);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--bg-surface-hover);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  color: var(--text-secondary);
+  color: var(--text-primary);
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s ease;
 }
 
 .quick-action-btn-red:hover {
-  border-color: rgba(239, 68, 68, 0.25);
-  background: rgba(239, 68, 68, 0.02);
-  color: #fff;
+  border-color: var(--brand-border);
+  background: var(--brand-soft);
+  color: var(--brand);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.06);
+  box-shadow: var(--shadow-sm);
 }
 
 .quick-action-icon-red {

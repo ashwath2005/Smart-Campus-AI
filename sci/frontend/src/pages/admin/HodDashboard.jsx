@@ -163,9 +163,9 @@ export const HodDashboard = () => {
               >
                 <div className="pg-hod-card-header">
                   <div className="pg-hod-card-title-sec">
-                    <div className="flex items-center gap-2">
+                    <div className="pg-hod-card-student-line">
                       <span className="pg-hod-card-name">{req.student_name}</span>
-                      <span className="text-xs text-slate-500">({req.student_roll})</span>
+                      <span className="pg-hod-roll">({req.student_roll})</span>
                       <span className="pg-hod-card-type-badge">{req.req_type}</span>
                     </div>
                     <div className="pg-hod-card-meta">
@@ -255,9 +255,9 @@ export const HodDashboard = () => {
               <div key={p.id} className="pg-hod-card" style={{ borderLeft: "4px solid #f59e0b" }}>
                 <div className="pg-hod-card-header">
                   <div className="pg-hod-card-title-sec">
-                    <div className="flex items-center gap-2">
+                    <div className="pg-hod-card-student-line">
                       <span className="pg-hod-card-name">{p.student?.name || `Student #${p.student_id}`}</span>
-                      <span className="text-xs text-slate-500">({p.student?.roll_number || p.student?.department || "Student"})</span>
+                      <span className="pg-hod-roll">({p.student?.roll_number || p.student?.department || "Student"})</span>
                       <span className="pg-hod-card-type-badge">{p.pass_type.toUpperCase()}</span>
                     </div>
                     <div className="pg-hod-card-meta">
@@ -279,7 +279,7 @@ export const HodDashboard = () => {
                     Expected Duration: {p.return_hours} hours | Leave: {p.custom_leave_time ? new Date(p.custom_leave_time).toLocaleString() : "Immediate"}
                   </div>
                 </div>
-                <div className="pg-hod-decision-panel" style={{ marginTop: "12px", borderTop: "1px solid #1f222e", paddingTop: "12px" }}>
+                <div className="pg-hod-decision-panel" style={{ marginTop: "12px", borderTop: "1px solid var(--border-color)", paddingTop: "12px" }}>
                   <div className="pg-hod-decision-actions" style={{ justifyContent: "flex-end", width: "100%" }}>
                     <Button
                       variant="ghost"
@@ -317,8 +317,8 @@ export const HodDashboard = () => {
               <Card key={f.id} style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                   <div>
-                    <h4 style={{ color: "#fff", fontWeight: 700, margin: 0 }}>{f.name}</h4>
-                    <p style={{ fontSize: "12px", color: "#90929b", margin: "2px 0 0 0" }}>{f.employee_id || "Faculty"} • {f.department || "Dept"}</p>
+                    <h4 style={{ color: "var(--text-primary)", fontWeight: 700, margin: 0 }}>{f.name}</h4>
+                    <p style={{ fontSize: "12px", color: "var(--text-secondary)", margin: "2px 0 0 0" }}>{f.employee_id || "Faculty"} • {f.department || "Dept"}</p>
                   </div>
                   <span
                     style={{
@@ -334,8 +334,8 @@ export const HodDashboard = () => {
                     {f.status}
                   </span>
                 </div>
-                <div style={{ fontSize: "12px", color: "#90929b" }}>
-                  Staff Room: <span style={{ color: "#fff" }}>{f.staff_room || "Main Staff Room"}</span>
+                <div style={{ fontSize: "12px", color: "var(--text-secondary)" }}>
+                  Staff Room: <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>{f.staff_room || "Main Staff Room"}</span>
                 </div>
                 {f.status_details?.current_class && f.status_details.current_class !== "N/A" && (
                   <div style={{ fontSize: "12px", color: "#3b82f6" }}>
@@ -345,7 +345,7 @@ export const HodDashboard = () => {
                 {f.subjects && f.subjects.length > 0 && (
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginTop: "4px" }}>
                     {f.subjects.slice(0, 3).map((sub, i) => (
-                      <span key={i} style={{ fontSize: "10px", padding: "2px 6px", background: "#181920", border: "1px solid #282a36", borderRadius: "4px", color: "#90929b" }}>
+                      <span key={i} style={{ fontSize: "10px", padding: "2px 6px", background: "var(--bg-surface-hover)", border: "1px solid var(--border-color)", borderRadius: "4px", color: "var(--text-secondary)" }}>
                         {sub}
                       </span>
                     ))}
@@ -368,9 +368,9 @@ export const HodDashboard = () => {
               <div key={`${req.req_type}-${req.id}`} className="pg-hod-card">
                 <div className="pg-hod-card-header">
                   <div className="pg-hod-card-title-sec">
-                    <div className="flex items-center gap-2">
+                    <div className="pg-hod-card-student-line">
                       <span className="pg-hod-card-name">{req.student_name}</span>
-                      <span className="text-xs text-slate-500">({req.student_roll})</span>
+                      <span className="pg-hod-roll">({req.student_roll})</span>
                       <span className="pg-hod-card-type-badge">{req.req_type}</span>
                     </div>
                     <div className="pg-hod-card-meta">

@@ -182,7 +182,7 @@ export function GateSecurity() {
         <button
           type="button"
           onClick={() => setShowIncidentModal(true)}
-          className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-rose-600/20 border border-rose-500/40 text-rose-300 hover:bg-rose-600/30 text-xs font-bold transition"
+          className="sec-btn-incident"
         >
           <AlertOctagon size={15} />
           <span>Report Security Incident</span>
@@ -387,21 +387,29 @@ export function GateSecurity() {
               {incidents.length > 0 ? (
                 incidents.map((inc) => (
                   <div key={inc.id} className="sec-feed-item">
-                    <div>
-                      <span className="font-bold text-white text-sm block">{inc.title}</span>
-                      <span className="text-xs text-slate-400 block">{inc.location} &bull; {inc.description}</span>
+                    <div className="sec-feed-info">
+                      <span className="sec-feed-title">{inc.title}</span>
+                      <span className="sec-feed-desc">{inc.location} &bull; {inc.description}</span>
                     </div>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                      inc.severity === 'CRITICAL' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/40' :
-                      inc.severity === 'HIGH' ? 'bg-orange-500/20 text-orange-400 border border-orange-500/40' :
-                      'bg-amber-500/20 text-amber-400 border border-amber-500/40'
-                    }`}>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{
+                      background: inc.severity === 'CRITICAL' ? 'rgba(239, 68, 68, 0.15)' :
+                                 inc.severity === 'HIGH' ? 'rgba(249, 115, 22, 0.15)' :
+                                 'rgba(245, 158, 11, 0.15)',
+                      color: inc.severity === 'CRITICAL' ? '#ef4444' :
+                             inc.severity === 'HIGH' ? '#f97316' :
+                             '#f59e0b',
+                      border: `1px solid ${
+                        inc.severity === 'CRITICAL' ? 'rgba(239, 68, 68, 0.3)' :
+                        inc.severity === 'HIGH' ? 'rgba(249, 115, 22, 0.3)' :
+                        'rgba(245, 158, 11, 0.3)'
+                      }`
+                    }}>
                       {inc.severity}
                     </span>
                   </div>
                 ))
               ) : (
-                <p className="text-xs text-slate-400">No active incidents logged. Campus perimeter secure.</p>
+                <p className="text-xs" style={{ color: "var(--text-muted)" }}>No active incidents logged. Campus perimeter secure.</p>
               )}
             </div>
           </div>
@@ -411,20 +419,20 @@ export function GateSecurity() {
 
       {/* Incident Report Modal */}
       {showIncidentModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-neutral-900 border border-white/10 rounded-2xl p-6 max-w-md w-full shadow-2xl"
+            className="sec-modal-card"
           >
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
+              <h3 className="text-base font-bold flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
                 <AlertOctagon size={18} className="text-rose-500" />
                 Report Campus Security Incident
               </h3>
               <button
                 onClick={() => setShowIncidentModal(false)}
-                className="text-slate-400 hover:text-white"
+                style={{ color: "var(--text-muted)", cursor: "pointer" }}
               >
                 <X size={16} />
               </button>
@@ -432,23 +440,23 @@ export function GateSecurity() {
 
             <form onSubmit={handleReportIncident} className="space-y-3">
               <div>
-                <label className="text-xs font-semibold text-slate-300 block mb-1">Incident Headline</label>
+                <label className="text-xs font-semibold block mb-1" style={{ color: "var(--text-secondary)" }}>Incident Headline</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Curfew Breach at Gate #2"
                   value={incTitle}
                   onChange={(e) => setIncTitle(e.target.value)}
-                  className="w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2 text-xs text-white"
+                  className="sec-modal-input"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-slate-300 block mb-1">Severity Level</label>
+                <label className="text-xs font-semibold block mb-1" style={{ color: "var(--text-secondary)" }}>Severity Level</label>
                 <select
                   value={incSeverity}
                   onChange={(e) => setIncSeverity(e.target.value)}
-                  className="w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2 text-xs text-white"
+                  className="sec-modal-input"
                 >
                   <option value="LOW">LOW — Minor Observation</option>
                   <option value="MEDIUM">MEDIUM — Standard Protocol Notice</option>
@@ -458,25 +466,25 @@ export function GateSecurity() {
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-slate-300 block mb-1">Location / Gate</label>
+                <label className="text-xs font-semibold block mb-1" style={{ color: "var(--text-secondary)" }}>Location / Gate</label>
                 <input
                   type="text"
                   required
                   value={incLocation}
                   onChange={(e) => setIncLocation(e.target.value)}
-                  className="w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2 text-xs text-white"
+                  className="sec-modal-input"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-slate-300 block mb-1">Incident Description</label>
+                <label className="text-xs font-semibold block mb-1" style={{ color: "var(--text-secondary)" }}>Incident Description</label>
                 <textarea
                   rows={3}
                   required
                   placeholder="Provide precise details of the security event..."
                   value={incDesc}
                   onChange={(e) => setIncDesc(e.target.value)}
-                  className="w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2 text-xs text-white"
+                  className="sec-modal-input"
                 />
               </div>
 

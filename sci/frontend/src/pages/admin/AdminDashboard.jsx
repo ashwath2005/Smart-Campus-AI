@@ -72,15 +72,15 @@ export const AdminDashboard = () => {
           {/* Welcome banner header */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
             <div>
-              <h3 style={{ fontSize: "24px", fontWeight: "800", color: "#fff", margin: 0 }}>Welcome back, Admin! 👋</h3>
+              <h3 style={{ fontSize: "24px", fontWeight: "800", color: "var(--text-primary)", margin: 0, letterSpacing: "-0.02em" }}>Welcome back, Admin! 👋</h3>
               <p style={{ fontSize: "13px", color: "var(--text-secondary)", marginTop: "4px", margin: 0 }}>
                 {pulseData?.status === 'UNUSUAL'
-                  ? `Campus Alert: Activity score is currently ${Math.round(pulseData.current_score)}% (${pulseData.status}). Review facility allocation.`
+                  ? `Campus Alert: Activity score is currently ${Math.round(pulseData.current_score || 0)}% (${pulseData.status}). Review facility allocation.`
                   : "Here's the real-time operational status of your campus today."}
               </p>
             </div>
-            <div style={{ background: "rgba(255,255,255,0.015)", border: "1px solid rgba(255, 255, 255, 0.04)", padding: "8px 16px", borderRadius: "9999px", display: "flex", alignItems: "center", gap: "8px", fontSize: "11.5px", color: "var(--text-primary)" }}>
-              <Clock size={13} style={{ color: "#ef4444" }} />
+            <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-color)", padding: "8px 16px", borderRadius: "9999px", display: "flex", alignItems: "center", gap: "8px", fontSize: "11.5px", color: "var(--text-primary)", boxShadow: "var(--shadow-sm)" }}>
+              <Clock size={13} style={{ color: "var(--brand, #ef4444)" }} />
               <span style={{ fontWeight: 600 }}>
                 {new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "short", day: "numeric" })}
               </span>
@@ -91,61 +91,77 @@ export const AdminDashboard = () => {
           <div className="pg-admindashboard-12">
             {/* Total Students */}
             <div className="console-stat-card">
-              <div className="console-stat-card-left">
+              <div className="console-stat-card-top">
                 <div className="console-stat-icon-wrapper">
                   <Users size={16} />
                 </div>
+                <div className="console-stat-sparkline">
+                  <SparklineChart data={[4, 6, 8, 10, 14, 18, 22]} color="var(--brand)" width={72} height={24} />
+                </div>
+              </div>
+              <div className="console-stat-body">
                 <span className="console-stat-label">TOTAL STUDENTS</span>
                 <div className="console-stat-value">{analytics?.total_students ?? 0}</div>
-                <TrendIndicator value={12} label="vs last intake" />
               </div>
-              <div className="console-stat-card-right">
-                <SparklineChart data={[4, 6, 8, 10, 14, 18, 22]} color="#ef4444" width={80} height={28} />
+              <div className="console-stat-footer">
+                <TrendIndicator value={12} label="vs last intake" />
               </div>
             </div>
 
             {/* Total Faculty */}
             <div className="console-stat-card">
-              <div className="console-stat-card-left">
+              <div className="console-stat-card-top">
                 <div className="console-stat-icon-wrapper">
                   <Users size={16} />
                 </div>
+                <div className="console-stat-sparkline">
+                  <SparklineChart data={[5, 6, 6, 7, 8, 8, 10]} color="var(--brand)" width={72} height={24} />
+                </div>
+              </div>
+              <div className="console-stat-body">
                 <span className="console-stat-label">TOTAL FACULTY</span>
                 <div className="console-stat-value">{analytics?.total_faculty ?? 0}</div>
-                <TrendIndicator value={8} label="vs last sem" />
               </div>
-              <div className="console-stat-card-right">
-                <SparklineChart data={[5, 6, 6, 7, 8, 8, 10]} color="#ef4444" width={80} height={28} />
+              <div className="console-stat-footer">
+                <TrendIndicator value={8} label="vs last sem" />
               </div>
             </div>
 
             {/* Total Departments */}
             <div className="console-stat-card">
-              <div className="console-stat-card-left">
+              <div className="console-stat-card-top">
                 <div className="console-stat-icon-wrapper">
                   <Landmark size={16} />
                 </div>
+                <div className="console-stat-sparkline">
+                  <SparklineChart data={[4, 4, 4, 4, 4, 4, 4]} color="var(--brand)" width={72} height={24} />
+                </div>
+              </div>
+              <div className="console-stat-body">
                 <span className="console-stat-label">TOTAL DEPARTMENTS</span>
                 <div className="console-stat-value">{analytics?.total_departments ?? 0}</div>
-                <TrendIndicator value={0} label="active academic units" />
               </div>
-              <div className="console-stat-card-right">
-                <SparklineChart data={[4, 4, 4, 4, 4, 4, 4]} color="#b91c1c" width={80} height={28} />
+              <div className="console-stat-footer">
+                <TrendIndicator value={0} label="active academic units" />
               </div>
             </div>
 
             {/* Active Placements */}
             <div className="console-stat-card">
-              <div className="console-stat-card-left">
+              <div className="console-stat-card-top">
                 <div className="console-stat-icon-wrapper">
                   <Briefcase size={16} />
                 </div>
+                <div className="console-stat-sparkline">
+                  <SparklineChart data={[1, 2, 2, 3, 4, 4, 6]} color="var(--brand)" width={72} height={24} />
+                </div>
+              </div>
+              <div className="console-stat-body">
                 <span className="console-stat-label">ACTIVE PLACEMENTS</span>
                 <div className="console-stat-value">{analytics?.total_placements ?? 0}</div>
-                <TrendIndicator value={20} label="recruitment drives" />
               </div>
-              <div className="console-stat-card-right">
-                <SparklineChart data={[1, 2, 2, 3, 4, 4, 6]} color="#b91c1c" width={80} height={28} />
+              <div className="console-stat-footer">
+                <TrendIndicator value={20} label="recruitment drives" />
               </div>
             </div>
           </div>
@@ -157,23 +173,23 @@ export const AdminDashboard = () => {
             <div className="console-card-dark">
               <div className="console-section-title-bar">
                 <h4 className="console-section-title">Campus Overview & Enrollment</h4>
-                <span style={{ fontSize: "11px", color: "rgba(255, 255, 255, 0.4)", background: "rgba(255,255,255,0.03)", padding: "4px 8px", borderRadius: "4px" }}>Active Year</span>
+                <span style={{ fontSize: "11px", color: "var(--text-muted)", background: "var(--bg-surface-hover)", border: "1px solid var(--border-color)", padding: "4px 8px", borderRadius: "4px" }}>Active Year</span>
               </div>
               
               {/* Legend */}
               <div style={{ display: "flex", gap: "16px", marginBottom: "16px", fontSize: "11px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                  <div style={{ width: "8px", height: "8px", borderRadius: "999px", background: "#b91c1c" }} />
-                  <span style={{ color: "rgba(255,255,255,0.6)" }}>Students ({analytics?.total_students ?? 0})</span>
+                  <div style={{ width: "8px", height: "8px", borderRadius: "999px", background: "var(--brand, #b91c1c)" }} />
+                  <span style={{ color: "var(--text-secondary)" }}>Students ({analytics?.total_students ?? 0})</span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                  <div style={{ width: "8px", height: "8px", borderRadius: "999px", background: "rgba(255,255,255,0.3)" }} />
-                  <span style={{ color: "rgba(255,255,255,0.6)" }}>Faculty ({analytics?.total_faculty ?? 0})</span>
+                  <div style={{ width: "8px", height: "8px", borderRadius: "999px", background: "var(--text-muted)" }} />
+                  <span style={{ color: "var(--text-secondary)" }}>Faculty ({analytics?.total_faculty ?? 0})</span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "6px", marginLeft: 'auto' }}>
-                  <Activity size={12} style={{ color: '#E31B23' }} />
-                  <span style={{ color: '#E31B23', fontWeight: 600 }}>
-                    Pulse: {pulseData ? `${Math.round(pulseData.activityScore ?? pulseData.current_score ?? 85)}%` : 'Active'}
+                  <Activity size={12} style={{ color: 'var(--brand, #E31B23)' }} />
+                  <span style={{ color: 'var(--brand, #E31B23)', fontWeight: 600 }}>
+                    Pulse: {pulseData?.current_score != null && !isNaN(pulseData.current_score) ? `${Math.round(pulseData.current_score)}%` : pulseData?.activityScore != null && !isNaN(pulseData.activityScore) ? `${Math.round(pulseData.activityScore)}%` : '82%'}
                   </span>
                 </div>
               </div>
@@ -182,16 +198,16 @@ export const AdminDashboard = () => {
               <div className="console-chart-wrapper" style={{ minHeight: 180, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <svg width="100%" height="160" viewBox="0 0 500 160" style={{ overflow: "visible" }}>
                   {[0, 1, 2, 3].map((i) => (
-                    <line key={i} x1="30" y1={40 * i + 10} x2="470" y2={40 * i + 10} stroke="rgba(255, 255, 255, 0.03)" strokeWidth="1" />
+                    <line key={i} x1="30" y1={40 * i + 10} x2="470" y2={40 * i + 10} stroke="var(--border-subtle)" strokeWidth="1" />
                   ))}
                   {["Q1", "Q2", "Q3", "Q4"].map((q, idx) => (
-                    <text key={q} x={120 * idx + 60} y="150" style={{ fill: "rgba(255, 255, 255, 0.4)", fontSize: "10px", textAnchor: "middle" }}>{q}</text>
+                    <text key={q} x={120 * idx + 60} y="150" style={{ fill: "var(--text-muted)", fontSize: "10px", textAnchor: "middle" }}>{q}</text>
                   ))}
                   {/* Faculty line */}
-                  <path d="M 60,130 Q 180,120 300,105 T 440,95" fill="none" stroke="rgba(255, 255, 255, 0.25)" strokeWidth="2" strokeDasharray="3" />
+                  <path d="M 60,130 Q 180,120 300,105 T 440,95" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeDasharray="3" />
                   {/* Student line */}
-                  <path d="M 60,110 C 160,95 260,60 360,40 C 400,30 430,35 440,30" fill="none" stroke="#b91c1c" strokeWidth="2.5" />
-                  <circle cx="440" cy="30" r="5" fill="#b91c1c" style={{ filter: "drop-shadow(0 0 6px #b91c1c)" }} />
+                  <path d="M 60,110 C 160,95 260,60 360,40 C 400,30 430,35 440,30" fill="none" stroke="var(--brand, #b91c1c)" strokeWidth="2.5" />
+                  <circle cx="440" cy="30" r="5" fill="var(--brand, #b91c1c)" style={{ filter: "drop-shadow(0 0 6px rgba(227, 27, 35, 0.4))" }} />
                 </svg>
               </div>
             </div>
@@ -393,11 +409,11 @@ export const AdminDashboard = () => {
               <h4 className="console-section-title">Campus Pulse 3D</h4>
               <button className="console-btn-red" onClick={() => navigate("/campus-pulse")}>Launch 3D</button>
             </div>
-            <div style={{ padding: "12px", background: "rgba(227, 27, 35, 0.04)", border: "1px solid rgba(227, 27, 35, 0.15)", borderRadius: "10px", marginTop: "8px" }}>
+            <div style={{ padding: "12px", background: "var(--brand-soft)", border: "1px solid var(--brand-border)", borderRadius: "10px", marginTop: "8px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                <span style={{ fontSize: "12px", color: "#ffffff", fontWeight: 600 }}>Activity Density Score</span>
-                <span style={{ fontSize: "15px", fontWeight: 800, color: "#E31B23" }}>
-                  {pulseData ? `${Math.round(pulseData.current_score)}%` : '85%'}
+                <span style={{ fontSize: "12px", color: "var(--text-primary)", fontWeight: 600 }}>Activity Density Score</span>
+                <span style={{ fontSize: "15px", fontWeight: 800, color: "var(--brand, #E31B23)" }}>
+                  {pulseData?.current_score != null && !isNaN(pulseData.current_score) ? `${Math.round(pulseData.current_score)}%` : pulseData?.activityScore != null && !isNaN(pulseData.activityScore) ? `${Math.round(pulseData.activityScore)}%` : '85%'}
                 </span>
               </div>
               <p style={{ fontSize: "11.5px", color: "var(--text-secondary)", margin: 0, lineHeight: 1.4 }}>

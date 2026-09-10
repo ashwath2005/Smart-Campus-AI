@@ -166,7 +166,7 @@ export const StudentDashboard = () => {
     },
     {
       id: "campus-3d",
-      name: "SKCET Digital Twin 3D",
+      name: "Campus Digital Twin 3D",
       category: "Realtime Spatial Pulse",
       activityScore: "99.1%",
       status: "Active",
@@ -273,32 +273,32 @@ export const StudentDashboard = () => {
             </div>
 
             {/* Intelligent "What Needs My Attention?" section */}
-            <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid rgba(255, 255, 255, 0.06)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                <span style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.05em", color: "#94a3b8", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <Sparkles size={13} style={{ color: "#ef4444" }} />
+            <div className="ref-attention-section">
+              <div className="ref-attention-header">
+                <span className="ref-attention-heading">
+                  <Sparkles size={13} style={{ color: "var(--brand)" }} />
                   WHAT NEEDS MY ATTENTION?
                 </span>
-                <span style={{ fontSize: "10.5px", color: "#64748b" }}>Live Campus Intelligence</span>
+                <span className="ref-attention-meta">Live Campus Intelligence</span>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "10px" }}>
+              <div className="ref-attention-grid">
                 {/* 1. Gate Pass status */}
                 {activeGatePass ? (
                   <div
                     onClick={() => navigate('/gate-pass')}
-                    style={{ padding: "12px", borderRadius: "10px", background: "rgba(0, 0, 0, 0.45)", border: "1px solid rgba(255, 255, 255, 0.08)", cursor: "pointer", display: "flex", flexDirection: "column", gap: "6px" }}
+                    className="ref-attention-card"
                   >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontSize: "12px", fontWeight: "700", color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
-                        <QrCode size={13} style={{ color: "#ef4444" }} />
+                    <div className="ref-attention-card-top">
+                      <span className="ref-attention-card-title">
+                        <QrCode size={13} style={{ color: "var(--brand)" }} />
                         Pass #{activeGatePass.id}
                       </span>
-                      <span style={{ fontSize: "10px", fontWeight: "700", padding: "2px 8px", borderRadius: "999px", background: activeGatePass.status === 'APPROVED' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)', color: activeGatePass.status === 'APPROVED' ? '#34d399' : '#fbbf24' }}>
+                      <span style={{ fontSize: "10px", fontWeight: "700", padding: "2px 8px", borderRadius: "999px", background: activeGatePass.status === 'APPROVED' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)', color: activeGatePass.status === 'APPROVED' ? '#10b981' : '#f59e0b' }}>
                         {activeGatePass.status}
                       </span>
                     </div>
-                    <span style={{ fontSize: "11px", color: "#94a3b8", lineHeight: 1.3 }}>
+                    <span className="ref-attention-card-desc">
                       {activeGatePass.status === 'APPROVED' ? 'QR Code ready for exit scan at Main Gate' :
                        activeGatePass.status === 'PENDING_PARENT_OTP' ? 'Waiting for Guardian SMS OTP authorization' :
                        activeGatePass.status === 'PENDING_WARDEN_APPROVAL' ? 'Guardian verified. Awaiting HOD sign-off' :
@@ -309,16 +309,16 @@ export const StudentDashboard = () => {
                 ) : (
                   <div
                     onClick={() => navigate('/gate-pass')}
-                    style={{ padding: "12px", borderRadius: "10px", background: "rgba(0, 0, 0, 0.45)", border: "1px solid rgba(255, 255, 255, 0.08)", cursor: "pointer", display: "flex", flexDirection: "column", gap: "6px" }}
+                    className="ref-attention-card"
                   >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontSize: "12px", fontWeight: "700", color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
-                        <QrCode size={13} style={{ color: "#64748b" }} />
+                    <div className="ref-attention-card-top">
+                      <span className="ref-attention-card-title">
+                        <QrCode size={13} style={{ color: "var(--text-muted)" }} />
                         Digital Gate Pass
                       </span>
-                      <span style={{ fontSize: "10px", color: "#34d399", fontWeight: "600" }}>On Campus</span>
+                      <span style={{ fontSize: "10px", color: "#10b981", fontWeight: "600" }}>On Campus</span>
                     </div>
-                    <span style={{ fontSize: "11px", color: "#94a3b8" }}>Apply for day outpass or weekend leave</span>
+                    <span className="ref-attention-card-desc">Apply for day outpass or weekend leave</span>
                   </div>
                 )}
 
@@ -326,52 +326,52 @@ export const StudentDashboard = () => {
                 {attendancePct < 75 ? (
                   <div
                     onClick={() => navigate('/attendance')}
-                    style={{ padding: "12px", borderRadius: "10px", background: "rgba(225, 29, 72, 0.15)", border: "1px solid rgba(225, 29, 72, 0.3)", cursor: "pointer", display: "flex", flexDirection: "column", gap: "6px" }}
+                    className="ref-attention-card-alert"
                   >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontSize: "12px", fontWeight: "700", color: "#f43f5e", display: "flex", alignItems: "center", gap: "6px" }}>
-                        <Clock size={13} style={{ color: "#f43f5e" }} />
+                    <div className="ref-attention-card-top">
+                      <span className="ref-attention-card-title" style={{ color: "#ef4444" }}>
+                        <Clock size={13} style={{ color: "#ef4444" }} />
                         Attendance Shortage
                       </span>
-                      <span style={{ fontSize: "10px", fontWeight: "700", padding: "2px 8px", borderRadius: "999px", background: "rgba(225, 29, 72, 0.25)", color: "#fda4af" }}>
+                      <span style={{ fontSize: "10px", fontWeight: "700", padding: "2px 8px", borderRadius: "999px", background: "rgba(239, 68, 68, 0.2)", color: "#ef4444" }}>
                         {attendancePct}%
                       </span>
                     </div>
-                    <span style={{ fontSize: "11px", color: "#fecdd3" }}>Overall attendance is below the required 75% threshold</span>
+                    <span className="ref-attention-card-desc" style={{ color: "var(--text-secondary)" }}>Overall attendance is below the required 75% threshold</span>
                   </div>
                 ) : urgentAssignments.length > 0 ? (
                   <div
                     onClick={() => navigate('/assignments')}
-                    style={{ padding: "12px", borderRadius: "10px", background: "rgba(0, 0, 0, 0.45)", border: "1px solid rgba(255, 255, 255, 0.08)", cursor: "pointer", display: "flex", flexDirection: "column", gap: "6px" }}
+                    className="ref-attention-card"
                   >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontSize: "12px", fontWeight: "700", color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
-                        <BookOpen size={13} style={{ color: "#38bdf8" }} />
+                    <div className="ref-attention-card-top">
+                      <span className="ref-attention-card-title">
+                        <BookOpen size={13} style={{ color: "#0284c7" }} />
                         Coursework Due
                       </span>
-                      <span style={{ fontSize: "10px", fontWeight: "700", padding: "2px 8px", borderRadius: "999px", background: "rgba(56, 189, 248, 0.2)", color: "#38bdf8" }}>
+                      <span style={{ fontSize: "10px", fontWeight: "700", padding: "2px 8px", borderRadius: "999px", background: "rgba(2, 132, 199, 0.15)", color: "#0284c7" }}>
                         Due Soon
                       </span>
                     </div>
-                    <span style={{ fontSize: "11px", color: "#94a3b8" }}>
+                    <span className="ref-attention-card-desc">
                       {urgentAssignments[0]?.title || 'Pending academic assignment'}
                     </span>
                   </div>
                 ) : (
                   <div
                     onClick={() => navigate('/placements')}
-                    style={{ padding: "12px", borderRadius: "10px", background: "rgba(0, 0, 0, 0.45)", border: "1px solid rgba(255, 255, 255, 0.08)", cursor: "pointer", display: "flex", flexDirection: "column", gap: "6px" }}
+                    className="ref-attention-card"
                   >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontSize: "12px", fontWeight: "700", color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
-                        <Briefcase size={13} style={{ color: "#fbbf24" }} />
+                    <div className="ref-attention-card-top">
+                      <span className="ref-attention-card-title">
+                        <Briefcase size={13} style={{ color: "#d97706" }} />
                         Placements
                       </span>
-                      <span style={{ fontSize: "10px", fontWeight: "700", padding: "2px 8px", borderRadius: "999px", background: "rgba(251, 191, 36, 0.2)", color: "#fbbf24" }}>
+                      <span style={{ fontSize: "10px", fontWeight: "700", padding: "2px 8px", borderRadius: "999px", background: "rgba(217, 119, 6, 0.15)", color: "#d97706" }}>
                         Eligible
                       </span>
                     </div>
-                    <span style={{ fontSize: "11px", color: "#94a3b8" }}>Active campus recruitment drives open for your batch</span>
+                    <span className="ref-attention-card-desc">Active campus recruitment drives open for your batch</span>
                   </div>
                 )}
               </div>
