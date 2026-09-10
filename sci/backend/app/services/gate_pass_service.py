@@ -570,6 +570,47 @@ class GatePassService:
         return {"success": True, "status": gp.status, "message": f"Gate pass {gp.status.lower()} by Warden/HOD."}
 
     @staticmethod
+    async def cancel_pass(
+        db: AsyncSession,
+        pass_id: int,
+        user_id: Optional[int],
+        user_role: Optional[str]
+    ) -> Dict[str, Any]:
+        query = select(GatePass).where(GatePass.id == pass_id)
+        res = await db.execute(query)
+        gp = res.scalar_one_or_none()
+        if not gp:
+            return {"success": False, "message": "Gate pass not found"}
+
+        if user_role != "admin" and gp.student_id != user_id:
+            return {"success": False, "message": "Cannot cancel another student's pass"}
+
+        if gp.status in ["RETURNED", "CANCELLED", "REJECTED"]:
+            return {"success": True, "message": f"Pass is already {gp.status}"}
+
+        old_state = gp.status
+        gp.status = "CANCELLED"
+        await GatePassService.log_audit(
+            db=db,
+            pass_id=gp.id,
+            actor_id=user_id,
+            actor_role=(user_role or "STUDENT").upper(),
+            action="CANCELLED",
+            previous_state=old_state,
+            new_state="CANCELLED"
+        )
+        await db.commit()
+
+        await GatePassService._dispatch_notifications_for_pass(
+            db=db,
+            gp=gp,
+            event_name="GATE_PASS_CANCELLED",
+            actor_id=user_id,
+            remarks="Cancelled by user"
+        )
+        return {"success": True, "message": "Gate pass cancelled successfully!", "status": "CANCELLED"}
+
+    @staticmethod
     async def exit_scan(db: AsyncSession, qr_token: str, guard_id: Optional[int] = None) -> Dict[str, Any]:
         """
         Security Guard Gate EXIT Scanner Endpoint.

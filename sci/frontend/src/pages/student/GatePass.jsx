@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Modal } from '../../components/ui';
+import toast from 'react-hot-toast';
 import './GatePass.css';
 
 const DEFAULT_MY_PASSES = [
@@ -73,6 +74,18 @@ export function GatePass() {
       }
     } catch (err) {
       setPasses(DEFAULT_MY_PASSES);
+    }
+  };
+
+  const handleCancelPass = async (passId) => {
+    if (!window.confirm(`Are you sure you want to cancel and withdraw Pass #${passId}?`)) return;
+    const loadToast = toast.loading(`Cancelling Pass #${passId}...`);
+    try {
+      await api.post(`/gate-pass/${passId}/cancel`);
+      toast.success(`Pass #${passId} has been cancelled!`, { id: loadToast });
+      fetchPasses();
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Failed to cancel pass", { id: loadToast });
     }
   };
 
@@ -476,10 +489,34 @@ export function GatePass() {
                         <p className="gp-history-pass-dest">{p.destination}</p>
                       </div>
                     </div>
-                    <div className="gp-history-right-group">
-                      <span className={p.status === 'APPROVED' ? 'gp-pill-approved' : 'gp-pill-completed'}>
+                    <div className="gp-history-right-group" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <span className={p.status === 'APPROVED' ? 'gp-pill-approved' : p.status === 'PENDING_WARDEN_APPROVAL' || p.status === 'PENDING_PARENT_OTP' ? 'gp-pill-pending' : 'gp-pill-completed'}>
                         {p.status}
                       </span>
+                      {['PENDING_PARENT_OTP', 'PENDING_WARDEN_APPROVAL', 'APPROVED'].includes(p.status) && (
+                        <button
+                          type="button"
+                          className="gp-cancel-small-btn"
+                          title="Cancel and clear pass"
+                          onClick={() => handleCancelPass(p.id)}
+                          style={{
+                            padding: "4px 8px",
+                            borderRadius: "6px",
+                            fontSize: "11px",
+                            fontWeight: 600,
+                            background: "rgba(239, 68, 68, 0.12)",
+                            color: "#ef4444",
+                            border: "1px solid rgba(239, 68, 68, 0.3)",
+                            cursor: "pointer",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "4px"
+                          }}
+                        >
+                          <X size={12} />
+                          <span>Cancel</span>
+                        </button>
+                      )}
                       <button
                         type="button"
                         className="gp-qr-small-btn"

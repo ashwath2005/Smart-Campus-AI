@@ -126,6 +126,23 @@ async def warden_approve_pass(
     return await GatePassService.warden_approve(db=db, pass_id=pass_id, action=action, warden_id=current_user.get("id"))
 
 
+@router.post("/{pass_id}/cancel")
+async def cancel_gate_pass(
+    pass_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
+):
+    """
+    Cancel an active or pending gate pass.
+    """
+    user_id = current_user.get("id")
+    user_role = current_user.get("role")
+    res = await GatePassService.cancel_pass(db=db, pass_id=pass_id, user_id=user_id, user_role=user_role)
+    if not res.get("success"):
+        raise HTTPException(status_code=400, detail=res.get("message"))
+    return res
+
+
 @router.post("/check-overdue")
 async def trigger_overdue_check(
     db: AsyncSession = Depends(get_db)
