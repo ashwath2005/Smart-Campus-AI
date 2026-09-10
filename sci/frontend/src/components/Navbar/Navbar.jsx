@@ -75,14 +75,6 @@ export const Navbar = ({ isSidebarOpen, onMenuToggle, onOpenCmdPalette }) => {
           <span className="ref-search-placeholder">Search anything...</span>
         </div>
 
-        {/* Reference Dark Pill Create Button */}
-        <button
-          className="ref-create-btn"
-          onClick={() => navigate('/assignments')}
-          title="Create task, pass, or submission"
-        >
-          Create
-        </button>
 
         {/* Circular Icon Button 1: Notifications with Badge Popover */}
         <div className="navbar-notif-wrapper" ref={notifRef}>

@@ -115,31 +115,6 @@
   white-space: nowrap;
 }
 
-/* Project Brand Pill Create Button */
-.ref-create-btn {
-  background-color: var(--brand);
-  color: #FFFFFF;
-  font-size: 12.5px;
-  font-weight: 600;
-  height: 35px;
-  padding: 0 20px;
-  border-radius: 9999px;
-  border: 1px solid var(--brand);
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(242, 23, 34, 0.2);
-  transition: all 0.18s ease;
-  outline: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.ref-create-btn:hover {
-  background-color: var(--brand-hover);
-  border-color: var(--brand-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(242, 23, 34, 0.3);
-}
 
 /* Reference Circular Action Buttons */
 .ref-circle-icon-btn {
