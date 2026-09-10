@@ -127,6 +127,7 @@ async def warden_approve_pass(
 
 
 @router.post("/{pass_id}/cancel")
+@router.post("/cancel/{pass_id}")
 async def cancel_gate_pass(
     pass_id: int,
     db: AsyncSession = Depends(get_db),
@@ -250,3 +251,5 @@ async def update_policy(
     await db.commit()
 
     return {"success": True, "message": "Gate Pass Policy updated successfully!"}
+
+

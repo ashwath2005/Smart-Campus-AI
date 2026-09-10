@@ -26,26 +26,7 @@ import { Modal } from '../../components/ui';
 import toast from 'react-hot-toast';
 import './GatePass.css';
 
-const DEFAULT_MY_PASSES = [
-  {
-    id: "GP-9421",
-    passType: "Day Outpass",
-    destination: "City Tech Park Library",
-    status: "APPROVED",
-    qrCodeHash: "a9f82d1c",
-    signedQrToken: "hmac-sig-9421-a9f82d1c",
-    created_at: new Date().toISOString()
-  },
-  {
-    id: "GP-9104",
-    passType: "Weekend Leave",
-    destination: "Home Transit (Coimbatore North)",
-    status: "COMPLETED",
-    qrCodeHash: "c4b10e9a",
-    signedQrToken: "hmac-sig-9104-c4b10e9a",
-    created_at: new Date(Date.now() - 3600 * 1000 * 48).toISOString()
-  }
-];
+const DEFAULT_MY_PASSES = [];
 
 export function GatePass() {
   const [passes, setPasses] = useState(DEFAULT_MY_PASSES);
@@ -53,10 +34,11 @@ export function GatePass() {
   const [reason, setReason] = useState('');
   const [destination, setDestination] = useState('');
 
-  // Separate Date & Time state fields
-  const [leaveDate, setLeaveDate] = useState('2026-08-13');
+  // Dynamic Date & Time state fields
+  const todayStr = new Date().toISOString().split('T')[0];
+  const [leaveDate, setLeaveDate] = useState(todayStr);
   const [leaveTime, setLeaveTime] = useState('09:00');
-  const [returnDate, setReturnDate] = useState('2026-08-13');
+  const [returnDate, setReturnDate] = useState(todayStr);
   const [returnTime, setReturnTime] = useState('13:00');
 
   const [loading, setLoading] = useState(false);
@@ -65,20 +47,47 @@ export function GatePass() {
   const [recLoading, setRecLoading] = useState(false);
   const [showQrModal, setShowQrModal] = useState(null);
 
+  const handlePassTypeChange = (newType) => {
+    setPassType(newType);
+    const now = new Date();
+    const nowIso = now.toISOString().split('T')[0];
+    setLeaveDate(nowIso);
+    if (newType === 'weekend_leave') {
+      const returnD = new Date(now.getTime() + 48 * 3600 * 1000);
+      setReturnDate(returnD.toISOString().split('T')[0]);
+      setLeaveTime('09:00');
+      setReturnTime('18:00');
+    } else if (newType === 'emergency') {
+      const returnD = new Date(now.getTime() + 24 * 3600 * 1000);
+      setReturnDate(returnD.toISOString().split('T')[0]);
+      setLeaveTime('10:00');
+      setReturnTime('18:00');
+    } else {
+      setReturnDate(nowIso);
+      setLeaveTime('10:00');
+      setReturnTime('14:00');
+    }
+  };
+
   const fetchPasses = async () => {
     try {
       const res = await api.get('/gate-pass/my-passes');
-      if (Array.isArray(res.data) && res.data.length > 0) {
+      if (Array.isArray(res.data)) {
         setPasses(res.data);
-        setActivePass(res.data[0]);
+        if (res.data.length > 0) {
+          setActivePass(res.data[0]);
+        } else {
+          setActivePass(null);
+        }
       }
     } catch (err) {
-      setPasses(DEFAULT_MY_PASSES);
+      setPasses([]);
+      setActivePass(null);
     }
   };
 
   const handleCancelPass = async (passId) => {
-    if (!window.confirm(`Are you sure you want to cancel and withdraw Pass #${passId}?`)) return;
+    if (!window.confirm(`Are you sure you want to cancel Pass #${passId}?`)) return;
     const loadToast = toast.loading(`Cancelling Pass #${passId}...`);
     try {
       await api.post(`/gate-pass/${passId}/cancel`);
@@ -137,44 +146,26 @@ export function GatePass() {
         setActivePass(res.data);
         setReason('');
         setDestination('');
+        if (res.data.status === 'APPROVED') {
+          toast.success("Gate Pass Auto-Approved by AI!");
+        } else if (res.data.status === 'PENDING_PARENT_OTP') {
+          toast.success("Tier 2 Pass submitted! Awaiting Guardian OTP verification.");
+        } else if (res.data.status === 'PENDING_WARDEN_APPROVAL') {
+          toast.success("Pass submitted! Awaiting Warden/HOD approval.");
+        } else {
+          toast.success(`Gate pass submitted: ${res.data.status}`);
+        }
         fetchPasses();
       } else {
-        const newPass = {
-          id: `GP-${Math.floor(1000 + Math.random() * 9000)}`,
-          passType: passType === 'outpass' ? 'Day Outpass' : passType === 'weekend_leave' ? 'Weekend Leave' : 'Emergency Pass',
-          destination: destination,
-          status: 'APPROVED',
-          eligibilityScore: 96,
-          riskLevel: 'LOW',
-          riskScore: 8,
-          qrCodeHash: Math.random().toString(36).substring(2, 10),
-          signedQrToken: `hmac-token-${Date.now()}`
-        };
-        setPasses([newPass, ...passes]);
-        setActivePass(newPass);
-        setReason('');
-        setDestination('');
+        toast.error(res.data?.message || "Active pass already exists or policy restriction.");
       }
     } catch (err) {
-      const newPass = {
-        id: `GP-${Math.floor(1000 + Math.random() * 9000)}`,
-        passType: passType === 'outpass' ? 'Day Outpass' : passType === 'weekend_leave' ? 'Weekend Leave' : 'Emergency Pass',
-        destination: destination,
-        status: 'APPROVED',
-        eligibilityScore: 96,
-        riskLevel: 'LOW',
-        riskScore: 8,
-        qrCodeHash: Math.random().toString(36).substring(2, 10),
-        signedQrToken: `hmac-token-${Date.now()}`
-      };
-      setPasses([newPass, ...passes]);
-      setActivePass(newPass);
-      setReason('');
-      setDestination('');
+      toast.error(err.response?.data?.message || err.response?.data?.detail || "Failed to submit gate pass request.");
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <motion.div
@@ -251,7 +242,7 @@ export function GatePass() {
                 <select
                   className="gp-input-styled-select"
                   value={passType}
-                  onChange={(e) => setPassType(e.target.value)}
+                  onChange={(e) => handlePassTypeChange(e.target.value)}
                 >
                   <option value="outpass">Day Outpass (&lt; 4 Hours) — TIER 1 Instant AI</option>
                   <option value="weekend_leave">Weekend Leave (1–2 Days) — TIER 2 Warden/Parent Sign-off</option>
@@ -412,17 +403,29 @@ export function GatePass() {
               </div>
             </div>
 
-            {/* Eligible for Auto Approval Banner */}
+            {/* Workflow / Approval Status Banner */}
             <div className="gp-eligible-banner">
               <div className="gp-eligible-left">
                 <div className="gp-eligible-icon">
-                  <Check size={20} />
+                  {passType === 'outpass' ? <Check size={20} /> : <ShieldCheck size={20} />}
                 </div>
                 <div>
                   <h4 className="gp-eligible-title">
-                    {activePass ? activePass.status : "Ready for Instant Digital Pass"}
+                    {activePass 
+                      ? `Active Pass Status: ${activePass.status}`
+                      : passType === 'outpass'
+                      ? "Eligible for Instant AI Auto-Approval"
+                      : passType === 'weekend_leave'
+                      ? "Tier 2 Multi-Party Workflow Required"
+                      : "Tier 3 Priority Warden Authorization"}
                   </h4>
-                  <p className="gp-eligible-sub">Risk Tier: <strong>LOW</strong> (Deterministic policy pass &bull; 0 manual delays)</p>
+                  <p className="gp-eligible-sub">
+                    {passType === 'outpass'
+                      ? "Day Outpass (< 4h) • Deterministic policy pass • Instant HMAC generation"
+                      : passType === 'weekend_leave'
+                      ? "Weekend Leave • Requires Guardian SMS/OTP approval followed by Chief Warden sign-off"
+                      : "Emergency Leave • Requires priority Hostel Warden review and verification"}
+                  </p>
                 </div>
               </div>
             </div>
@@ -438,24 +441,62 @@ export function GatePass() {
                   <span className="gp-credential-badge-sub">Campus Access &amp; Security</span>
                 </div>
               </div>
-              <span className="gp-credential-status-pill">
-                AUTHORIZED • HMAC SYNC
+              <span className={`gp-credential-status-pill ${
+                !activePass ? '' :
+                activePass.status === 'APPROVED' ? 'status-approved' :
+                activePass.status === 'OUT' ? 'status-out' :
+                activePass.status === 'PENDING_PARENT_OTP' ? 'status-pending' :
+                activePass.status === 'PENDING_WARDEN_APPROVAL' ? 'status-pending' : ''
+              }`} style={{
+                background: !activePass ? "rgba(100, 116, 139, 0.2)" :
+                  activePass.status === 'APPROVED' ? "rgba(16, 185, 129, 0.2)" :
+                  activePass.status === 'OUT' ? "rgba(59, 130, 246, 0.2)" :
+                  activePass.status === 'PENDING_PARENT_OTP' ? "rgba(245, 158, 11, 0.2)" :
+                  activePass.status === 'PENDING_WARDEN_APPROVAL' ? "rgba(249, 115, 22, 0.2)" : "rgba(100, 116, 139, 0.2)",
+                color: !activePass ? "#94a3b8" :
+                  activePass.status === 'APPROVED' ? "#10b981" :
+                  activePass.status === 'OUT' ? "#3b82f6" :
+                  activePass.status === 'PENDING_PARENT_OTP' ? "#f59e0b" :
+                  activePass.status === 'PENDING_WARDEN_APPROVAL' ? "#f97316" : "#94a3b8",
+                border: "1px solid currentColor"
+              }}>
+                {!activePass
+                  ? "NO ACTIVE PASS"
+                  : activePass.status === 'APPROVED'
+                  ? "AUTHORIZED • ACTIVE PASS"
+                  : activePass.status === 'OUT'
+                  ? "OFF-CAMPUS • OUTPASS ACTIVE"
+                  : activePass.status === 'PENDING_PARENT_OTP'
+                  ? "AWAITING GUARDIAN OTP"
+                  : activePass.status === 'PENDING_WARDEN_APPROVAL'
+                  ? "AWAITING WARDEN SIGN-OFF"
+                  : activePass.status}
               </span>
             </div>
 
             <div className="gp-credential-body">
               <div className="gp-credential-qr-box">
-                <QrCode size={44} className="gp-credential-qr" />
+                {activePass && (activePass.status === 'APPROVED' || activePass.status === 'OUT') ? (
+                  <QrCode size={44} className="gp-credential-qr" />
+                ) : (
+                  <Lock size={36} style={{ color: "#f59e0b" }} />
+                )}
               </div>
               <div className="gp-credential-meta">
                 <div className="gp-credential-dest">
-                  {destination || activePass?.destination || 'City Tech Park Library'}
+                  {activePass ? (activePass.destination || destination || 'Campus Exit') : 'No Active Pass'}
                 </div>
                 <div className="gp-credential-schedule">
-                  Validity Window: {leaveDate} {leaveTime} &rarr; {returnDate} {returnTime}
+                  {activePass
+                    ? `Status: ${activePass.status} • Tier: ${activePass.tierLevel || activePass.tier_level || (passType === 'weekend_leave' ? 'TIER_2' : 'TIER_1')}`
+                    : `Selected Tier: ${passType === 'weekend_leave' ? 'TIER 2 (Guardian OTP + Warden)' : passType === 'emergency' ? 'TIER 3 (Warden Emergency)' : 'TIER 1 (AI Instant)'}`}
                 </div>
                 <div className="gp-credential-token">
-                  ID: {activePass ? activePass.id : 'GP-9421'} &bull; Token: {activePass ? (activePass.qrCodeHash || 'hmac-sha256') : 'hmac-sha256'}
+                  {activePass && (activePass.status === 'APPROVED' || activePass.status === 'OUT')
+                    ? `Pass ID: #${activePass.id} • Token: ${activePass.qrCodeHash || 'HMAC-SHA256'}`
+                    : activePass
+                    ? `Pass #${activePass.id} • QR unlocks upon Guardian OTP & Warden approval`
+                    : "Submit request to generate digitally signed HMAC token"}
                 </div>
               </div>
             </div>

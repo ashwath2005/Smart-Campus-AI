@@ -949,3 +949,49 @@ class GatePassService:
             }
             for l in logs
         ]
+
+    @staticmethod
+    async def cancel_pass(
+        db: AsyncSession,
+        pass_id: int,
+        user_id: Optional[int] = None,
+        student_id: Optional[int] = None,
+        user_role: Optional[str] = "student"
+    ) -> Dict[str, Any]:
+        actor_id = user_id or student_id
+        actor_role_str = (user_role or "STUDENT").upper()
+
+        query = select(GatePass).where(GatePass.id == pass_id)
+        if actor_role_str == "STUDENT":
+            query = query.where(GatePass.student_id == actor_id)
+
+        res = await db.execute(query)
+        gp = res.scalar_one_or_none()
+        if not gp:
+            return {"success": False, "message": "Active pass not found or cannot be cancelled"}
+
+        prev_status = gp.status
+        gp.status = "CANCELLED"
+        await db.commit()
+
+        await GatePassService.log_audit(
+            db=db,
+            pass_id=gp.id,
+            actor_id=actor_id,
+            actor_role=actor_role_str,
+            action="CANCELLED",
+            previous_state=prev_status,
+            new_state="CANCELLED"
+        )
+        await db.commit()
+
+        await GatePassService._dispatch_notifications_for_pass(
+            db=db,
+            gp=gp,
+            event_name="GATE_PASS_CANCELLED",
+            actor_id=actor_id
+        )
+
+        return {"success": True, "message": f"Pass #{pass_id} cancelled successfully", "status": "CANCELLED"}
+
+
