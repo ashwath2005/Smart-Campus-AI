@@ -11,6 +11,8 @@ from app.models.gate_pass import GatePass, GatePassPolicy, GatePassAuditLog
 from app.models.user import User
 from app.models.attendance import Attendance
 from app.models.academic import AcademicCalendarEvent
+from app.models.communication import Notification
+from app.utils.websocket_manager import manager as ws_manager
 from app.core.config import settings
 
 HMAC_SECRET = getattr(settings, "HMAC_SECRET", "SCME_AWN_SECURITY_HMAC_KEY_2026")
@@ -91,6 +93,131 @@ class GatePassService:
             metadata_json=json.dumps(metadata) if metadata else None
         )
         db.add(log_entry)
+
+    @staticmethod
+    async def _dispatch_notifications_for_pass(
+        db: AsyncSession,
+        gp: GatePass,
+        event_name: str,
+        actor_id: Optional[int] = None,
+        remarks: Optional[str] = None
+    ):
+        try:
+            student_res = await db.execute(select(User).where(User.id == gp.student_id))
+            student = student_res.scalar_one_or_none()
+            student_name = getattr(student, "name", f"Student #{gp.student_id}") if student else f"Student #{gp.student_id}"
+            guardian_id = getattr(student, "guardian_id", None) if student else None
+
+            if not guardian_id:
+                g_res = await db.execute(select(User).where(User.role == "guardian").limit(1))
+                g_user = g_res.scalar_one_or_none()
+                if g_user:
+                    guardian_id = g_user.id
+
+            notifs = []
+            if gp.status == "PENDING_PARENT_OTP":
+                if guardian_id:
+                    notifs.append(Notification(
+                        title="Guardian Authorization Required",
+                        message=f"Your ward {student_name} requested a {gp.pass_type} to {gp.destination}. Verification OTP: {gp.parent_otp}",
+                        category="gatepass",
+                        priority="high",
+                        user_id=guardian_id,
+                        created_by=gp.student_id
+                    ))
+            elif gp.status == "PENDING_WARDEN_APPROVAL":
+                notifs.append(Notification(
+                    title="Gate Pass Pending Approval",
+                    message=f"Pass request for {student_name} ({gp.destination}) requires HOD/Warden review.",
+                    category="gatepass",
+                    priority="normal",
+                    target_role="hod",
+                    created_by=actor_id or gp.student_id
+                ))
+            elif gp.status == "APPROVED":
+                notifs.append(Notification(
+                    title="Gate Pass Approved!",
+                    message=f"Your {gp.pass_type} to {gp.destination} has been APPROVED. QR token is active.",
+                    category="gatepass",
+                    priority="high",
+                    user_id=gp.student_id,
+                    created_by=actor_id or 1
+                ))
+                if guardian_id:
+                    notifs.append(Notification(
+                        title="Ward Gate Pass Approved",
+                        message=f"Gate pass for {student_name} to {gp.destination} is approved.",
+                        category="gatepass",
+                        priority="normal",
+                        user_id=guardian_id,
+                        created_by=actor_id or 1
+                    ))
+            elif gp.status == "OUT":
+                notifs.append(Notification(
+                    title="Campus Exit Confirmed",
+                    message=f"Exit verified at Main Gate. Valid until {gp.expected_return_time.strftime('%I:%M %p') if gp.expected_return_time else 'curfew'}.",
+                    category="gatepass",
+                    priority="normal",
+                    user_id=gp.student_id,
+                    created_by=actor_id or 1
+                ))
+                if guardian_id:
+                    notifs.append(Notification(
+                        title="Ward Left Campus",
+                        message=f"{student_name} departed campus through Main Gate towards {gp.destination}.",
+                        category="gatepass",
+                        priority="high",
+                        user_id=guardian_id,
+                        created_by=actor_id or 1
+                    ))
+            elif gp.status == "RETURNED":
+                notifs.append(Notification(
+                    title="Return Confirmed",
+                    message="Return scan recorded at Main Gate. Welcome back!",
+                    category="gatepass",
+                    priority="normal",
+                    user_id=gp.student_id,
+                    created_by=actor_id or 1
+                ))
+                if guardian_id:
+                    notifs.append(Notification(
+                        title="Ward Safely Returned",
+                        message=f"{student_name} returned to campus safely.",
+                        category="gatepass",
+                        priority="normal",
+                        user_id=guardian_id,
+                        created_by=actor_id or 1
+                    ))
+            elif gp.status == "REJECTED":
+                notifs.append(Notification(
+                    title="Gate Pass Declined",
+                    message=f"Your {gp.pass_type} to {gp.destination} was not approved. Remarks: {remarks or 'None'}",
+                    category="gatepass",
+                    priority="high",
+                    user_id=gp.student_id,
+                    created_by=actor_id or 1
+                ))
+
+            for n in notifs:
+                db.add(n)
+            await db.commit()
+
+            event_payload = {
+                "type": "WORKFLOW_UPDATE",
+                "event": event_name,
+                "entity": "GATE_PASS",
+                "pass_id": gp.id,
+                "status": gp.status,
+                "student_id": gp.student_id,
+                "destination": gp.destination,
+            }
+            if guardian_id:
+                await ws_manager.send_personal_message(guardian_id, event_payload)
+            await ws_manager.send_personal_message(gp.student_id, event_payload)
+            await ws_manager.broadcast_to_role("security", event_payload)
+            await ws_manager.broadcast_to_role("hod", event_payload)
+        except Exception as e:
+            print(f"Error dispatching gate pass notifications: {e}")
 
     @staticmethod
     async def get_active_policy(db: AsyncSession) -> GatePassPolicy:
@@ -307,6 +434,14 @@ class GatePassService:
             metadata={"tier": tier_level, "destination": destination, "hours": return_hours}
         )
 
+        # Real-time notification and WebSocket dispatch
+        await GatePassService._dispatch_notifications_for_pass(
+            db=db,
+            gp=gate_pass,
+            event_name="GATE_PASS_CREATED",
+            actor_id=student_id
+        )
+
         return {
             "success": True,
             "id": gate_pass.id,
@@ -387,6 +522,12 @@ class GatePassService:
             )
 
             await db.commit()
+            await GatePassService._dispatch_notifications_for_pass(
+                db=db,
+                gp=gp,
+                event_name="PARENT_OTP_VERIFIED",
+                remarks="Parent OTP authorized"
+            )
             return {"success": True, "message": "Parent OTP verified successfully! Gate Pass APPROVED.", "status": "APPROVED"}
         else:
             return {"success": False, "message": "Invalid Parent OTP authorization code"}
@@ -419,6 +560,13 @@ class GatePassService:
         )
 
         await db.commit()
+        await GatePassService._dispatch_notifications_for_pass(
+            db=db,
+            gp=gp,
+            event_name="WARDEN_ACTION",
+            actor_id=warden_id,
+            remarks=f"Action: {action}"
+        )
         return {"success": True, "status": gp.status, "message": f"Gate pass {gp.status.lower()} by Warden/HOD."}
 
     @staticmethod
@@ -468,6 +616,13 @@ class GatePassService:
             metadata={"actual_exit_time": now.isoformat()}
         )
         await db.commit()
+
+        await GatePassService._dispatch_notifications_for_pass(
+            db=db,
+            gp=gp,
+            event_name="GATE_EXIT_SCANNED",
+            actor_id=guard_id
+        )
 
         # Fetch student details
         student_query = select(User).where(User.id == gp.student_id)
@@ -537,6 +692,13 @@ class GatePassService:
             metadata={"actual_return_time": now.isoformat(), "duration": dur_str}
         )
         await db.commit()
+
+        await GatePassService._dispatch_notifications_for_pass(
+            db=db,
+            gp=gp,
+            event_name="GATE_RETURN_SCANNED",
+            actor_id=guard_id
+        )
 
         student_query = select(User).where(User.id == gp.student_id)
         student = (await db.execute(student_query)).scalar_one_or_none()

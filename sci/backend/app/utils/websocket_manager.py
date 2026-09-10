@@ -88,5 +88,37 @@ class ConnectionManager:
                         logger.warning(f"Error sending WebSocket message to user {user_id}: {e}")
                         self.disconnect(ws, user_id)
 
+    async def send_personal_message(self, user_id: int, message: dict):
+        """Send a JSON message directly to a specific user's active sockets."""
+        if user_id in self.active_connections:
+            for ws in list(self.active_connections[user_id]):
+                try:
+                    await ws.send_json(message)
+                    logger.info(f"Sent personal message to user {user_id}")
+                except Exception as e:
+                    logger.warning(f"Error sending personal message to user {user_id}: {e}")
+                    self.disconnect(ws, user_id)
+
+    async def broadcast_to_role(self, role: str, message: dict):
+        """Broadcast a JSON message to all connected users with a given role."""
+        for user_id, sockets in list(self.active_connections.items()):
+            for ws in list(sockets):
+                if ws.scope.get("role") == role or (role == "admin" and ws.scope.get("role") == "admin"):
+                    try:
+                        await ws.send_json(message)
+                    except Exception as e:
+                        logger.warning(f"Error broadcasting to role {role}: {e}")
+                        self.disconnect(ws, user_id)
+
+    async def broadcast_all(self, message: dict):
+        """Broadcast a JSON message to all active sockets."""
+        for user_id, sockets in list(self.active_connections.items()):
+            for ws in list(sockets):
+                try:
+                    await ws.send_json(message)
+                except Exception as e:
+                    logger.warning(f"Error broadcasting message: {e}")
+                    self.disconnect(ws, user_id)
+
 # Global connection manager instance
 manager = ConnectionManager()

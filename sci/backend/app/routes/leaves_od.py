@@ -7,6 +7,7 @@ from datetime import datetime, date
 
 from app.database import get_db
 from app.models.user import User, StudentLeave, StudentOD
+from app.models.attendance import Attendance
 from app.models.communication import Notification
 from app.middleware.auth_middleware import get_current_user
 from app.middleware.role_checker import require_role
@@ -284,6 +285,20 @@ async def approve_student_leave(
     leave.hod_reviewer_id = current_user["id"]
     leave.hod_reviewed_at = datetime.now()
 
+    if req.status == "Approved":
+        # Regularize attendance records within the Leave date range
+        att_query = select(Attendance).where(
+            Attendance.student_id == leave.student_id,
+            Attendance.date >= leave.start_date,
+            Attendance.date <= leave.end_date
+        )
+        att_records = (await db.execute(att_query)).scalars().all()
+        for att in att_records:
+            if att.status in ["absent", "Absent"]:
+                att.status = "present"
+                att.status_type = "leave"
+                att.remarks = f"Excused via Approved Leave #{leave.id} ({leave.leave_type})"
+
     await db.flush()
     await db.commit()
 
@@ -513,6 +528,20 @@ async def approve_student_od(
     od.hod_comment = req.comment
     od.hod_reviewer_id = current_user["id"]
     od.hod_reviewed_at = datetime.now()
+
+    if req.status == "Approved":
+        # Regularize attendance records within the OD date range
+        att_query = select(Attendance).where(
+            Attendance.student_id == od.student_id,
+            Attendance.date >= od.start_date,
+            Attendance.date <= od.end_date
+        )
+        att_records = (await db.execute(att_query)).scalars().all()
+        for att in att_records:
+            if att.status in ["absent", "Absent"]:
+                att.status = "present"
+                att.status_type = "od"
+                att.remarks = f"Regularized by OD #{od.id}: {od.event_title}"
 
     await db.flush()
     await db.commit()

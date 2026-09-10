@@ -6,9 +6,10 @@ from pydantic import BaseModel
 from datetime import date
 from app.database import get_db
 from app.models.attendance import Attendance
-from app.middleware.auth_middleware import get_current_user
-
+from app.models.communication import Notification
 from app.models.user import User
+from app.middleware.auth_middleware import get_current_user
+from app.utils.websocket_manager import manager as ws_manager
 
 router = APIRouter(prefix="/attendance", tags=["Attendance"])
 
@@ -153,6 +154,54 @@ async def mark_attendance(
         db.add(record)
         
     await db.flush()
+    await db.commit()
+
+    # Trigger alert if attendance in this subject falls below 75%
+    if req.status.lower() in ["absent", "late"]:
+        try:
+            att_res = await db.execute(
+                select(Attendance).where(
+                    Attendance.student_id == req.student_id,
+                    Attendance.subject == req.subject
+                )
+            )
+            all_recs = att_res.scalars().all()
+            tot = len(all_recs)
+            pres = len([r for r in all_recs if r.status.lower() in ("present", "late", "od")])
+            pct = round((pres / tot * 100), 1) if tot > 0 else 100.0
+            if pct < 75.0:
+                std_q = await db.execute(select(User).where(User.id == req.student_id))
+                std_user = std_q.scalar_one_or_none()
+                guardian_id = getattr(std_user, "guardian_id", None) if std_user else None
+                notif = Notification(
+                    title=f"⚠️ Attendance Alert: {req.subject}",
+                    message=f"Attendance in {req.subject} is currently {pct}% (below mandatory 75% threshold).",
+                    category="academic",
+                    priority="high",
+                    user_id=req.student_id,
+                    created_by=current_user["id"]
+                )
+                db.add(notif)
+                if guardian_id:
+                    g_notif = Notification(
+                        title=f"⚠️ Ward Attendance Alert: {req.subject}",
+                        message=f"Your ward's attendance in {req.subject} has fallen to {pct}% (below 75%).",
+                        category="academic",
+                        priority="high",
+                        user_id=guardian_id,
+                        created_by=current_user["id"]
+                    )
+                    db.add(g_notif)
+                await db.commit()
+                await ws_manager.send_personal_message(req.student_id, {
+                    "type": "WORKFLOW_UPDATE",
+                    "event": "ATTENDANCE_RISK_ALERT",
+                    "subject": req.subject,
+                    "percentage": pct
+                })
+        except Exception:
+            pass
+
     return {"message": "Attendance marked successfully"}
 
 
@@ -196,6 +245,7 @@ async def mark_attendance_bulk(
             db.add(record)
             
     await db.flush()
+    await db.commit()
     return {"message": f"Successfully marked/updated attendance for {len(req.records)} students"}
 
 

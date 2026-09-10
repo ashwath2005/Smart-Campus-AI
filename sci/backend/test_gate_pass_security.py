@@ -2,6 +2,11 @@ import unittest
 import secrets
 import hmac
 import hashlib
+import sys
+import io
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding="utf-8")
+
 from app.services.gate_pass_service import GatePassService
 from app.core.config import settings
 
