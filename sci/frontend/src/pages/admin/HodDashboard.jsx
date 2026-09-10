@@ -14,7 +14,8 @@ export const HodDashboard = () => {
   const [gatePasses, setGatePasses] = useState([]);
   const [faculties, setFaculties] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("pending"); // pending | history | gate_passes | faculty_monitor
+  const isWarden = user?.role === "warden";
+  const [activeTab, setActiveTab] = useState(isWarden ? "gate_passes" : "pending"); // pending | history | gate_passes | faculty_monitor
 
   // Decision Input States
   const [decisionComments, setDecisionComments] = useState({}); // { [req_id]: comment }
@@ -41,6 +42,9 @@ export const HodDashboard = () => {
   };
 
   useEffect(() => {
+    if (user?.role === "warden") {
+      setActiveTab("gate_passes");
+    }
     fetchData();
   }, [user]);
 
@@ -102,7 +106,11 @@ export const HodDashboard = () => {
   const totalApproved = [...leaves, ...ods].filter(r => r.status === "Approved").length;
   const totalRejected = [...leaves, ...ods].filter(r => r.status === "Rejected").length;
 
-  const hodTabs = [
+  const hodTabs = isWarden ? [
+    { id: "gate_passes", label: `Gate Passes (${pendingGatePasses.length})` },
+    { id: "pending", label: `Leave & OD Requests (${pendingRequests.length})` },
+    { id: "history", label: `Approval History (${historyRequests.length})` }
+  ] : [
     { id: "pending", label: `Pending Leave/OD (${pendingRequests.length})` },
     { id: "gate_passes", label: `Gate Passes (${pendingGatePasses.length})` },
     { id: "faculty_monitor", label: `Faculty Presence (${faculties.length})` },
@@ -117,18 +125,27 @@ export const HodDashboard = () => {
     >
       {/* Header */}
       <div className="pg-hoddashboard-header">
-        <h2 className="pg-hoddashboard-title">HOD Dashboard — {user?.department || "Campus"}</h2>
+        <h2 className="pg-hoddashboard-title">
+          {isWarden ? "Hostel Warden Governance Console" : `HOD Dashboard — ${user?.department || "Campus"}`}
+        </h2>
         <p className="pg-hoddashboard-subtitle">
-          Final review portal for department student leave applications and On-Duty requests.
+          {isWarden 
+            ? "Review and authorize student Gate Passes, Hostel Weekend Leaves, and Emergency Travel."
+            : "Final review portal for department student leave applications, Gate Passes, and On-Duty requests."}
         </p>
       </div>
 
       {/* Stats Widgets */}
       <div className="pg-hoddashboard-stats">
         <StatCard
-          label="Pending Your Approval"
-          value={pendingRequests.length}
+          label={isWarden ? "Pending Gate Passes" : "Pending Leave/OD"}
+          value={isWarden ? pendingGatePasses.length : pendingRequests.length}
           icon={<ClipboardList size={18} />}
+        />
+        <StatCard
+          label="Gate Passes Requiring Sign-off"
+          value={pendingGatePasses.length}
+          icon={<Shield size={18} />}
         />
         <StatCard
           label="Total Approved"
@@ -251,14 +268,22 @@ export const HodDashboard = () => {
       ) : activeTab === "gate_passes" ? (
         <div className="pg-hod-request-list">
           {pendingGatePasses.length > 0 ? (
-            pendingGatePasses.map((p) => (
+            pendingGatePasses.map((p) => {
+              const passTypeStr = (p.pass_type || p.passType || "outpass").toUpperCase();
+              const studentName = p.student?.name || (p.student_id || p.studentId ? `Student #${p.student_id || p.studentId}` : "Student");
+              const rollOrDept = p.student?.roll_number || p.student?.department || "Student";
+              const isParentVerified = p.parent_otp_verified ?? p.parent_verified ?? p.parentVerified ?? false;
+              const leaveDt = p.custom_leave_time || p.leave_time || p.leaveTime;
+              const durationHours = p.return_hours || 4;
+
+              return (
               <div key={p.id} className="pg-hod-card" style={{ borderLeft: "4px solid #f59e0b" }}>
                 <div className="pg-hod-card-header">
                   <div className="pg-hod-card-title-sec">
                     <div className="pg-hod-card-student-line">
-                      <span className="pg-hod-card-name">{p.student?.name || `Student #${p.student_id}`}</span>
-                      <span className="pg-hod-roll">({p.student?.roll_number || p.student?.department || "Student"})</span>
-                      <span className="pg-hod-card-type-badge">{p.pass_type.toUpperCase()}</span>
+                      <span className="pg-hod-card-name">{studentName}</span>
+                      <span className="pg-hod-roll">({rollOrDept})</span>
+                      <span className="pg-hod-card-type-badge">{passTypeStr}</span>
                     </div>
                     <div className="pg-hod-card-meta">
                       <span className="flex items-center gap-1">
@@ -266,7 +291,7 @@ export const HodDashboard = () => {
                         Dest: {p.destination}
                       </span>
                       <span>•</span>
-                      <span>{p.parent_otp_verified ? "✓ Parent Verified" : "Pending Parent"}</span>
+                      <span>{isParentVerified ? "✓ Parent Verified" : "Pending Parent"}</span>
                     </div>
                   </div>
                   <span className="status-badge" style={{ background: "rgba(245, 158, 11, 0.15)", color: "#f59e0b", border: "1px solid rgba(245, 158, 11, 0.3)" }}>
@@ -276,7 +301,7 @@ export const HodDashboard = () => {
                 <div className="pg-hod-card-body">
                   <strong>Reason:</strong> {p.reason}
                   <div style={{ marginTop: "6px", fontSize: "12px", color: "#90929b" }}>
-                    Expected Duration: {p.return_hours} hours | Leave: {p.custom_leave_time ? new Date(p.custom_leave_time).toLocaleString() : "Immediate"}
+                    Expected Duration: {durationHours} hours | Leave: {leaveDt ? new Date(leaveDt).toLocaleString() : "Immediate"}
                   </div>
                 </div>
                 <div className="pg-hod-decision-panel" style={{ marginTop: "12px", borderTop: "1px solid var(--border-color)", paddingTop: "12px" }}>
@@ -301,7 +326,8 @@ export const HodDashboard = () => {
                   </div>
                 </div>
               </div>
-            ))
+              );
+            })
           ) : (
             <div className="pg-hod-empty card glass">
               <Shield size={36} className="text-white/20" />

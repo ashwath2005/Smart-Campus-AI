@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, time
 from typing import Dict, Any, List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, update
+from sqlalchemy.orm import selectinload
 
 from app.models.gate_pass import GatePass, GatePassPolicy, GatePassAuditLog
 from app.models.user import User
@@ -128,10 +129,18 @@ class GatePassService:
             elif gp.status == "PENDING_WARDEN_APPROVAL":
                 notifs.append(Notification(
                     title="Gate Pass Pending Approval",
-                    message=f"Pass request for {student_name} ({gp.destination}) requires HOD/Warden review.",
+                    message=f"Pass request for {student_name} ({gp.destination}) requires HOD review.",
                     category="gatepass",
                     priority="normal",
                     target_role="hod",
+                    created_by=actor_id or gp.student_id
+                ))
+                notifs.append(Notification(
+                    title="Gate Pass Pending Approval",
+                    message=f"Pass request for {student_name} ({gp.destination}) requires Hostel Warden sign-off.",
+                    category="gatepass",
+                    priority="normal",
+                    target_role="warden",
                     created_by=actor_id or gp.student_id
                 ))
             elif gp.status == "APPROVED":
@@ -141,6 +150,14 @@ class GatePassService:
                     category="gatepass",
                     priority="high",
                     user_id=gp.student_id,
+                    created_by=actor_id or 1
+                ))
+                notifs.append(Notification(
+                    title="New Approved Gate Pass",
+                    message=f"Student {student_name} pass to {gp.destination} is approved. Ready for exit scan.",
+                    category="gatepass",
+                    priority="normal",
+                    target_role="security",
                     created_by=actor_id or 1
                 ))
                 if guardian_id:
@@ -670,6 +687,7 @@ class GatePassService:
         student = (await db.execute(student_query)).scalar_one_or_none()
 
         return {
+            "success": True,
             "valid": True,
             "passId": gp.id,
             "studentName": getattr(student, "full_name", getattr(student, "name", "Student #" + str(gp.student_id))),
@@ -747,6 +765,7 @@ class GatePassService:
         is_late = now > gp.expected_return_time
 
         return {
+            "success": True,
             "valid": True,
             "passId": gp.id,
             "studentName": getattr(student, "full_name", getattr(student, "name", "Student #" + str(gp.student_id))),
@@ -838,27 +857,52 @@ class GatePassService:
 
     @staticmethod
     async def get_all_passes_admin(db: AsyncSession) -> List[Dict[str, Any]]:
-        query = select(GatePass).order_by(GatePass.created_at.desc()).limit(50)
+        query = select(GatePass).options(selectinload(GatePass.student)).order_by(GatePass.created_at.desc()).limit(100)
         res = await db.execute(query)
         passes = res.scalars().all()
         return [
             {
                 "id": p.id,
+                "student_id": p.student_id,
                 "studentId": p.student_id,
+                "student": {
+                    "id": p.student.id,
+                    "name": p.student.name,
+                    "roll_number": p.student.roll_number or f"STU-{p.student.id:03d}",
+                    "department": p.student.department or "General",
+                    "phone_number": p.student.phone_number
+                } if p.student else None,
+                "pass_type": p.pass_type,
                 "passType": p.pass_type,
+                "tier_level": p.tier_level,
                 "tierLevel": p.tier_level,
                 "reason": p.reason,
                 "destination": p.destination,
                 "status": p.status,
+                "parent_verified": p.parent_verified,
                 "parentVerified": p.parent_verified,
+                "parent_otp_verified": p.parent_verified,
+                "warden_approved": p.warden_approved,
                 "wardenApproved": p.warden_approved,
+                "tutor_approved": p.tutor_approved,
+                "eligibility_score": p.eligibility_score,
                 "eligibilityScore": p.eligibility_score,
+                "risk_score": p.risk_score,
                 "riskScore": p.risk_score,
+                "risk_level": p.risk_level,
                 "riskLevel": p.risk_level,
+                "return_hours": round((p.expected_return_time - p.leave_time).total_seconds() / 3600, 1) if (p.expected_return_time and p.leave_time) else 4,
+                "leave_time": p.leave_time.isoformat() if p.leave_time else None,
                 "leaveTime": p.leave_time.isoformat() if p.leave_time else None,
+                "custom_leave_time": p.leave_time.isoformat() if p.leave_time else None,
+                "expected_return_time": p.expected_return_time.isoformat() if p.expected_return_time else None,
                 "expectedReturnTime": p.expected_return_time.isoformat() if p.expected_return_time else None,
+                "actual_exit_time": p.actual_exit_time.isoformat() if p.actual_exit_time else None,
                 "actualExitTime": p.actual_exit_time.isoformat() if p.actual_exit_time else None,
-                "actualReturnTime": p.actual_return_time.isoformat() if p.actual_return_time else None
+                "actual_return_time": p.actual_return_time.isoformat() if p.actual_return_time else None,
+                "actualReturnTime": p.actual_return_time.isoformat() if p.actual_return_time else None,
+                "created_at": p.created_at.isoformat() if p.created_at else None,
+                "explanations": json.loads(p.explanation_json) if p.explanation_json else []
             }
             for p in passes
         ]

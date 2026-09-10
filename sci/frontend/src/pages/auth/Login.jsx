@@ -58,6 +58,7 @@ export const Login = () => {
             faculty: "/faculty",
             admin: "/admin",
             hod: "/hod",
+            warden: "/hod",
             security: "/gate-security",
             guardian: "/guardian-gate-pass"
           };
@@ -147,7 +148,7 @@ export const Login = () => {
           </div>
 
           {/* Demo Login buttons */}
-          <div className="auth-quick-login-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+          <div className="auth-quick-login-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(85px, 1fr))' }}>
             <Button
               variant="secondary"
               size="sm"
@@ -171,6 +172,15 @@ export const Login = () => {
               className="auth-quick-login-btn"
             >
               HOD
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => handleQuickLogin("warden@campus.com")}
+              className="auth-quick-login-btn"
+              style={{ borderColor: "rgba(99, 102, 241, 0.4)" }}
+            >
+              Warden
             </Button>
             <Button
               variant="secondary"

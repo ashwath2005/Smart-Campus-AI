@@ -111,6 +111,33 @@ async def seed():
                 employee_id="EMP003",
                 staff_room="Block A, HOD Office 102",
             ),
+            User(
+                name="Chief Hostel Warden",
+                email="warden@campus.com",
+                password=hashed,
+                role="warden",
+                department="Hostel Administration",
+                employee_id="WAR001",
+                staff_room="Hostel Office Block A",
+                phone_number="+91 98765 43222",
+            ),
+            User(
+                name="Gate Security Officer",
+                email="security@campus.com",
+                password=hashed,
+                role="security",
+                department="Security",
+                employee_id="SEC001",
+                phone_number="+91 98765 43210",
+            ),
+            User(
+                name="Suresh Sharma (Parent)",
+                email="guardian@campus.com",
+                password=hashed,
+                role="guardian",
+                department="Parent Community",
+                phone_number="+91 98765 43210",
+            ),
         ]
 
         for u in users:

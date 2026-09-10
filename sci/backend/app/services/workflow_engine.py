@@ -178,13 +178,21 @@ class WorkflowEngine:
                 ))
 
         elif new_state == "PENDING_WARDEN_APPROVAL":
-            # Notify HOD / Warden
+            # Notify HOD & Warden
             notifs_to_create.append(Notification(
-                title="Gate Pass Pending Warden/HOD Action",
+                title="Gate Pass Pending HOD Action",
                 message=f"Parent authorized {student_name}'s {gp.pass_type} to {gp.destination}. Ready for final sign-off.",
                 category="gatepass",
                 priority="normal",
                 target_role="hod",
+                created_by=actor.get("id") or gp.student_id,
+            ))
+            notifs_to_create.append(Notification(
+                title="Gate Pass Pending Warden Action",
+                message=f"Parent authorized {student_name}'s {gp.pass_type} to {gp.destination}. Ready for final sign-off.",
+                category="gatepass",
+                priority="normal",
+                target_role="warden",
                 created_by=actor.get("id") or gp.student_id,
             ))
 

@@ -92,6 +92,13 @@ export const Sidebar = ({ isOpen, onClose }) => {
     { label: 'Peer Forum', path: '/forum', icon: MessageSquare },
   ];
 
+  const wardenLinks = [
+    { label: 'Warden Governance', path: '/hod', icon: LayoutDashboard },
+    { label: 'Gate Pass Console', path: '/gate-pass-admin', icon: QrCode },
+    { label: 'Campus Pulse 3D', path: '/campus-pulse', icon: Activity },
+    { label: 'Peer Forum', path: '/forum', icon: MessageSquare },
+  ];
+
   const securityLinks = [
     { label: 'Gate Scanner', path: '/gate-security', icon: QrCode },
     { label: 'Campus Pulse 3D', path: '/campus-pulse', icon: Activity },
@@ -106,6 +113,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
     admin: adminLinks,
     faculty: facultyLinks,
     hod: hodLinks,
+    warden: wardenLinks,
     security: securityLinks,
     guardian: guardianLinks,
     student: studentLinks,

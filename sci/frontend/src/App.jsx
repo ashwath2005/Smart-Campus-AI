@@ -69,6 +69,7 @@ const RoleHomeRedirect = () => {
     if (role === 'faculty') return <Navigate to="/faculty" replace />;
     if (role === 'admin') return <Navigate to="/admin" replace />;
     if (role === 'hod') return <Navigate to="/hod" replace />;
+    if (role === 'warden') return <Navigate to="/hod" replace />;
     if (role === 'security') return <Navigate to="/gate-security" replace />;
     if (role === 'guardian') return <Navigate to="/guardian-gate-pass" replace />;
   } catch {
@@ -244,7 +245,7 @@ const App = () => {
         <Route
           path="/gate-pass-admin"
           element={
-            <ProtectedRoute allowedRoles={['admin', 'hod']}>
+            <ProtectedRoute allowedRoles={['admin', 'hod', 'warden']}>
               <Layout>
                 <GatePassAdmin />
               </Layout>
@@ -365,11 +366,11 @@ const App = () => {
           }
         />
 
-        {/* Protected HOD Routes */}
+        {/* Protected HOD & Warden Routes */}
         <Route
           path="/hod"
           element={
-            <ProtectedRoute allowedRoles={['hod']}>
+            <ProtectedRoute allowedRoles={['hod', 'warden']}>
               <Layout>
                 <HodDashboard />
               </Layout>
@@ -381,7 +382,7 @@ const App = () => {
         <Route
           path="/campus-pulse"
           element={
-            <ProtectedRoute allowedRoles={['student', 'faculty', 'admin', 'hod', 'security']}>
+            <ProtectedRoute allowedRoles={['student', 'faculty', 'admin', 'hod', 'security', 'warden']}>
               <Layout>
                 <CampusPulse />
               </Layout>
