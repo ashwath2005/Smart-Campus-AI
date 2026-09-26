@@ -1,0 +1,61 @@
+/* Stack Component - Layout Primitive using Design Tokens */
+
+/* Base Stack */
+.stack {
+  display: flex;
+  gap: var(--stack-gap, var(--space-3));
+}
+
+/* Stack Direction */
+.stack-column {
+  flex-direction: column;
+}
+
+.stack-row {
+  flex-direction: row;
+}
+
+/* Responsive Stack Direction */
+@media (min-width: 640px) { /* sm */
+  .sm\:stack-column {
+    flex-direction: column;
+  }
+  .sm\:stack-row {
+    flex-direction: row;
+  }
+}
+
+@media (min-width: 768px) { /* md */
+  .md\:stack-column {
+    flex-direction: column;
+  }
+  .md\:stack-row {
+    flex-direction: row;
+  }
+}
+
+@media (min-width: 1024px) { /* lg */
+  .lg\:stack-column {
+    flex-direction: column;
+  }
+  .lg\:stack-row {
+    flex-direction: row;
+  }
+}
+
+/* Gap Utilities for Stack */
+.stack-gap-0 { --stack-gap: 0px; }
+.stack-gap-1 { --stack-gap: var(--space-1); }
+.stack-gap-2 { --stack-gap: var(--space-2); }
+.stack-gap-3 { --stack-gap: var(--space-3); }
+.stack-gap-4 { --stack-gap: var(--space-4); }
+.stack-gap-5 { --stack-gap: var(--space-5); }
+.stack-gap-6 { --stack-gap: var(--space-6); }
+.stack-gap-8 { --stack-gap: var(--space-8); }
+.stack-gap-10 { --stack-gap: var(--space-10); }
+.stack-gap-12 { --stack-gap: var(--space-12); }
+.stack-gap-16 { --stack-gap: var(--space-16); }
+.stack-gap-20 { --stack-gap: var(--space-20); }
+.stack-gap-24 { --stack-gap: var(--space-24); }
+
+/* Dark Mode - handled automatically by design tokens */

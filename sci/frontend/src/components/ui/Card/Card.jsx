@@ -7,17 +7,24 @@ export const Card = ({
   className = '',
   onClick,
   hoverGlow = true,
+  elevated = false,
+  outlined = false,
+  interactive = false,
 }) => {
   const isClickable = !!onClick;
-  
+  const shouldHover = hoverGlow && (isClickable || interactive);
+
   return (
     <motion.div
       onClick={onClick}
-      whileHover={isClickable || hoverGlow ? { y: -3 } : {}}
-      transition={{ type: 'spring', stiffness: 380, damping: 28  }}
+      whileHover={{
+        y: shouldHover ? -2 : 0,
+        scale: shouldHover ? 1.005 : 1
+      }}
+      whileTap={{ scale: 0.98 }}
       className={`glass-card card-padding ${
         isClickable ? 'card-clickable' : ''
-      } ${className}`}
+      } ${elevated ? 'elevated' : ''} ${outlined ? 'outlined' : ''} ${className}`}
     >
       {children}
     </motion.div>

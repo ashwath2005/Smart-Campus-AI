@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 2240px;
+    height: 1260px;
+    padding: 20px;
+  }
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+  .title {
+    font-size: 26px;
+    font-weight: 700;
+    fill: #0f2b48;
+    text-anchor: middle;
+    letter-spacing: 0.5px;
+  }
+  .subtitle {
+    font-size: 14px;
+    font-weight: 500;
+    fill: #475569;
+    text-anchor: middle;
+  }
+  .node-title {
+    font-size: 14px;
+    font-weight: 700;
+    fill: #0f2b48;
+    text-anchor: middle;
+  }
+  .node-desc {
+    font-size: 11px;
+    font-weight: 500;
+    fill: #334155;
+    text-anchor: middle;
+  }
+  .node-desc-sub {
+    font-size: 10px;
+    font-style: italic;
+    fill: #64748b;
+    text-anchor: middle;
+  }
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    fill: #ffffff;
+    text-anchor: middle;
+  }
+  .diamond-text {
+    font-size: 12px;
+    font-weight: 700;
+    fill: #1e293b;
+    text-anchor: middle;
+  }
+  .edge-label {
+    font-size: 11px;
+    font-weight: 600;
+    fill: #2563eb;
+    text-anchor: middle;
+  }
+  .edge-label-red {
+    font-size: 11px;
+    font-weight: 600;
+    fill: #dc2626;
+    text-anchor: middle;
+  }
+  .edge-label-green {
+    font-size: 11px;
+    font-weight: 600;
+    fill: #16a34a;
+    text-anchor: middle;
+  }
+</style>
+</head>
+<body>
+<svg viewBox="0 0 2200 1220" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Shadow Filter -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+    
+    <!-- Marker Arrows -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#3b82f6"/>
+    </marker>
+    <marker id="arrow-navy" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#1e3a8a"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#ef4444"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#10b981"/>
+    </marker>
+
+    <!-- Gradients -->
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0f2b48"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
+    </linearGradient>
+    <linearGradient id="nodeGradBlue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f0f7ff"/>
+    </linearGradient>
+    <linearGradient id="nodeGradPurple" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f5f3ff"/>
+    </linearGradient>
+    <linearGradient id="nodeGradAmber" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#fffbeb"/>
+    </linearGradient>
+    <linearGradient id="nodeGradGreen" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#ecfdf5"/>
+    </linearGradient>
+    <linearGradient id="termGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#0f2b48"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Container Box -->
+  <rect x="15" y="15" width="2170" height="1190" rx="16" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+
+  <!-- Diagram Title Banner -->
+  <text x="1100" y="55" class="title">HIGH-LEVEL SYSTEM FLOW DIAGRAM OF CAMPUS OPERATIONS (SCME-AWN)</text>
+  <text x="1100" y="80" class="subtitle">Sequential Multi-Tier Interaction Across Client Authentication, GACB Context Engine, Microservices, and Wearable Push Dispatch</text>
+
+  <!-- STAGE BOUNDARY REGIONS -->
+  <!-- Layer 1: Client & Ingestion -->
+  <rect x="35" y="105" width="465" height="1075" rx="12" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <rect x="55" y="115" width="260" height="26" rx="6" fill="#e2e8f0"/>
+  <text x="185" y="133" font-size="12" font-weight="700" fill="#334155" text-anchor="middle">LAYER 1: PRESENTATION & AUTH</text>
+
+  <!-- Layer 2: Routing & Context -->
+  <rect x="525" y="105" width="465" height="1075" rx="12" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <rect x="545" y="115" width="280" height="26" rx="6" fill="#e2e8f0"/>
+  <text x="685" y="133" font-size="12" font-weight="700" fill="#334155" text-anchor="middle">LAYER 2: CONTEXT COMPILER (GACB)</text>
+
+  <!-- Layer 3: Specialized Intelligence Engines -->
+  <rect x="1015" y="105" width="615" height="1075" rx="12" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <rect x="1035" y="115" width="310" height="26" rx="6" fill="#e2e8f0"/>
+  <text x="1190" y="133" font-size="12" font-weight="700" fill="#334155" text-anchor="middle">LAYER 3: CORE EXECUTION ENGINES</text>
+
+  <!-- Layer 4: Persistence & Dispatch -->
+  <rect x="1655" y="105" width="525" height="1075" rx="12" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <rect x="1675" y="115" width="330" height="26" rx="6" fill="#e2e8f0"/>
+  <text x="1840" y="133" font-size="12" font-weight="700" fill="#334155" text-anchor="middle">LAYER 4: PERSISTENCE & DISPATCH</text>
+
+
+  <!-- ==================== LAYER 1 NODES ==================== -->
+  <!-- 1. START TERMINAL -->
+  <rect x="180" y="165" width="220" height="52" rx="26" fill="url(#termGrad)" filter="url(#shadow)"/>
+  <text x="290" y="196" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">START: Client Access</text>
+
+  <!-- Flow 1 -> 2 -->
+  <line x1="290" y1="217" x2="290" y2="260" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- 2. CLIENT AUTH PROCESS -->
+  <g filter="url(#shadow)">
+    <rect x="150" y="260" width="280" height="75" rx="8" fill="url(#nodeGradBlue)" stroke="#3b82f6" stroke-width="1.5"/>
+    <rect x="150" y="260" width="280" height="24" rx="8" fill="#1e3a8a"/>
+    <rect x="150" y="276" width="280" height="8" fill="#1e3a8a"/>
+    <text x="290" y="277" class="badge">OAuth2 / JWT Authentication</text>
+    <text x="290" y="302" class="node-title">Credentials Ingestion</text>
+    <text x="290" y="322" class="node-desc">Password Hash & Token Verification</text>
+  </g>
+
+  <!-- Flow 2 -> 3 (Diamond) -->
+  <line x1="290" y1="335" x2="290" y2="385" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- 3. AUTH DECISION DIAMOND -->
+  <g filter="url(#shadow)">
+    <polygon points="290,385 415,445 290,505 165,445" fill="url(#nodeGradAmber)" stroke="#d97706" stroke-width="2"/>
+    <text x="290" y="440" class="diamond-text">Valid Token &</text>
+    <text x="290" y="456" class="diamond-text">Active Role?</text>
+  </g>
+
+  <!-- Diamond NO -> Auth Error Terminal -->
+  <line x1="165" y1="445" x2="105" y2="445" stroke="#ef4444" stroke-width="2.5"/>
+  <line x1="105" y1="445" x2="105" y2="560" stroke="#ef4444" stroke-width="2.5" marker-end="url(#arrow-red)"/>
+  <text x="135" y="438" class="edge-label-red">No</text>
+
+  <!-- Auth Error Node -->
+  <g filter="url(#shadow)">
+    <rect x="45" y="560" width="120" height="60" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="105" y="585" font-size="11" font-weight="700" fill="#b91c1c" text-anchor="middle">HTTP 401</text>
+    <text x="105" y="602" font-size="10" fill="#dc2626" text-anchor="middle">Unauthorized</text>
+  </g>
+
+  <!-- Diamond YES -> Role Router -->
+  <line x1="290" y1="505" x2="290" y2="555" stroke="#10b981" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+  <text x="305" y="530" class="edge-label-green">Yes</text>
+
+  <!-- 4. ROLE ROUTER PROCESS -->
+  <g filter="url(#shadow)">
+    <rect x="150" y="555" width="280" height="75" rx="8" fill="url(#nodeGradBlue)" stroke="#2563eb" stroke-width="1.5"/>
+    <rect x="150" y="555" width="280" height="24" rx="8" fill="#1e40af"/>
+    <rect x="150" y="571" width="280" height="8" fill="#1e40af"/>
+    <text x="290" y="572" class="badge">Role-Based Access Control</text>
+    <text x="290" y="597" class="node-title">Permission Granularity Router</text>
+    <text x="290" y="617" class="node-desc">Resolve Student / Faculty / Warden / Admin</text>
+  </g>
+
+  <!-- Flow 4 -> 5 (Three Portals) -->
+  <line x1="290" y1="630" x2="290" y2="680" stroke="#3b82f6" stroke-width="2.5"/>
+  <line x1="190" y1="680" x2="390" y2="680" stroke="#3b82f6" stroke-width="2.5"/>
+  <line x1="190" y1="680" x2="190" y2="715" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="290" y1="680" x2="290" y2="715" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="390" y1="680" x2="390" y2="715" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- Role Sub-boxes -->
+  <g filter="url(#shadow)">
+    <rect x="140" y="715" width="100" height="55" rx="6" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="190" y="737" font-size="11" font-weight="700" fill="#1e3a8a" text-anchor="middle">Student</text>
+    <text x="190" y="755" font-size="9" fill="#64748b" text-anchor="middle">Analytics & AI</text>
+
+    <rect x="245" y="715" width="90" height="55" rx="6" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="290" y="737" font-size="11" font-weight="700" fill="#1e3a8a" text-anchor="middle">Faculty</text>
+    <text x="290" y="755" font-size="9" fill="#64748b" text-anchor="middle">TT & Absence</text>
+
+    <rect x="340" y="715" width="100" height="55" rx="6" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="390" y="737" font-size="11" font-weight="700" fill="#1e3a8a" text-anchor="middle">Admin/Warden</text>
+    <text x="390" y="755" font-size="9" fill="#64748b" text-anchor="middle">Audit & Gate</text>
+  </g>
+
+  <!-- Convergence to Action Selection -->
+  <line x1="190" y1="770" x2="190" y2="805" stroke="#3b82f6" stroke-width="2"/>
+  <line x1="290" y1="770" x2="290" y2="805" stroke="#3b82f6" stroke-width="2"/>
+  <line x1="390" y1="770" x2="390" y2="805" stroke="#3b82f6" stroke-width="2"/>
+  <line x1="190" y1="805" x2="390" y2="805" stroke="#3b82f6" stroke-width="2"/>
+  <line x1="290" y1="805" x2="290" y2="845" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- 5. ACTION SELECTOR PROCESS -->
+  <g filter="url(#shadow)">
+    <rect x="150" y="845" width="280" height="75" rx="8" fill="url(#nodeGradBlue)" stroke="#1e3a8a" stroke-width="1.5"/>
+    <rect x="150" y="845" width="280" height="24" rx="8" fill="#0f2b48"/>
+    <rect x="150" y="861" width="280" height="8" fill="#0f2b48"/>
+    <text x="290" y="862" class="badge">Unified Request Dispatcher</text>
+    <text x="290" y="887" class="node-title">Campus Service Action Selection</text>
+    <text x="290" y="907" class="node-desc">AI Assistance, Timetable, or Gate Pass</text>
+  </g>
+
+  <!-- Connect Layer 1 -> Layer 2 -->
+  <path d="M 430 882 L 490 882 L 490 280 L 555 280" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+
+  <!-- ==================== LAYER 2 NODES ==================== -->
+  <!-- 6. DYNAMIC CONTEXT BINDING (GACB) -->
+  <g filter="url(#shadow)">
+    <rect x="555" y="235" width="405" height="90" rx="8" fill="url(#nodeGradPurple)" stroke="#7c3aed" stroke-width="1.5"/>
+    <rect x="555" y="235" width="405" height="24" rx="8" fill="#6d28d9"/>
+    <rect x="555" y="251" width="405" height="8" fill="#6d28d9"/>
+    <text x="757" y="252" class="badge">GACB Pipeline: Step 1</text>
+    <text x="757" y="278" class="node-title">Telemetry & Profile Extraction</text>
+    <text x="757" y="298" class="node-desc">Fetch Attendance, Mastery Graph, Weak Concepts & Timetable</text>
+    <text x="757" y="313" class="node-desc-sub">Ensures Zero Hallucination Binding</text>
+  </g>
+
+  <line x1="757" y1="325" x2="757" y2="375" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- 7. CONTEXT COMPILATION -->
+  <g filter="url(#shadow)">
+    <rect x="555" y="375" width="405" height="85" rx="8" fill="url(#nodeGradPurple)" stroke="#7c3aed" stroke-width="1.5"/>
+    <rect x="555" y="375" width="405" height="24" rx="8" fill="#6d28d9"/>
+    <rect x="555" y="391" width="405" height="8" fill="#6d28d9"/>
+    <text x="757" y="392" class="badge">GACB Pipeline: Step 2</text>
+    <text x="757" y="418" class="node-title">Context Vector Synthesis</text>
+    <text x="757" y="438" class="node-desc">Assemble Student State, Course Syllabus & Constraints</text>
+    <text x="757" y="452" class="node-desc-sub">Inject Strict JSON Schema Constraints</text>
+  </g>
+
+  <line x1="757" y1="460" x2="757" y2="510" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- 8. SERVICE ROUTING DIAMOND -->
+  <g filter="url(#shadow)">
+    <polygon points="757,510 895,575 757,640 619,575" fill="url(#nodeGradAmber)" stroke="#d97706" stroke-width="2"/>
+    <text x="757" y="568" class="diamond-text">Target Service</text>
+    <text x="757" y="586" class="diamond-text">Classification?</text>
+  </g>
+
+  <!-- Route A: AI Study & Quiz Engine -->
+  <line x1="895" y1="575" x2="955" y2="575" stroke="#2563eb" stroke-width="2.5"/>
+  <path d="M 955 575 L 955 240 L 1045 240" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="962" y="400" class="edge-label" transform="rotate(-90 962,400)">AI Learning / Quiz</text>
+
+  <!-- Route B: Timetable & Room Reallocation -->
+  <line x1="757" y1="640" x2="757" y2="720" stroke="#2563eb" stroke-width="2.5"/>
+  <path d="M 757 720 L 975 720 L 975 610 L 1045 610" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="866" y="710" class="edge-label">Room / Timetable</text>
+
+  <!-- Route C: Gate Pass & Security -->
+  <path d="M 619 575 L 580 575 L 580 930 L 1045 930" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="595" y="780" class="edge-label" transform="rotate(-90 595,780)">Digital Gate Pass</text>
+
+
+  <!-- ==================== LAYER 3 ENGINES ==================== -->
+  <!-- ENGINE 1: AI & RAG COGNITIVE SUBSYSTEM -->
+  <rect x="1035" y="150" width="575" height="310" rx="10" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="1055" y="175" font-size="12" font-weight="700" fill="#6d28d9">SUBSYSTEM A: COGNITIVE AI & ADAPTIVE ROADMAP</text>
+
+  <!-- Connectivity Decision Diamond -->
+  <g filter="url(#shadow)">
+    <polygon points="1165,200 1275,240 1165,280 1055,240" fill="url(#nodeGradAmber)" stroke="#d97706" stroke-width="1.8"/>
+    <text x="1165" y="236" class="diamond-text">Cloud Online</text>
+    <text x="1165" y="252" class="diamond-text">Connectivity?</text>
+  </g>
+
+  <!-- Online Branch -> Gemini 2.5 -->
+  <line x1="1275" y1="240" x2="1345" y2="240" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <text x="1305" y="232" class="edge-label-green">Yes</text>
+  <g filter="url(#shadow)">
+    <rect x="1345" y="205" width="245" height="70" rx="6" fill="url(#nodeGradGreen)" stroke="#10b981" stroke-width="1.5"/>
+    <text x="1467" y="230" class="node-title" fill="#047857">Gemini 2.5 Flash API</text>
+    <text x="1467" y="250" class="node-desc">GACB Context Vector Injection</text>
+    <text x="1467" y="265" class="node-desc-sub">Structured JSON Output</text>
+  </g>
+
+  <!-- Offline Branch -> Local Ollama -->
+  <line x1="1165" y1="280" x2="1165" y2="330" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-red)"/>
+  <text x="1180" y="305" class="edge-label-red">No</text>
+  <g filter="url(#shadow)">
+    <rect x="1055" y="330" width="230" height="70" rx="6" fill="url(#nodeGradPurple)" stroke="#8b5cf6" stroke-width="1.5"/>
+    <text x="1170" y="355" class="node-title" fill="#6d28d9">ICQEA Offline Engine</text>
+    <text x="1170" y="373" class="node-desc">Local Ollama / LLaMA-3</text>
+    <text x="1170" y="388" class="node-desc-sub">Vector Cosine Chunk Filtering</text>
+  </g>
+
+  <!-- ALRA Convergence Box -->
+  <g filter="url(#shadow)">
+    <rect x="1345" y="330" width="245" height="70" rx="6" fill="url(#nodeGradBlue)" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="1467" y="353" class="node-title">ALRA Engine</text>
+    <text x="1467" y="372" class="node-desc">Priority Score & Ebbinghaus</text>
+    <text x="1467" y="388" class="node-desc-sub">Burnout & Fatigue Mitigation</text>
+  </g>
+  <line x1="1285" y1="365" x2="1345" y2="365" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="1467" y1="275" x2="1467" y2="330" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow)"/>
+
+
+  <!-- ENGINE 2: TIMETABLE & DCRA+ SUBSYSTEM -->
+  <rect x="1035" y="490" width="575" height="295" rx="10" fill="#ffffff" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="1055" y="515" font-size="12" font-weight="700" fill="#1e40af">SUBSYSTEM B: TIMETABLE & CLASSROOM REALLOCATION</text>
+
+  <!-- CSP Backtracking Box -->
+  <g filter="url(#shadow)">
+    <rect x="1055" y="535" width="230" height="75" rx="6" fill="url(#nodeGradBlue)" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="1170" y="560" class="node-title">CSP Backtracking Engine</text>
+    <text x="1170" y="580" class="node-desc">Hard Constraints Satisfaction</text>
+    <text x="1170" y="596" class="node-desc-sub">Faculty Leaves, Section & Lab Slots</text>
+  </g>
+
+  <line x1="1285" y1="572" x2="1335" y2="572" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Conflict Decision Diamond -->
+  <g filter="url(#shadow)">
+    <polygon points="1405,535 1485,572 1405,610 1325,572" fill="url(#nodeGradAmber)" stroke="#d97706" stroke-width="1.8"/>
+    <text x="1405" y="568" class="diamond-text">Conflict /</text>
+    <text x="1405" y="584" class="diamond-text">Absence?</text>
+  </g>
+
+  <!-- DCRA+ Dynamic Optimization -->
+  <line x1="1405" y1="610" x2="1405" y2="670" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-red)"/>
+  <text x="1420" y="640" class="edge-label-red">Yes</text>
+  <g filter="url(#shadow)">
+    <rect x="1300" y="670" width="220" height="75" rx="6" fill="url(#nodeGradAmber)" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="1410" y="695" class="node-title" fill="#b45309">DCRA+ Optimization</text>
+    <text x="1410" y="713" class="node-desc">Proximity Matrix & Health (CHI)</text>
+    <text x="1410" y="729" class="node-desc-sub">Maximizes Suitability Index S</text>
+  </g>
+
+  <!-- Schedule Locked Box -->
+  <line x1="1485" y1="572" x2="1530" y2="572" stroke="#16a34a" stroke-width="2"/>
+  <line x1="1530" y1="572" x2="1530" y2="625" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <text x="1510" y="563" class="edge-label-green">No</text>
+
+  <g filter="url(#shadow)">
+    <rect x="1480" y="625" width="115" height="45" rx="6" fill="#ecfdf5" stroke="#10b981" stroke-width="1.2"/>
+    <text x="1537" y="643" font-size="10" font-weight="700" fill="#047857" text-anchor="middle">Timetable</text>
+    <text x="1537" y="658" font-size="9" fill="#059669" text-anchor="middle">Confirmed</text>
+  </g>
+  <line x1="1520" y1="707" x2="1550" y2="707" stroke="#f59e0b" stroke-width="2"/>
+  <line x1="1550" y1="707" x2="1550" y2="670" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrow)"/>
+
+
+  <!-- ENGINE 3: DIGITAL GATE PASS SUBSYSTEM -->
+  <rect x="1035" y="810" width="575" height="235" rx="10" fill="#ffffff" stroke="#059669" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="1055" y="835" font-size="12" font-weight="700" fill="#047857">SUBSYSTEM C: DIGITAL GATE PASS & ACCESS SECURITY</text>
+
+  <!-- Gate Pass Submission -->
+  <g filter="url(#shadow)">
+    <rect x="1055" y="855" width="220" height="75" rx="6" fill="url(#nodeGradGreen)" stroke="#10b981" stroke-width="1.5"/>
+    <text x="1165" y="880" class="node-title">Pass Request Ingestion</text>
+    <text x="1165" y="900" class="node-desc">Geofence & Timing Parameters</text>
+    <text x="1165" y="915" class="node-desc-sub">Student & Guardian Token Binding</text>
+  </g>
+
+  <line x1="1275" y1="892" x2="1335" y2="892" stroke="#059669" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Warden Approval Diamond -->
+  <g filter="url(#shadow)">
+    <polygon points="1425,855 1505,892 1425,930 1345,892" fill="url(#nodeGradAmber)" stroke="#d97706" stroke-width="1.8"/>
+    <text x="1425" y="888" class="diamond-text">Warden & Guardian</text>
+    <text x="1425" y="904" class="diamond-text">Authorized?</text>
+  </g>
+
+  <!-- Approved -> QR Generation -->
+  <line x1="1425" y1="930" x2="1425" y2="970" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <text x="1440" y="952" class="edge-label-green">Yes</text>
+  <g filter="url(#shadow)">
+    <rect x="1325" y="970" width="200" height="55" rx="6" fill="url(#nodeGradGreen)" stroke="#10b981" stroke-width="1.5"/>
+    <text x="1425" y="993" class="node-title" fill="#047857">HMAC QR Pass Issuance</text>
+    <text x="1425" y="1010" class="node-desc">Time-Bounded Access Key</text>
+  </g>
+
+
+  <!-- ==================== LAYER 4 DISPATCH & PERSISTENCE ==================== -->
+  <!-- Convergence Lines into Database -->
+  <path d="M 1590 365 L 1680 365 L 1680 480 L 1720 480" fill="none" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <path d="M 1595 647 L 1680 647 L 1680 495 L 1720 495" fill="none" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <path d="M 1525 997 L 1680 997 L 1680 515 L 1720 515" fill="none" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- 9. RELATIONAL PERSISTENCE (PostgreSQL / SQLite) -->
+  <g filter="url(#shadow)">
+    <rect x="1720" y="450" width="395" height="85" rx="8" fill="url(#nodeGradBlue)" stroke="#0284c7" stroke-width="2"/>
+    <rect x="1720" y="450" width="395" height="24" rx="8" fill="#0369a1"/>
+    <rect x="1720" y="466" width="395" height="8" fill="#0369a1"/>
+    <text x="1917" y="467" class="badge">Persistence Storage</text>
+    <text x="1917" y="493" class="node-title">Async Database Transaction</text>
+    <text x="1917" y="513" class="node-desc">Atomic Commit across Tables (Timetable, Quizzes, Pass, Logs)</text>
+  </g>
+
+  <line x1="1917" y1="535" x2="1917" y2="590" stroke="#0284c7" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- 10. REAL-TIME ALERT DECISION DIAMOND -->
+  <g filter="url(#shadow)">
+    <polygon points="1917,590 2045,645 1917,700 1789,645" fill="url(#nodeGradAmber)" stroke="#d97706" stroke-width="2"/>
+    <text x="1917" y="640" class="diamond-text">Real-Time Alert</text>
+    <text x="1917" y="656" class="diamond-text">Required?</text>
+  </g>
+
+  <!-- Diamond NO -> Direct UI Render -->
+  <line x1="2045" y1="645" x2="2085" y2="645" stroke="#64748b" stroke-width="2"/>
+  <line x1="2085" y1="645" x2="2085" y2="880" stroke="#64748b" stroke-width="2"/>
+  <line x1="2085" y1="880" x2="2025" y2="880" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="2060" y="635" class="edge-label" style="fill:#64748b;">No</text>
+
+  <!-- Diamond YES -> Multi-channel WebSocket & Push -->
+  <line x1="1917" y1="700" x2="1917" y2="745" stroke="#16a34a" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+  <text x="1932" y="725" class="edge-label-green">Yes</text>
+
+  <!-- 11. WEARABLE & PUSH DISPATCHER -->
+  <g filter="url(#shadow)">
+    <rect x="1745" y="745" width="345" height="80" rx="8" fill="url(#nodeGradPurple)" stroke="#9333ea" stroke-width="1.8"/>
+    <rect x="1745" y="745" width="345" height="24" rx="8" fill="#7e22ce"/>
+    <rect x="1745" y="761" width="345" height="8" fill="#7e22ce"/>
+    <text x="1917" y="762" class="badge">Multi-Channel Push Engine</text>
+    <text x="1917" y="788" class="node-title">Wearable Haptic & WebSocket Alert</text>
+    <text x="1917" y="808" class="node-desc">FCM Mobile Push + Smartwatch Vibe Dispatch</text>
+  </g>
+
+  <line x1="1917" y1="825" x2="1917" y2="865" stroke="#9333ea" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- 12. CLIENT UI UPDATE -->
+  <g filter="url(#shadow)">
+    <rect x="1745" y="865" width="345" height="80" rx="8" fill="url(#nodeGradBlue)" stroke="#2563eb" stroke-width="1.8"/>
+    <rect x="1745" y="865" width="345" height="24" rx="8" fill="#1e40af"/>
+    <rect x="1745" y="881" width="345" height="8" fill="#1e40af"/>
+    <text x="1917" y="882" class="badge">Client Presentation Layer</text>
+    <text x="1917" y="908" class="node-title">Reactive SPA UI Render</text>
+    <text x="1917" y="928" class="node-desc">Optimistic Cache Refresh & Toast Notification</text>
+  </g>
+
+  <line x1="1917" y1="945" x2="1917" y2="1005" stroke="#1e3a8a" stroke-width="2.5" marker-end="url(#arrow-navy)"/>
+
+  <!-- 13. END TERMINAL -->
+  <rect x="1807" y="1005" width="220" height="52" rx="26" fill="url(#termGrad)" filter="url(#shadow)"/>
+  <text x="1917" y="1036" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">END: Awaiting Next Event</text>
+
+</svg>
+</body>
+</html>

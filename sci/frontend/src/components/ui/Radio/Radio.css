@@ -1,0 +1,116 @@
+/* Radio Component - Modern Enterprise Forms using Design Tokens */
+
+/* Radio Container */
+.radio-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: var(--space-4);
+}
+
+/* Radio Label */
+.radio-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  gap: var(--space-2);
+}
+
+/* Radio Input - Hide native input */
+.radio-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Custom Radio Styling */
+.radio-custom {
+  position: relative;
+  width: 1.25rem; /* 20px */
+  height: 1.25rem; /* 20px */
+  border-radius: 50%; /* Circle */
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-surface);
+  transition: var(--transition-normal);
+  flex-shrink: 0;
+}
+
+/* Radio States */
+.radio-input:checked + .radio-custom {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary);
+}
+
+.radio-input:checked + .radio-custom::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.625rem; /* 10px */
+  height: 0.625rem; /* 10px */
+  border-radius: 50%;
+  background-color: #ffffff;
+  transform: translate(-50%, -50%);
+}
+
+.radio-input:hover + .radio-custom:not(:disabled) {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-200);
+}
+
+.radio-input:focus-visible + .radio-custom {
+  --ring-offset-width: 2px;
+  --ring-color: var(--color-primary);
+  box-shadow: var(--ring-inset) 0 0 0 calc(2px + var(--ring-offset-width)) var(--ring-color);
+}
+
+.radio-input:disabled + .radio-custom {
+  background-color: var(--color-bg-muted);
+  border-color: var(--color-border-muted);
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Radio Label Text */
+.radio-label-text {
+  font-size: 0.875rem; /* text-sm */
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+}
+
+/* Error States */
+.radio-input-error + .radio-custom {
+  border-color: var(--color-error) !important;
+}
+
+.radio-input-error:focus-visible + .radio-custom {
+  --ring-offset-width: 2px;
+  --ring-color: var(--color-error);
+  box-shadow: var(--ring-inset) 0 0 0 calc(2px + var(--ring-offset-width)) var(--color-error);
+}
+
+.radio-input-error:hover + .radio-custom:not(:disabled) {
+  border-color: var(--color-error) !important;
+}
+
+/* Helper Text */
+.radio-helper-text {
+  margin-top: var(--space-1);
+  font-size: 0.75rem; /* text-xs */
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.4;
+}
+
+/* Error Text */
+.radio-error-text {
+  margin-top: var(--space-1);
+  font-size: 0.75rem; /* text-xs */
+  color: var(--color-error);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.4;
+}
+
+/* Dark Mode - handled automatically by design tokens */

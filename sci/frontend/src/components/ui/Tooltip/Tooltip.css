@@ -1,0 +1,112 @@
+/* Tooltip Component - Modern Enterprise UI using Design Tokens */
+
+/* Tooltip Wrapper */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+/* Tooltip Arrow */
+.tooltip-arrow {
+  position: absolute;
+  width: 0.625rem; /* 10px */
+  height: 0.625rem; /* 10px */
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+}
+
+/* Tooltip Content */
+.tooltip-content {
+  position: absolute;
+  z-index: var(--z-index-tooltip);
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.75rem; /* text-xs */
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-md);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* Tooltip Positions */
+.tooltip-top .tooltip-content {
+  bottom: 120%;
+  left: 50%;
+}
+
+.tooltip-top .tooltip-arrow {
+  bottom: -5px;
+  left: 50%;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-top-color: var(--color-border);
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  transform: translate(-50%) rotate(45deg);
+}
+
+.tooltip-bottom .tooltip-content {
+  top: 120%;
+  left: 50%;
+}
+
+.tooltip-bottom .tooltip-arrow {
+  top: -5px;
+  left: 50%;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-top-color: transparent;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: var(--color-border);
+  transform: translate(-50%) rotate(45deg);
+}
+
+.tooltip-left .tooltip-content {
+  right: 120%;
+  top: 50%;
+}
+
+.tooltip-left .tooltip-arrow {
+  right: -5px;
+  top: 50%;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-top-color: transparent;
+  border-left-color: var(--color-border);
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  transform: translate(50%, -50%) rotate(45deg);
+}
+
+.tooltip-right .tooltip-content {
+  left: 120%;
+  top: 50%;
+}
+
+.tooltip-right .tooltip-arrow {
+  left: -5px;
+  top: 50%;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-top-color: transparent;
+  border-left-color: transparent;
+  border-right-color: var(--color-border);
+  border-bottom-color: transparent;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+/* Show Tooltip on Hover/Focus */
+.tooltip:hover .tooltip-content,
+.tooltip:focus-within .tooltip-content {
+  opacity: 1;
+}
+
+/* Dark Mode - handled automatically by design tokens */

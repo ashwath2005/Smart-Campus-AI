@@ -1,143 +1,288 @@
-/* Input Styles */
+/* Enhanced Input Component - Modern Enterprise Forms using Design Tokens */
+
+/* Input Container */
 .input-container {
   width: 100%;
-  margin-bottom: 18px;
+  margin-bottom: var(--space-5);
 }
 
+/* Input Label - Improved Typography */
 .input-label {
   display: block;
-  font-size: 10.5px;
-  font-weight: 750;
-  color: var(--text-secondary);
+  font-size: 0.75rem; /* text-xs */
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-2);
   font-family: var(--font-sans);
-  padding-left: 2px;
+  padding-left: var(--space-0-5);
+  line-height: 1.4;
 }
 
+/* Input Wrapper - Enhanced States */
 .input-wrapper {
   position: relative;
   border-radius: var(--radius-lg);
-  box-shadow: none;
+  transition: var(--transition-normal);
 }
 
+/* Input Icon - Better Alignment */
 .input-icon-left {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
-  padding-left: 14px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: var(--space-9);
   pointer-events: none;
-  color: var(--text-secondary);
+  color: var(--color-text-muted);
+  transition: color var(--transition-normal);
 }
 
+/* Input Field - Enhanced Styling */
 .input-field {
   display: block;
   width: 100%;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-color);
-  background-color: var(--bg-surface-elevated, var(--bg-shell));
-  color: var(--text-primary);
-  font-size: 13.5px;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  font-size: 0.875rem; /* text-sm */
+  transition: var(--transition-normal);
   font-family: var(--font-sans);
   outline: none;
   box-sizing: border-box;
-  padding-top: 11px;
-  padding-bottom: 11px;
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-3);
+  font-weight: var(--font-weight-normal);
+  letter-spacing: -0.01em;
+}
+
+/* Enhanced Focus States */
+.input-field:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
+  background-color: var(--color-bg-surface) !important;
 }
 
 .dark .input-field {
-  background-color: var(--bg-canvas);
-  border-color: var(--border-color);
+  background-color: #0D0D0D !important;
+  border-color: #262626 !important;
+  color: #F5F5F5 !important;
 }
 
-/* Autofill overrides to prevent light background in dark mode */
+.dark .input-field::placeholder {
+  color: #737373 !important;
+}
+
+.dark .input-field:focus {
+  border-color: #6366F1 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12) !important;
+  background-color: #0D0D0D !important;
+}
+
+/* Hover State */
+.input-field:hover:not(:focus) {
+  border-color: var(--color-border-muted) !important;
+}
+
+.dark .input-field:hover:not(:focus) {
+  border-color: #333333 !important;
+}
+
+/* Disabled State */
+.input-field:disabled {
+  background-color: var(--color-bg-muted) !important;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dark .input-field:disabled {
+  background-color: #0A0A0A !important;
+  border-color: #1F1F1F !important;
+  color: #525252 !important;
+}
+
+/* Enhanced Autofill overrides */
 input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-background-clip: text;
-  -webkit-text-fill-color: var(--text-primary) !important;
+  -webkit-text-fill-color: var(--color-text-primary) !important;
   transition: background-color 5000s ease-in-out 0s;
   box-shadow: inset 0 0 0 20px rgba(0, 0, 0, 0.02) !important;
 }
 
 .dark input:-webkit-autofill,
-.dark input:-webkit-autofill:hover, 
-.dark input:-webkit-autofill:focus, 
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
 .dark input:-webkit-autofill:active {
   -webkit-text-fill-color: #ffffff !important;
   box-shadow: inset 0 0 0 20px #07080b !important;
 }
 
-/* Normal input focus states - Calm Institutional Blue */
-.input-field:focus {
-  border-color: var(--accent) !important;
-  box-shadow: 0 0 0 3px var(--accent-light) !important;
-  background-color: var(--bg-secondary);
-}
-
-.dark .input-field:focus {
-  background-color: var(--bg-secondary);
-}
-
-/* Error state classes */
+/* Enhanced Error States */
 .input-field-error {
-  border-color: var(--danger);
-  background-color: rgba(239, 68, 68, 0.05);
+  border-color: var(--color-error) !important;
+  background-color: rgba(239, 68, 68, 0.03) !important;
 }
 
 .input-field-error:focus {
-  background-color: var(--bg-secondary);
-  border-color: var(--danger);
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+  border-color: var(--color-error) !important;
+  box-shadow:
+    0 0 0 3px rgba(239, 68, 68, 0.15) !important,
+    0 1px 3px 0 rgba(239, 68, 68, 0.1)    !important;
+  background-color: var(--color-bg-surface) !important;
 }
 
-/* Padding modifiers */
-.input-field-padding-left-icon {
-  padding-left: 40px;
+.dark .input-field-error {
+  border-color: var(--color-error) !important;
+  background-color: rgba(239, 68, 68, 0.05) !important;
 }
 
-.input-field-padding-left-normal {
-  padding-left: 16px;
+.dark .input-field-error:focus {
+  box-shadow:
+    0 0 0 3px rgba(239, 68, 68, 0.2) !important,
+    0 1px 3px 0 rgba(239, 68, 68, 0.1)    !important;
 }
 
-.input-field-padding-right-password {
-  padding-right: 40px;
+/* Error States - Enhanced Feedback */
+.input-field-error:hover:not(:focus) {
+  border-color: var(--color-error) !important;
 }
 
-.input-field-padding-right-normal {
-  padding-right: 16px;
-}
-
-/* Password Toggle icon */
+/* Enhanced Password Toggle */
 .input-password-toggle {
   position: absolute;
   top: 0;
   bottom: 0;
   right: 0;
-  padding-right: 12px;
   display: flex;
   align-items: center;
-  color: var(--text-secondary);
+  justify-content: center;
+  width: var(--space-9);
+  color: var(--color-text-muted);
   background: transparent;
   border: none;
   cursor: pointer;
   outline: none;
+  transition: var(--transition-normal);
+  padding: 0;
+  margin: 0;
 }
 
 .input-password-toggle:hover {
-  color: var(--text-primary);
+  color: var(--color-text-primary) !important;
+  background-color: var(--color-bg-muted) !important;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0 !important;
 }
 
+.input-password-toggle:active {
+  background-color: var(--color-border) !important;
+}
+
+/* Enhanced Helper Text */
+.input-helper-text {
+  margin-top: var(--space-1-5);
+  font-size: 0.75rem; /* text-xs */
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.4;
+}
+
+/* Enhanced Error Text */
 .input-error-text {
-  margin-top: 5px;
-  font-size: 11px;
-  color: var(--danger);
-  font-weight: 600;
-  padding-left: 2px;
+  margin-top: var(--space-1-5);
+  font-size: 0.75rem; /* text-xs */
+  color: var(--color-error);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+}
+
+/* Input with Icon - Enhanced Spacing */
+.input-field-padding-left-icon {
+  padding-left: var(--space-11) !important;
+}
+
+.input-field-padding-left-normal {
+  padding-left: var(--space-4) !important;
+}
+
+.input-field-padding-right-password {
+  padding-right: var(--space-11) !important;
+}
+
+.input-field-padding-right-normal {
+  padding-right: var(--space-4) !important;
+}
+
+/* Input Groups / Compound Fields */
+.input-group {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+@media (min-width: 640px) {
+  .input-group-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .input-group-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+/* Loading State */
+.input-field.loading {
+  position: relative;
+}
+
+.input-field.loading::after {
+  content: '';
+  position: absolute;
+  right: var(--space-4);
+  top: 50%;
+  width: var(--space-4);
+  height: var(--space-4);
+  margin-top: calc(-1 * var(--space-2));
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin var(--transition-normal) linear infinite;
+  pointer-events: none;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Dark Mode Enhancements - handled automatically by design tokens */
+.dark .input-field {
+  /* Colors are handled by design tokens */
+}
+
+.dark .input-field:hover:not(:focus) {
+  border-color: var(--color-border-muted) !important;
+}
+
+/* Focus Ring Animation */
+.input-field-focused {
+  animation: focus-ring var(--transition-fast) ease-out;
+}
+
+@keyframes focus-ring {
+  from {
+    box-shadow: 0 0 0 0 rgba(242, 23, 34, 0);
+  }
+  to {
+    box-shadow: 0 0 0 3px var(--color-primary-200);
+  }
 }

@@ -52,6 +52,7 @@ class Role:
     ADMIN = "admin"
     SECURITY = "security"
     GUARDIAN = "guardian"
+    WARDEN = "warden"
 
 
 class Permission:
@@ -207,6 +208,14 @@ ROLE_PERMISSIONS: Dict[str, Set[str]] = {
         Permission.GATEPASS_VIEW_CHILD,
         Permission.GATEPASS_APPROVE_CHILD,
         Permission.CAMPUS_PULSE_VIEW,
+    },
+    Role.WARDEN: {
+        Permission.GATEPASS_APPROVE,
+        Permission.GATEPASS_VIEW_CHILD,
+        Permission.CAMPUS_PULSE_VIEW,
+        Permission.SECURITY_INCIDENT_CREATE,
+        Permission.SECURITY_INCIDENT_VIEW,
+        Permission.AUDIT_LOG_VIEW,
     },
 }
 

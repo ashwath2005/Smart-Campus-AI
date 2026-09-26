@@ -63,16 +63,36 @@ async def run_migrations():
 
         # Check and add columns for users
         try:
-            res = await conn.execute(text("SELECT advisor_id FROM users LIMIT 1"))
+            res = await conn.execute(text("SELECT advisor_id, guardian_id FROM users LIMIT 1"))
             await res.all()
-            print("  - users advisor_id column already exists.")
+            print("  - users advisor_id and guardian_id columns already exist.")
         except Exception:
-            print("  - Adding missing advisor_id column to users...")
-            try:
-                await conn.execute(text("ALTER TABLE users ADD COLUMN advisor_id INTEGER"))
-                print("    + Added column users.advisor_id")
-            except Exception as e:
-                print(f"    (column users.advisor_id might already exist: {e})")
+            print("  - Adding missing columns to users...")
+            for col, col_type in [("advisor_id", "INTEGER"), ("guardian_id", "INTEGER")]:
+                try:
+                    await conn.execute(text(f"ALTER TABLE users ADD COLUMN {col} {col_type}"))
+                    print(f"    + Added column users.{col}")
+                except Exception as e:
+                    print(f"    (column users.{col} might already exist: {e})")
+            await conn.commit()
+
+        # Check and add columns for placements
+        try:
+            res = await conn.execute(text("SELECT registration_type, registration_link_clicks, registration_url FROM placements LIMIT 1"))
+            await res.all()
+            print("  - placements registration columns already exist.")
+        except Exception:
+            print("  - Adding missing columns to placements...")
+            for col, col_type in [
+                ("registration_type", "VARCHAR(50) DEFAULT 'internal'"),
+                ("registration_link_clicks", "INTEGER DEFAULT 0"),
+                ("registration_url", "VARCHAR(500)")
+            ]:
+                try:
+                    await conn.execute(text(f"ALTER TABLE placements ADD COLUMN {col} {col_type}"))
+                    print(f"    + Added column placements.{col}")
+                except Exception as e:
+                    print(f"    (column placements.{col} might already exist: {e})")
             await conn.commit()
 
         # Check and add columns for faculty_leaves

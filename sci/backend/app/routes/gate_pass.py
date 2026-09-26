@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Body, Query
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Dict, Any, Optional
 from datetime import datetime
@@ -109,21 +110,25 @@ async def verify_parent_otp(
     return await GatePassService.verify_parent_otp(db=db, pass_id=pass_id, otp_code=otp_code)
 
 
+class WardenActionRequest(BaseModel):
+    pass_id: int
+    action: str = "approve"
+
+
 @router.post("/warden-action")
 async def warden_approve_pass(
-    pass_id: int = Body(...),
-    action: str = Body("approve"),  # approve or reject
+    req: WardenActionRequest,
     db: AsyncSession = Depends(get_db),
     current_user: dict = Depends(get_current_user)
 ):
     """
     Hostel Warden / HOD 1-Click Approval endpoint.
     """
-    user_role = current_user.get("role")
+    user_role = (current_user.get("role") or "").lower()
     if user_role not in ["admin", "faculty", "hod", "warden"]:
         raise HTTPException(status_code=403, detail="Warden or Faculty role required")
 
-    return await GatePassService.warden_approve(db=db, pass_id=pass_id, action=action, warden_id=current_user.get("id"))
+    return await GatePassService.warden_approve(db=db, pass_id=req.pass_id, action=req.action, warden_id=current_user.get("id"))
 
 
 @router.post("/{pass_id}/cancel")

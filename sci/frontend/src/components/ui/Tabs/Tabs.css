@@ -1,3 +1,5 @@
+/* Tabs Component - Modern Enterprise UI using Design Tokens */
+
 /* Tabs Layout */
 .tabs-container {
   display: inline-flex;
@@ -7,58 +9,81 @@
   flex-shrink: 0;
 }
 
+/* Tabs Button */
 .tabs-btn {
   position: relative;
-  padding: 8px 20px;
-  font-size: 14px;
-  font-weight: 600;
-  transition: color 0.2s ease-in-out;
+  padding: var(--space-2) var(--space-5);
+  font-size: 0.875rem; /* text-sm */
+  font-weight: var(--font-weight-semibold);
+  transition: var(--transition-fast) ease-in-out;
   outline: none;
   font-family: var(--font-sans);
   user-select: none;
-  border-radius: 9999px;
-  flex-shrink: 0;
+  border-radius: var(--radius-full);
   border: none;
   background: transparent;
   cursor: pointer;
 }
 
-@media (max-width: 767px) {
-  .tabs-btn {
-    font-size: 12px;
-  }
-}
-
+/* Active State */
 .tabs-btn-active {
-  color: var(--accent);
-  font-weight: 700;
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
 }
 
+/* Dark Mode */
 .dark .tabs-btn-active {
-  color: var(--accent-hover);
+  color: #FFFFFF;
 }
 
+/* Inactive State */
 .tabs-btn-inactive {
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
 }
 
 .tabs-btn-inactive:hover {
-  color: var(--text-primary);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-muted);
 }
 
+.dark .tabs-btn-inactive {
+  color: #A3A3A3;
+}
+
+.dark .tabs-btn-inactive:hover {
+  color: #F5F5F5;
+  background-color: #141414;
+}
+
+/* Active Indicator */
 .tabs-active-indicator {
   position: absolute;
   inset: 0;
-  background-color: #ffffff;
-  border-radius: 9999px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.04);
+  background-color: var(--color-bg-card);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-xs);
 }
 
+/* Dark Mode */
 .dark .tabs-active-indicator {
-  background-color: #1e293b;
+  background-color: #141414;
+  border: 1px solid #2A2A2A;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
+/* Label Text */
 .tabs-label-text {
   position: relative;
   z-index: 10;
+}
+
+/* Size Variants */
+.tabs-sm {
+  font-size: 0.75rem; /* text-xs */
+  padding: var(--space-1) var(--space-3);
+}
+
+.tabs-lg {
+  font-size: 1rem; /* text-base */
+  padding: var(--space-2) var(--space-6);
 }

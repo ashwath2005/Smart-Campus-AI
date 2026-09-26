@@ -24,6 +24,7 @@ const AcademicPredictor = lazy(() => import('./pages/student/AcademicPredictor')
 const GateSecurity = lazy(() => import('./pages/security/GateSecurity').then(m => ({ default: m.GateSecurity })));
 const GuardianGatePass = lazy(() => import('./pages/guardian/GuardianGatePass').then(m => ({ default: m.GuardianGatePass })));
 const GatePassAdmin = lazy(() => import('./pages/admin/GatePassAdmin').then(m => ({ default: m.GatePassAdmin })));
+const HodDashboard = lazy(() => import('./pages/admin/HodDashboard').then(m => ({ default: m.HodDashboard })));
 
 const FacultyDashboard = lazy(() => import('./pages/faculty/FacultyDashboard').then(m => ({ default: m.FacultyDashboard })));
 const FacultyLocator = lazy(() => import('./pages/faculty/FacultyLocator').then(m => ({ default: m.FacultyLocator })));
@@ -32,7 +33,6 @@ const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard').then(m 
 const AdminDataImport = lazy(() => import('./pages/admin/AdminDataImport').then(m => ({ default: m.AdminDataImport })));
 const AdminCoreHub = lazy(() => import('./pages/admin/AdminCoreHub').then(m => ({ default: m.AdminCoreHub })));
 const AdminTimetableGenerator = lazy(() => import('./pages/admin/AdminTimetableGenerator').then(m => ({ default: m.AdminTimetableGenerator })));
-const HodDashboard = lazy(() => import('./pages/admin/HodDashboard').then(m => ({ default: m.HodDashboard })));
 
 const AcademicCalendar = lazy(() => import('./pages/shared/AcademicCalendar').then(m => ({ default: m.AcademicCalendar })));
 const Events = lazy(() => import('./pages/shared/Events').then(m => ({ default: m.Events })));
@@ -40,6 +40,7 @@ const Placements = lazy(() => import('./pages/shared/Placements').then(m => ({ d
 const CompanyProfiles = lazy(() => import('./pages/shared/CompanyProfiles').then(m => ({ default: m.CompanyProfiles })));
 const Notifications = lazy(() => import('./pages/shared/Notifications').then(m => ({ default: m.Notifications })));
 const AIAssistant = lazy(() => import('./pages/shared/AIAssistant').then(m => ({ default: m.AIAssistant })));
+const Announcements = lazy(() => import('./pages/shared/Announcements').then(m => ({ default: m.Announcements })));
 const Profile = lazy(() => import('./pages/shared/Profile').then(m => ({ default: m.Profile })));
 const NotFound = lazy(() => import('./pages/shared/NotFound').then(m => ({ default: m.NotFound })));
 const Forum = lazy(() => import('./pages/shared/Forum').then(m => ({ default: m.Forum })));
@@ -91,7 +92,7 @@ const App = () => {
 
           {/* Public Routes */}
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Navigate to="/login" replace />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route
             path="/change-password"
@@ -121,340 +122,339 @@ const App = () => {
               </Layout>
             </ProtectedRoute>
           }
-        />
-        <Route
-          path="/attendance"
-          element={
-            <ProtectedRoute allowedRoles={['student', 'faculty']}>
-              <Layout>
-                <Attendance />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/timetable"
-          element={
-            <ProtectedRoute allowedRoles={['student', 'faculty']}>
-              <Layout>
-                <Timetable />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/assignments"
-          element={
-            <ProtectedRoute allowedRoles={['student', 'faculty']}>
-              <Layout>
-                <Assignments />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/study-materials"
-          element={
-            <ProtectedRoute allowedRoles={['student', 'faculty']}>
-              <Layout>
-                <StudyMaterials />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/internal-marks"
-          element={
-            <ProtectedRoute allowedRoles={['student']}>
-              <Layout>
-                <InternalMarks />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/results"
-          element={
-            <ProtectedRoute allowedRoles={['student']}>
-              <Layout>
-                <SemesterResults />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/gate-pass"
-          element={
-            <ProtectedRoute allowedRoles={['student', 'admin']}>
-              <Layout>
-                <GatePass />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/workflows"
-          element={
-            <ProtectedRoute allowedRoles={['student', 'faculty', 'admin']}>
-              <Layout>
-                <StudentWorkflows />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/student/workflows"
-          element={
-            <ProtectedRoute allowedRoles={['student', 'faculty', 'admin']}>
-              <Layout>
-                <StudentWorkflows />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/gate-security"
-          element={
-            <ProtectedRoute allowedRoles={['security', 'admin']}>
-              <Layout>
-                <GateSecurity />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/guardian-gate-pass"
-          element={
-            <ProtectedRoute allowedRoles={['guardian', 'admin']}>
-              <Layout>
-                <GuardianGatePass />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/guardian/dashboard"
-          element={
-            <ProtectedRoute allowedRoles={['guardian', 'admin']}>
-              <Layout>
-                <GuardianGatePass />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/gate-pass-admin"
-          element={
-            <ProtectedRoute allowedRoles={['admin', 'hod', 'warden']}>
-              <Layout>
-                <GatePassAdmin />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/sgpa-predictor"
-          element={
-            <ProtectedRoute allowedRoles={['student', 'faculty', 'admin']}>
-              <Layout>
-                <AcademicPredictor />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/academic-calendar"
-          element={
-            <ProtectedRoute allowedRoles={['student']}>
-              <Layout>
-                <AcademicCalendar />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/events"
-          element={
-            <ProtectedRoute allowedRoles={['student', 'faculty', 'admin']}>
-              <Layout>
-                <Events />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/placements"
-          element={
-            <ProtectedRoute allowedRoles={['student', 'admin']}>
-              <Layout>
-                <Placements />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/companies"
-          element={
-            <ProtectedRoute allowedRoles={['student']}>
-              <Layout>
-                <CompanyProfiles />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/notifications"
-          element={
-            <ProtectedRoute allowedRoles={['student', 'faculty', 'admin']}>
-              <Layout>
-                <Notifications />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/ai-assistant"
-          element={
-            <ProtectedRoute allowedRoles={['student']}>
-              <Layout>
-                <AIAssistant />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/announcements"
-          element={
-            <ProtectedRoute allowedRoles={['student', 'faculty', 'admin']}>
-              <Layout>
-                <Notifications />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute allowedRoles={['student', 'faculty', 'admin']}>
-              <Layout>
-                <Profile />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/faculty-locator"
-          element={
-            <ProtectedRoute allowedRoles={['student', 'faculty', 'admin']}>
-              <Layout>
-                <FacultyLocator />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
+          />
+          <Route
+            path="/attendance"
+            element={
+              <ProtectedRoute allowedRoles={['student', 'faculty']}>
+                <Layout>
+                  <Attendance />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/timetable"
+            element={
+              <ProtectedRoute allowedRoles={['student', 'faculty']}>
+                <Layout>
+                  <Timetable />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/assignments"
+            element={
+              <ProtectedRoute allowedRoles={['student', 'faculty']}>
+                <Layout>
+                  <Assignments />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/study-materials"
+            element={
+              <ProtectedRoute allowedRoles={['student', 'faculty']}>
+                <Layout>
+                  <StudyMaterials />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/internal-marks"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <Layout>
+                  <InternalMarks />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/results"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <Layout>
+                  <SemesterResults />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/gate-pass"
+            element={
+              <ProtectedRoute allowedRoles={['student', 'admin']}>
+                <Layout>
+                  <GatePass />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/workflows"
+            element={
+              <ProtectedRoute allowedRoles={['student', 'faculty', 'admin']}>
+                <Layout>
+                  <StudentWorkflows />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/workflows"
+            element={
+              <ProtectedRoute allowedRoles={['student', 'faculty', 'admin']}>
+                <Layout>
+                  <StudentWorkflows />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/gate-security"
+            element={
+              <ProtectedRoute allowedRoles={['security', 'admin']}>
+                <Layout>
+                  <GateSecurity />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/guardian-gate-pass"
+            element={
+              <ProtectedRoute allowedRoles={['guardian', 'admin']}>
+                <Layout>
+                  <GuardianGatePass />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/guardian/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['guardian', 'admin']}>
+                <Layout>
+                  <GuardianGatePass />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/gate-pass-admin"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'hod', 'warden']}>
+                <Layout>
+                  <GatePassAdmin />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/sgpa-predictor"
+            element={
+              <ProtectedRoute allowedRoles={['student', 'faculty', 'admin']}>
+                <Layout>
+                  <AcademicPredictor />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/academic-calendar"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <Layout>
+                  <AcademicCalendar />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/events"
+            element={
+              <ProtectedRoute allowedRoles={['student', 'faculty', 'admin']}>
+                <Layout>
+                  <Events />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/placements"
+            element={
+              <ProtectedRoute allowedRoles={['student', 'admin']}>
+                <Layout>
+                  <Placements />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/companies"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <Layout>
+                  <CompanyProfiles />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute allowedRoles={['student', 'faculty', 'admin']}>
+                <Layout>
+                  <Notifications />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ai-assistant"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <Layout>
+                  <AIAssistant />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/announcements"
+            element={
+              <ProtectedRoute allowedRoles={['student', 'faculty', 'admin']}>
+                <Layout>
+                  <Announcements />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute allowedRoles={['student', 'faculty', 'admin']}>
+                <Layout>
+                  <Profile />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/faculty-locator"
+            element={
+              <ProtectedRoute allowedRoles={['student', 'faculty', 'admin']}>
+                <Layout>
+                  <FacultyLocator />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
 
+          {/* Protected Faculty Routes */}
+          <Route
+            path="/faculty"
+            element={
+              <ProtectedRoute allowedRoles={['faculty']}>
+                <Layout>
+                  <FacultyDashboard />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Protected Faculty Routes */}
-        <Route
-          path="/faculty"
-          element={
-            <ProtectedRoute allowedRoles={['faculty']}>
-              <Layout>
-                <FacultyDashboard />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
+          {/* Protected HOD & Warden Routes */}
+          <Route
+            path="/hod"
+            element={
+              <ProtectedRoute allowedRoles={['hod', 'warden']}>
+                <Layout>
+                  <HodDashboard />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Protected HOD & Warden Routes */}
-        <Route
-          path="/hod"
-          element={
-            <ProtectedRoute allowedRoles={['hod', 'warden']}>
-              <Layout>
-                <HodDashboard />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
+          {/* Protected Admin Routes */}
+          <Route
+            path="/campus-pulse"
+            element={
+              <ProtectedRoute allowedRoles={['student', 'faculty', 'admin', 'hod', 'security', 'warden']}>
+                <Layout>
+                  <CampusPulse />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <Layout>
+                  <AdminDashboard />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/data-import"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <Layout>
+                  <AdminDataImport />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/core-hub"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <Layout>
+                  <AdminCoreHub />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/timetable-generator"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <Layout>
+                  <AdminTimetableGenerator />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Protected Admin Routes */}
-        <Route
-          path="/campus-pulse"
-          element={
-            <ProtectedRoute allowedRoles={['student', 'faculty', 'admin', 'hod', 'security', 'warden']}>
-              <Layout>
-                <CampusPulse />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute allowedRoles={['admin']}>
-              <Layout>
-                <AdminDashboard />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/data-import"
-          element={
-            <ProtectedRoute allowedRoles={['admin']}>
-              <Layout>
-                <AdminDataImport />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/core-hub"
-          element={
-            <ProtectedRoute allowedRoles={['admin']}>
-              <Layout>
-                <AdminCoreHub />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/timetable-generator"
-          element={
-            <ProtectedRoute allowedRoles={['admin']}>
-              <Layout>
-                <AdminTimetableGenerator />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
+          {/* Forum Routes */}
+          <Route
+            path="/forum"
+            element={
+              <ProtectedRoute allowedRoles={['student', 'faculty', 'admin']}>
+                <Layout>
+                  <Forum />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/forum/:postId"
+            element={
+              <ProtectedRoute allowedRoles={['student', 'faculty', 'admin']}>
+                <Layout>
+                  <ForumPost />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Forum Routes */}
-        <Route
-          path="/forum"
-          element={
-            <ProtectedRoute allowedRoles={['student', 'faculty', 'admin']}>
-              <Layout>
-                <Forum />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/forum/:postId"
-          element={
-            <ProtectedRoute allowedRoles={['student', 'faculty', 'admin']}>
-              <Layout>
-                <ForumPost />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Fallback 404 Route */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          {/* Fallback 404 Route */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </Suspense>
     </>
   );

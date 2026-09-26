@@ -68,7 +68,8 @@ export const StudentDashboard = () => {
         }
 
         if (passRes.status === "fulfilled" && Array.isArray(passRes.value.data)) {
-          const active = passRes.value.data.find(p => p.status in {"PENDING_PARENT_OTP": 1, "PENDING_WARDEN_APPROVAL": 1, "APPROVED": 1, "OUT": 1, "OVERDUE": 1});
+          const activeStatuses = ["PENDING_PARENT_OTP", "PENDING_WARDEN_APPROVAL", "APPROVED", "OUT", "OVERDUE"];
+          const active = passRes.value.data.find(p => p && activeStatuses.includes(p.status));
           setActiveGatePass(active || passRes.value.data[0] || null);
         }
 

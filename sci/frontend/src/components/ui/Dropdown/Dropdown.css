@@ -1,3 +1,5 @@
+/* Dropdown Component - Modern Enterprise UI using Design Tokens */
+
 /* Dropdown Layout */
 .dropdown-container {
   position: relative;
@@ -9,15 +11,16 @@
   cursor: pointer;
 }
 
+/* Dropdown Menu */
 .dropdown-menu {
   position: absolute;
-  z-index: 30;
-  margin-top: 8px;
-  width: 224px;
+  z-index: var(--z-index-popover);
+  margin-top: var(--space-2);
+  width: 14rem; /* 224px */
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-  background-color: var(--bg-secondary);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-card);
+  box-shadow: var(--shadow-md);
   outline: none;
   overflow: hidden;
 }
@@ -31,18 +34,19 @@
 }
 
 .dropdown-menu-inner {
-  padding: 4px 0;
+  padding: var(--space-1) 0;
 }
 
+/* Dropdown Item */
 .dropdown-item {
   display: flex;
   width: 100%;
   align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  font-size: 14px;
-  font-weight: 500;
-  transition: background-color var(--transition-fast), color var(--transition-fast);
+  gap: var(--space-2);
+  padding: var(--space-2-5) var(--space-4);
+  font-size: 0.875rem; /* text-sm */
+  font-weight: var(--font-weight-medium);
+  transition: var(--transition-fast);
   font-family: var(--font-sans);
   border: none;
   background: transparent;
@@ -52,31 +56,46 @@
 }
 
 .dropdown-item-normal {
-  color: var(--text-primary);
+  color: var(--color-text-primary);
 }
 
 .dropdown-item-normal:hover {
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: var(--color-bg-muted);
+}
+
+.dark .dropdown-menu {
+  background-color: #111111;
+  border-color: #292929;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8);
+}
+
+.dark .dropdown-item-normal {
+  color: #F5F5F5;
 }
 
 .dark .dropdown-item-normal:hover {
-  background-color: rgba(255, 255, 255, 0.04);
+  background-color: #181818;
+}
+
+.dark .dropdown-item-selected {
+  background-color: rgba(99, 102, 241, 0.12);
+  color: #FFFFFF;
 }
 
 .dropdown-item-danger {
-  color: var(--danger);
+  color: var(--color-error);
 }
 
 .dropdown-item-danger:hover {
-  background-color: rgba(239, 68, 68, 0.05);
+  background-color: var(--color-error-50);
 }
 
 .dark .dropdown-item-danger:hover {
-  background-color: rgba(239, 68, 68, 0.1);
+  background-color: var(--color-error-50);
 }
 
 .dropdown-item-icon {
-  color: var(--text-secondary);
+  color: var(--color-text-muted);
   display: inline-flex;
   align-items: center;
 }

@@ -1,0 +1,63 @@
+/* Breadcrumb Component - Modern Enterprise UI using Design Tokens */
+
+/* Breadcrumb Container */
+.breadcrumb-container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  padding: var(--space-2) 0;
+  font-size: 0.75rem; /* text-xs */
+  color: var(--color-text-secondary);
+}
+
+/* Breadcrumb List */
+.breadcrumb-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Breadcrumb Item */
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+}
+
+/* Breadcrumb Item Current (active page) */
+.breadcrumb-item-current {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+/* Breadcrumb Item Link */
+.breadcrumb-item-link {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+.breadcrumb-item-link:hover {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+}
+
+/* Breadcrumb Separator */
+.breadcrumb-separator {
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-normal);
+}
+
+/* Dark Mode - handled automatically by design tokens */
+
+/* Size Variants */
+.breadcrumb-sm {
+  font-size: 0.6875rem; /* 11px */
+}
+
+.breadcrumb-lg {
+  font-size: 0.875rem; /* text-sm */
+}

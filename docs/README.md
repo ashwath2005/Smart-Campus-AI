@@ -1,112 +1,77 @@
-# Smart Campus AI 🎓
+# Smart Campus AI — System Documentation & Knowledge Base
 
-An AI-Powered Intelligent College Management Ecosystem. Designed with a premium, responsive SaaS UI/UX (inspired by Linear, Vercel, and Stripe) that centralizes academics, placements, events, and advanced AI-powered student assistance.
+Welcome to the central technical documentation and specification library for the **Smart Campus AI Management System**.
 
----
-
-## 🚀 Key Features
-
-- **Intelligent Assistant Hub**: Multi-tab AI panel powered by Gemini API:
-  - **Academic Chat**: ChatGPT-style study buddy.
-  - **Study Planner**: Auto-generate personalized timetables.
-  - **Notes Summarizer**: Extract key concepts and Q&A from PDFs.
-  - **Interactive Quizzer**: Custom MCQ generator with scoring.
-  - **Placement Helper**: Skill-gap analysis, interview prep, and career advice.
-- **Academics & Timetables**: Dynamic subject schedules, interactive marks logging, and results analytics.
-- **Attendance Monitoring**: Rich visual charts showing attendance percentage indicators with automatic low-attendance warnings.
-- **Placement Cell**: Career portal mapping active corporate postings, company profiles, and application statuses.
-- **Events & Coordination**: QR-check-ins and interactive event registration.
-- **Role-Based Portals**: Personalized dashboards for **Students**, **Faculty** (grading, attendance taking), and **Admins** (system analytics, user/department CRUDs).
+This repository documentation is organized into 8 domain-driven categories:
 
 ---
 
-## 🛠️ Tech Stack
+## 📑 Documentation Index
 
-### Backend
-- **Framework**: FastAPI (Asynchronous python)
-- **Database ORM**: SQLAlchemy 2.0 with a dynamic connection check:
-  - **MySQL (Production-ready)**: Supported when configured.
-  - **SQLite (Local dynamic fallback)**: Auto-initiates locally via `aiosqlite` if no MySQL server is running.
-- **Auth**: Direct Bcrypt hashing with JWT tokens.
-- **AI Integrations**: Google Generative AI SDK (Gemini API).
+### 1. 🏗️ [Architecture & Blueprints](architecture/)
+System architecture models, 3D digital twin diagrams, blueprints, and data flows.
+* [System Architecture Specification](architecture/ARCHITECTURE.md)
+* [Smart Campus Architecture Summary](architecture/SMART_CAMPUS_ARCHITECTURE.md)
+* [3D Campus Digital Twin Architecture](architecture/THREE_JS_ARCHITECTURE.md)
+* [Project Master Documentation](architecture/PROJECT_MASTER_DOCUMENTATION.md)
+* [Deep Project Blueprint](architecture/DEEP_PROJECT_BLUEPRINT.md)
+* [Master Replication Blueprint](architecture/MASTER_REPLICATION_BLUEPRINT.md)
+* [Project Overview](architecture/PROJECT_OVERVIEW.md)
+* [Figma MCP Integration Architecture](architecture/FIGMA_MCP_INTEGRATION.md)
+* Architecture Diagrams: [Dark Theme](architecture/smart_campus_architecture_dark.png) · [Light Theme](architecture/smart_campus_architecture_simple_light.png) · [Block Diagram](architecture/block_diagram.png) · [Flow Diagram](architecture/flow_diagram.png)
 
-### Frontend
-- **Framework**: React 18 with Vite
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Animations**: Framer Motion
-- **Data Visualizations**: Recharts
+### 2. ⚡ [Algorithmic Intelligence Engines](algorithms/)
+Mathematical formulations, objective functions, optimization heuristics, and cryptographic protocols.
+* [Algorithmic Engines Manual](algorithms/ALGORITHMS.md)
+  * **ALRA**: Academic Latent Risk Assessment Engine
+  * **KDPA**: Knowledge Decay & Retention Modeling (Ebbinghaus Spaced Repetition)
+  * **CLPA**: Cognitive Learning Pathway Allocation
+  * **DCRA+**: Dynamic Classroom Reallocation Algorithm
+  * **CSP Scheduler**: Backtracking Timetable Constraint Satisfaction Solver
+  * **HMAC Pass**: Cryptographic Minimal-PII Gate Pass Token Protocol
 
----
+### 3. 🌐 [API & Integration](api/)
+RESTful API endpoint documentation, response schemas, and authentication headers.
+* [FastAPI Endpoint Reference](api/API_REFERENCE.md)
 
-## 📂 Project Structure
+### 4. 🔀 [6-Role Workflows & RBAC Matrices](workflows/)
+State machines, multi-role handoffs, action permissions, and audit specifications.
+* [Complete Workflow Matrix](workflows/COMPLETE_WORKFLOW_MATRIX.md)
+* [Workflow Matrix](workflows/WORKFLOW_MATRIX.md)
+* [Workflow State Machines](workflows/WORKFLOW_STATE_MACHINES.md)
+* [Cross-Role Workflows](workflows/CROSS_ROLE_WORKFLOWS.md)
+* [Workflow Dependency Graph](workflows/WORKFLOW_DEPENDENCY_GRAPH.md)
+* [Role Action Matrix](workflows/ROLE_ACTION_MATRIX.md)
+* [Role Permission Matrix](workflows/ROLE_PERMISSION_MATRIX.md)
+* [API Role Matrix](workflows/API_ROLE_MATRIX.md)
+* [Audit Log Specification](workflows/AUDIT_LOG_SPECIFICATION.md)
+* [Notification Matrix](workflows/NOTIFICATION_MATRIX.md)
 
-```
-smart-campus-ai/
-├── backend/
-│   ├── app/
-│   │   ├── models/        # Database models (User, Academics, Placements, etc.)
-│   │   ├── routes/        # Router files (/auth, /ai, /placements, /students, etc.)
-│   │   ├── services/      # Gemini AI and Authentication logic
-│   │   ├── middleware/    # Auth and Role validations
-│   │   └── main.py        # FastAPI Entrypoint
-│   ├── create_tables.py   # Database creation script
-│   ├── seed_data.py       # Seeding script with dummy credentials
-│   └── requirements.txt   # Python packages
-│
-└── frontend/
-    ├── src/
-    │   ├── api/           # Axios instance configuration
-    │   ├── components/    # Common layouts, charts, and routing components
-    │   │   ├── ui/        # Premium UI library (Button, Modal, Card, tabs, etc.)
-    │   │   └── charts/    # Analytics components using Recharts
-    │   ├── context/       # Authentication and Theme states
-    │   ├── pages/         # Page templates (Login, AIAssistant, Placements, etc.)
-    │   ├── types/         # TypeScript interfaces
-    │   └── main.tsx       # React Client Root
-    ├── tailwind.config.js # Extended Premium Design Tokens
-    └── vite.config.ts     # Vite Config with path alias mapping (@/*)
-```
+### 5. 🧪 [Testing, QA & Validation](testing/)
+Test suites, verification matrices, coverage reports, and gap analyses.
+* [Master Test Cases & QA Validation Matrix](testing/TEST_CASES.md)
+* [Test Coverage Report](testing/TEST_COVERAGE.md)
+* [Test Traceability Matrix](testing/TEST_TRACEABILITY_MATRIX.md)
+* [API Test Matrix](testing/API_TEST_MATRIX.md)
+* [Uncovered Actions & Gap Audit](testing/UNCOVERED_ACTIONS.md)
+* [Implementation Gap Analysis](testing/IMPLEMENTATION_GAP_ANALYSIS.md)
 
----
+### 6. 🗄️ [Database & Data Models](database/)
+Entity-relationship specifications, schema structures, and data dictionary.
+* [Database Architecture](database/DATABASE.md)
+* [Schema Details Specification (Markdown)](database/schema_details.md)
+* [Schema Details Document (DOCX)](database/schema_details.docx)
+* [Database Workflow Matrix](database/DATABASE_WORKFLOW_MATRIX.md)
 
-## ⚡ Setup & Run
+### 7. 🎓 [Research & Publications](research/)
+Academic papers, literature surveys, and conference publication drafts.
+* [15-Page Comprehensive Research Paper](research/15_PAGE_SMART_CAMPUS_PAPER.md)
+* [IEEE Paper Draft](research/IEEE_PAPER_DRAFT.md)
+* [IEEE LaTeX Source Code](research/IEEE_LaTeX/main.tex)
+* [Comprehensive Literature Survey](research/LITERATURE_SURVEY.md)
+* [First Review Presentation Content](research/FIRST_REVIEW_PRESENTATION_CONTENT.md)
 
-### 1. Database Setup
-1. In the `backend/` folder, create a `.env` file containing your Gemini API key:
-   ```env
-   GEMINI_API_KEY=your_gemini_api_key
-   ```
-2. Create and seed the database tables:
-   ```bash
-   cd backend
-   .\venv\Scripts\python.exe create_tables.py
-   .\venv\Scripts\python.exe seed_data.py
-   ```
-   *Note: If you have no local MySQL instance running on port 3306, it will automatically create a local `smartcampus.db` SQLite file.*
-
-### 2. Run the Backend
-```bash
-uvicorn app.main:app --reload --port 8000
-```
-API Documentation will be available at `http://localhost:8000/docs`.
-
-### 3. Run the Frontend
-1. Navigate to the `frontend/` folder.
-2. Run the development server:
-   ```bash
-   npm run dev
-   ```
-3. Open `http://localhost:5173` in your browser.
-
----
-
-## 🔑 Demo Credentials
-
-Use the following seeded accounts to sign in:
-
-| Role | Email | Password |
-|---|---|---|
-| **Student** | `student1@campus.com` | `password123` |
-| **Faculty** | `faculty1@campus.com` | `password123` |
-| **Admin** | `admin@campus.com` | `password123` |
+### 8. 🛠️ [Setup & Developer Environment](setup/)
+Local deployment guides, environment variables, and developer toolchain.
+* [System Setup & Deployment Guide](setup/SETUP_GUIDE.md)
+* [AI Development Toolchain Specification](setup/AI-DEVELOPMENT-TOOLCHAIN.md)

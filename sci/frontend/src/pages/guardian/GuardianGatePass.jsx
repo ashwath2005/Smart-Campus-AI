@@ -235,7 +235,7 @@ export function GuardianGatePass() {
           Active Leave Authorization Queue
         </h3>
 
-        {activePass && (activePass.status === 'PENDING_PARENT_OTP' || !activePass.parent_verified) ? (
+        {activePass && (activePass.status === 'PENDING_PARENT_OTP' || (!activePass.parent_verified && activePass.status !== 'APPROVED' && activePass.status !== 'CANCELLED' && activePass.status !== 'REJECTED' && activePass.status !== 'PENDING_WARDEN_APPROVAL')) ? (
           <div className="p-4 rounded-xl space-y-4" style={{ background: "var(--bg-surface-elevated, var(--bg-shell))", border: "1px solid var(--border-color)" }}>
             <div className="flex justify-between items-start flex-wrap gap-2">
               <div>
@@ -319,6 +319,14 @@ export function GuardianGatePass() {
                 </div>
               </div>
             </div>
+          </div>
+        ) : activePass && activePass.status === 'PENDING_WARDEN_APPROVAL' ? (
+          <div className="p-6 text-center rounded-xl" style={{ background: "var(--bg-surface-elevated, var(--bg-shell))", border: "1px solid var(--border-color)" }}>
+            <CheckCircle2 size={32} className="mx-auto mb-2 text-emerald-500" />
+            <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Parent Authorization Confirmed</p>
+            <p className="text-xs mt-1" style={{ color: "var(--text-secondary)" }}>
+              Pass #{activePass.id} has been authorized by Guardian and is now forwarded to the <strong>Chief Warden / HOD</strong> for final sign-off.
+            </p>
           </div>
         ) : (
           <div className="p-6 text-center rounded-xl" style={{ background: "var(--bg-surface-elevated, var(--bg-shell))", border: "1px solid var(--border-color)" }}>

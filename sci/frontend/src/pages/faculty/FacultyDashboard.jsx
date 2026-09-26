@@ -2,7 +2,7 @@ import "./FacultyDashboard.css";
 import { useState, useEffect } from "react";
 import api from "../../api/axios";
 import { Card, StatCard, Skeleton, Button, Input, Select, Tabs, Textarea, Badge } from "../../components/ui";
-import { Users, BookOpen, Clock, BarChart2, TrendingUp, AlertTriangle, Activity, Brain } from "lucide-react";
+import { Users, BookOpen, Clock, BarChart2, TrendingUp, AlertTriangle, Activity, Brain, Award, Save, RotateCcw, CheckCircle2, FileSpreadsheet } from "lucide-react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 export const FacultyDashboard = () => {
@@ -72,6 +72,109 @@ export const FacultyDashboard = () => {
       setRosterLoading(false);
     }
   };
+
+  // ─── Internal Marks Management State & Handlers ──────────────────────────────
+  const [marksSubject, setMarksSubject] = useState("Data Structures");
+  const [marksExam, setMarksExam] = useState("cat1");
+  const [marksSemester, setMarksSemester] = useState(4);
+  const [marksMax, setMarksMax] = useState(50);
+  const [marksRoster, setMarksRoster] = useState([]);
+  const [marksValues, setMarksValues] = useState({});
+  const [marksLoading, setMarksLoading] = useState(false);
+  const [marksSaving, setMarksSaving] = useState(false);
+
+  const fetchMarksRoster = async () => {
+    setMarksLoading(true);
+    try {
+      const res = await api.get(
+        `/internal-marks/roster?subject_name=${encodeURIComponent(marksSubject)}&exam_type=${marksExam}&semester=${marksSemester}`
+      );
+      const data = res.data?.students || [];
+      setMarksRoster(data);
+      const vals = {};
+      data.forEach((s) => {
+        if (s.marks_obtained !== null && s.marks_obtained !== undefined) {
+          vals[s.student_id] = s.marks_obtained;
+        }
+      });
+      setMarksValues(vals);
+    } catch {
+      toast.error("Failed to load student roster for marks.");
+    } finally {
+      setMarksLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === "marks") {
+      fetchMarksRoster();
+    }
+  }, [activeTab, marksSubject, marksExam, marksSemester]);
+
+  const handleMarksChange = (studentId, val) => {
+    setMarksValues((prev) => ({
+      ...prev,
+      [studentId]: val,
+    }));
+  };
+
+  const handleSaveMarks = async () => {
+    const entries = [];
+    for (const s of marksRoster) {
+      const val = marksValues[s.student_id];
+      if (val !== undefined && val !== "" && !isNaN(Number(val))) {
+        const numVal = Number(val);
+        if (numVal < 0 || numVal > marksMax) {
+          toast.error(`Marks for ${s.name} must be between 0 and ${marksMax}`);
+          return;
+        }
+        entries.push({
+          student_id: s.student_id,
+          marks_obtained: numVal,
+        });
+      }
+    }
+
+    if (entries.length === 0) {
+      toast.error("Please enter marks for at least one student before saving.");
+      return;
+    }
+
+    setMarksSaving(true);
+    try {
+      const res = await api.post("/internal-marks/batch-save", {
+        subject_name: marksSubject,
+        exam_type: marksExam,
+        semester: Number(marksSemester),
+        max_marks: Number(marksMax),
+        entries,
+      });
+      toast.success(res.data?.message || "Internal marks saved successfully!");
+      fetchMarksRoster();
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Failed to save internal marks.");
+    } finally {
+      setMarksSaving(false);
+    }
+  };
+
+  const handleQuickFill = (percentage) => {
+    const fillScore = Math.round(marksMax * (percentage / 100) * 10) / 10;
+    const nextVals = { ...marksValues };
+    marksRoster.forEach((s) => {
+      if (nextVals[s.student_id] === undefined || nextVals[s.student_id] === "") {
+        nextVals[s.student_id] = fillScore;
+      }
+    });
+    setMarksValues(nextVals);
+    toast.success(`Populated unfilled entries with ${fillScore} (${percentage}%)`);
+  };
+
+  const gradedEntries = Object.values(marksValues).filter((v) => v !== "" && !isNaN(Number(v)));
+  const gradedCount = gradedEntries.length;
+  const marksSum = gradedEntries.reduce((acc, v) => acc + Number(v), 0);
+  const avgMarks = gradedCount > 0 ? marksSum / gradedCount : 0;
+  const highestMark = gradedCount > 0 ? Math.max(...gradedEntries.map(Number)) : 0;
 
   const fetchFacultyStatus = async () => {
     try {
@@ -240,6 +343,7 @@ export const FacultyDashboard = () => {
   const facultyTabs = [
     { id: "overview", label: "Overview" },
     { id: "attendance", label: "Mark Attendance" },
+    { id: "marks", label: "Enter Internal Marks" },
     { id: "assignment", label: "Create Assignment" },
     { id: "material", label: "Upload Material" },
     { id: "ai_analytics", label: "AI Learning Analytics" }
@@ -493,7 +597,257 @@ export const FacultyDashboard = () => {
               )}
             </Card>
           </div>
-        )}{activeTab === "assignment" && <Card className="pg-facultydashboard-22"><h3 className="pg-facultydashboard-23">
+        )}
+
+        {/* ─── Dedicated Enter Internal Marks Tab Panel ───────────────────────── */}
+        {activeTab === "marks" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+            {/* Header & Controls Card */}
+            <Card style={{ padding: "20px", background: "#131418", border: "1px solid #232630" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "16px", marginBottom: "20px" }}>
+                <div>
+                  <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#fff", display: "flex", alignItems: "center", gap: "8px", margin: 0 }}>
+                    <Award size={18} style={{ color: "#E31B23" }} />
+                    Continuous Assessment & Internal Marks Roster
+                  </h3>
+                  <p style={{ fontSize: "12.5px", color: "var(--text-secondary)", margin: "4px 0 0 0" }}>
+                    Select subject and assessment type, enter student marks, and publish directly to academic databases & student portals.
+                  </p>
+                </div>
+                <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={fetchMarksRoster}
+                    disabled={marksLoading}
+                  >
+                    <RotateCcw size={14} style={{ marginRight: "6px" }} /> Refresh
+                  </Button>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={handleSaveMarks}
+                    loading={marksSaving}
+                    disabled={marksSaving || marksRoster.length === 0}
+                    style={{ background: "#E31B23", color: "#fff" }}
+                  >
+                    <Save size={14} style={{ marginRight: "6px" }} /> Save All Marks
+                  </Button>
+                </div>
+              </div>
+
+              {/* Assessment Configuration Controls */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "14px" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "12px", color: "#90929b", marginBottom: "6px" }}>Subject</label>
+                  <Select
+                    value={marksSubject}
+                    onChange={(e) => setMarksSubject(e.target.value)}
+                    options={subjectOptions}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: "12px", color: "#90929b", marginBottom: "6px" }}>Semester</label>
+                  <Select
+                    value={marksSemester}
+                    onChange={(e) => setMarksSemester(Number(e.target.value))}
+                    options={[1, 2, 3, 4, 5, 6, 7, 8].map((s) => ({ value: s, label: `Semester ${s}` }))}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: "12px", color: "#90929b", marginBottom: "6px" }}>Assessment / Exam Type</label>
+                  <Select
+                    value={marksExam}
+                    onChange={(e) => setMarksExam(e.target.value)}
+                    options={[
+                      { value: "cat1", label: "CAT-1 (Continuous Assessment 1)" },
+                      { value: "cat2", label: "CAT-2 (Continuous Assessment 2)" },
+                      { value: "cat3", label: "CAT-3 (Continuous Assessment 3)" },
+                      { value: "model", label: "Model Examination" },
+                      { value: "assignment", label: "Internal Coursework" },
+                    ]}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: "12px", color: "#90929b", marginBottom: "6px" }}>Maximum Marks</label>
+                  <Input
+                    type="number"
+                    value={marksMax}
+                    onChange={(e) => setMarksMax(Number(e.target.value))}
+                    min={10}
+                    max={100}
+                  />
+                </div>
+              </div>
+
+              {/* Summary Stats & Quick Actions Bar */}
+              <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "12px", marginTop: "16px", paddingTop: "14px", borderTop: "1px solid #232630" }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" }}>
+                  <Badge variant="info">Enrolled: {marksRoster.length} Students</Badge>
+                  <Badge variant={gradedCount > 0 ? "success" : "warning"}>Graded: {gradedCount} / {marksRoster.length}</Badge>
+                  {gradedCount > 0 && (
+                    <>
+                      <Badge variant="neutral">Class Average: {avgMarks.toFixed(1)} / {marksMax} ({((avgMarks / marksMax) * 100).toFixed(0)}%)</Badge>
+                      <Badge variant="neutral">Top Score: {highestMark} / {marksMax}</Badge>
+                    </>
+                  )}
+                </div>
+                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                  <span style={{ fontSize: "12px", color: "#90929b" }}>Quick Fill:</span>
+                  <button
+                    type="button"
+                    onClick={() => handleQuickFill(85)}
+                    style={{ background: "#1c1e24", border: "1px solid #2d3039", color: "#fff", borderRadius: "4px", padding: "3px 8px", fontSize: "11px", cursor: "pointer" }}
+                  >
+                    85% (High)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleQuickFill(70)}
+                    style={{ background: "#1c1e24", border: "1px solid #2d3039", color: "#fff", borderRadius: "4px", padding: "3px 8px", fontSize: "11px", cursor: "pointer" }}
+                  >
+                    70% (Avg)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMarksValues({})}
+                    style={{ background: "rgba(227, 27, 35, 0.1)", border: "1px solid rgba(227, 27, 35, 0.3)", color: "#ff4d4f", borderRadius: "4px", padding: "3px 8px", fontSize: "11px", cursor: "pointer" }}
+                  >
+                    Clear All
+                  </button>
+                </div>
+              </div>
+            </Card>
+
+            {/* Student Marks Entry Table Card */}
+            <Card style={{ padding: "20px", background: "#131418", border: "1px solid #232630" }}>
+              {marksLoading ? (
+                <div style={{ padding: "40px 0" }}>
+                  <Skeleton variant="card" count={2} />
+                </div>
+              ) : marksRoster.length === 0 ? (
+                <div style={{ padding: "40px 0", textAlign: "center", color: "#90929b" }}>
+                  <FileSpreadsheet size={32} style={{ margin: "0 auto 12px auto", opacity: 0.5 }} />
+                  <p style={{ margin: 0, fontSize: "14px" }}>No students registered under Semester {marksSemester} for this section.</p>
+                </div>
+              ) : (
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
+                    <thead>
+                      <tr style={{ borderBottom: "1px solid #2d3039", textAlign: "left", color: "#90929b" }}>
+                        <th style={{ padding: "10px 12px", width: "120px" }}>Roll Number</th>
+                        <th style={{ padding: "10px 12px" }}>Student Name</th>
+                        <th style={{ padding: "10px 12px", width: "140px" }}>Department</th>
+                        <th style={{ padding: "10px 12px", width: "110px", textAlign: "center" }}>Max Marks</th>
+                        <th style={{ padding: "10px 12px", width: "150px", textAlign: "center" }}>Marks Scored</th>
+                        <th style={{ padding: "10px 12px", width: "100px", textAlign: "center" }}>Percent</th>
+                        <th style={{ padding: "10px 12px", width: "130px", textAlign: "center" }}>Grade Preview</th>
+                        <th style={{ padding: "10px 12px", width: "120px", textAlign: "center" }}>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {marksRoster.map((s) => {
+                        const val = marksValues[s.student_id];
+                        const hasVal = val !== undefined && val !== "" && !isNaN(Number(val));
+                        const numVal = hasVal ? Number(val) : null;
+                        const pct = numVal !== null && marksMax > 0 ? (numVal / marksMax) * 100 : null;
+
+                        let grade = "—";
+                        let gradeColor = "#90929b";
+                        if (pct !== null) {
+                          if (pct >= 90) { grade = "O (10)"; gradeColor = "#10b981"; }
+                          else if (pct >= 80) { grade = "A+ (9)"; gradeColor = "#10b981"; }
+                          else if (pct >= 70) { grade = "A (8)"; gradeColor = "#3b82f6"; }
+                          else if (pct >= 60) { grade = "B+ (7)"; gradeColor = "#f59e0b"; }
+                          else if (pct >= 50) { grade = "B (6)"; gradeColor = "#f59e0b"; }
+                          else { grade = "RA (0)"; gradeColor = "#ef4444"; }
+                        }
+
+                        const isModified = hasVal && numVal !== s.marks_obtained;
+
+                        return (
+                          <tr
+                            key={s.student_id}
+                            style={{
+                              borderBottom: "1px solid #1c1e24",
+                              transition: "background 0.15s ease",
+                            }}
+                          >
+                            <td style={{ padding: "12px", color: "#90929b", fontFamily: "var(--font-mono)", fontWeight: 600 }}>
+                              {s.roll_number}
+                            </td>
+                            <td style={{ padding: "12px", color: "#fff", fontWeight: 600 }}>
+                              {s.name}
+                              <div style={{ fontSize: "11px", color: "#6b7280", fontWeight: 400 }}>{s.email}</div>
+                            </td>
+                            <td style={{ padding: "12px", color: "#90929b" }}>
+                              {s.department}
+                            </td>
+                            <td style={{ padding: "12px", textAlign: "center", color: "#90929b", fontWeight: 600 }}>
+                              {marksMax}
+                            </td>
+                            <td style={{ padding: "12px", textAlign: "center" }}>
+                              <input
+                                type="number"
+                                min={0}
+                                max={marksMax}
+                                step="0.5"
+                                value={val !== undefined ? val : ""}
+                                onChange={(e) => handleMarksChange(s.student_id, e.target.value)}
+                                placeholder="0.0"
+                                style={{
+                                  width: "90px",
+                                  padding: "6px 10px",
+                                  background: "#181920",
+                                  border: isModified ? "1px solid #E31B23" : "1px solid #2d3039",
+                                  borderRadius: "6px",
+                                  color: "#fff",
+                                  fontSize: "13px",
+                                  fontWeight: "700",
+                                  textAlign: "center",
+                                  outline: "none",
+                                }}
+                              />
+                            </td>
+                            <td style={{ padding: "12px", textAlign: "center", color: "#fff", fontWeight: 600 }}>
+                              {pct !== null ? `${pct.toFixed(0)}%` : "—"}
+                            </td>
+                            <td style={{ padding: "12px", textAlign: "center", color: gradeColor, fontWeight: 700 }}>
+                              {grade}
+                            </td>
+                            <td style={{ padding: "12px", textAlign: "center" }}>
+                              {isModified ? (
+                                <Badge variant="warning">Unsaved</Badge>
+                              ) : s.recorded ? (
+                                <Badge variant="success">Published</Badge>
+                              ) : (
+                                <Badge variant="neutral">Pending</Badge>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+
+                  <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px", gap: "12px" }}>
+                    <Button
+                      variant="primary"
+                      onClick={handleSaveMarks}
+                      loading={marksSaving}
+                      disabled={marksSaving || marksRoster.length === 0}
+                      style={{ background: "#E31B23", color: "#fff" }}
+                    >
+                      <Save size={15} style={{ marginRight: "6px" }} /> Save & Publish Marks
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </Card>
+          </div>
+        )}
+
+        {activeTab === "assignment" && <Card className="pg-facultydashboard-22"><h3 className="pg-facultydashboard-23">
               Create Coursework Assignment
             </h3><form onSubmit={handleCreateAssignment} className="pg-facultydashboard-24"><Input
     label="Assignment Title"

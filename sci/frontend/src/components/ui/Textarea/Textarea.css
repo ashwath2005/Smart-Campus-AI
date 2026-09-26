@@ -1,70 +1,191 @@
-/* Textarea Styles */
+/* Enhanced Textarea Component - Modern Enterprise Forms using Design Tokens */
+
+/* Textarea Container */
 .textarea-container {
   width: 100%;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-5);
 }
 
+/* Textarea Label - Improved */
 .textarea-label {
   display: block;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  margin-bottom: 6px;
+  font-size: 0.75rem; /* text-xs */
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-1-5);
   font-family: var(--font-sans);
-  letter-spacing: -0.01em;
-  padding-left: 4px;
+  padding-left: var(--space-0-5);
+  line-height: 1.4;
 }
 
+/* Textarea Wrapper - Enhanced States */
 .textarea-wrapper {
   position: relative;
   border-radius: var(--radius-lg);
-  box-shadow: none;
+  transition: var(--transition-normal);
 }
 
+/* Textarea Field - Enhanced Styling */
 .textarea-field {
   display: block;
   width: 100%;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-  background-color: var(--bg-surface-elevated, var(--bg-shell));
-  color: var(--text-primary);
-  font-size: 14px;
-  transition: all 0.2s ease-in-out;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  font-size: 0.875rem; /* text-sm */
+  transition: var(--transition-normal);
   font-family: var(--font-sans);
   outline: none;
   box-sizing: border-box;
-  padding: 10px 16px;
-  line-height: 1.625;
+  padding: var(--space-3);
+  line-height: 1.6;
+  font-weight: var(--font-weight-normal);
+  letter-spacing: -0.01em;
+  resize: vertical;
+  min-height: 5rem; /* 80px */
 }
 
-.dark .textarea-field {
-  background-color: var(--bg-canvas);
-  border-color: var(--border-color);
-}
-
-/* Normal focus state */
+/* Enhanced Focus States */
 .textarea-field:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px var(--accent-glow);
-  background-color: var(--bg-secondary);
+  border-color: var(--color-primary) !important;
+  box-shadow:
+    0 0 0 3px var(--color-primary-200) !important,
+    0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
+  background-color: var(--color-bg-surface) !important;
 }
 
-/* Error state classes */
+.dark .textarea-field:focus {
+  background-color: var(--color-bg-surface) !important;
+}
+
+/* Hover State */
+.textarea-field:hover:not(:focus) {
+  border-color: var(--color-border-muted) !important;
+}
+
+/* Disabled State */
+.textarea-field:disabled {
+  background-color: var(--color-bg-muted) !important;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Enhanced Autofill overrides */
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+textarea:-webkit-autofill:active {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: var(--color-text-primary) !important;
+  transition: background-color 5000s ease-in-out 0s;
+  box-shadow: inset 0 0 0 20px rgba(0, 0, 0, 0.02) !important;
+}
+
+.dark textarea:-webkit-autofill,
+.dark textarea:-webkit-autofill:hover,
+.dark textarea:-webkit-autofill:focus,
+.dark textarea:-webkit-autofill:active {
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: inset 0 0 0 20px #07080b !important;
+}
+
+/* Enhanced Error States */
 .textarea-field-error {
-  border-color: var(--danger);
-  background-color: rgba(239, 68, 68, 0.05);
+  border-color: var(--color-error) !important;
+  background-color: rgba(239, 68, 68, 0.03) !important;
 }
 
 .textarea-field-error:focus {
-  background-color: var(--bg-secondary);
-  border-color: var(--danger);
-  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+  border-color: var(--color-error) !important;
+  box-shadow:
+    0 0 0 3px rgba(239, 68, 68, 0.15) !important,
+    0 1px 3px 0 rgba(239, 68, 68, 0.1) !important;
+  background-color: var(--color-bg-surface) !important;
 }
 
+.dark .textarea-field-error {
+  border-color: var(--color-error) !important;
+  background-color: rgba(239, 68, 68, 0.05) !important;
+}
+
+.dark .textarea-field-error:focus {
+  box-shadow:
+    0 0 0 3px rgba(239, 68, 68, 0.2) !important,
+    0 1px 3px 0 rgba(239, 68, 68, 0.1) !important;
+}
+
+/* Error States - Enhanced Feedback */
+.textarea-field-error:hover:not(:focus) {
+  border-color: var(--color-error) !important;
+}
+
+/* Enhanced Helper Text */
+.textarea-helper-text {
+  margin-top: var(--space-1-5);
+  font-size: 0.75rem; /* text-xs */
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.4;
+}
+
+/* Enhanced Error Text */
 .textarea-error-text {
-  margin-top: 4px;
-  font-size: 12px;
-  color: var(--danger);
-  font-weight: 500;
-  padding-left: 4px;
+  margin-top: var(--space-1-5);
+  font-size: 0.75rem; /* text-xs */
+  color: var(--color-error);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+}
+
+/* Loading State */
+.textarea-field.loading {
+  position: relative;
+}
+
+.textarea-field.loading::after {
+  content: '';
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  width: var(--space-3);
+  height: var(--space-3);
+  margin-top: calc(-1 * var(--space-1-5));
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin var(--transition-normal) linear infinite;
+  pointer-events: none;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Dark Mode Enhancements - handled automatically by design tokens */
+.dark .textarea-field {
+  /* Colors are handled by design tokens */
+}
+
+.dark .textarea-field:hover:not(:focus) {
+  border-color: var(--color-border-muted) !important;
+}
+
+/* Focus Ring Animation */
+.textarea-field-focused {
+  animation: focus-ring var(--transition-fast) ease-out;
+}
+
+@keyframes focus-ring {
+  from {
+    box-shadow: 0 0 0 0 rgba(242, 23, 34, 0);
+  }
+  to {
+    box-shadow: 0 0 0 3px var(--color-primary-200);
+  }
 }

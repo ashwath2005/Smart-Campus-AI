@@ -1,9 +1,10 @@
+@import "./styles/design-tokens.css";
 @import "./styles/variables.css";
 @import "./styles/theme.css";
-@import "./styles/globals.css";
-@import "./styles/animations.css";
 @import "./styles/typography.css";
 @import "./styles/layout.css";
-@import "./styles/responsive.css";
+@import "./styles/animations.css";
 @import "./styles/utilities.css";
 @import "./styles/auth.css";
+@import "./styles/responsive.css";
+@import "./styles/globals.css";

@@ -3,8 +3,9 @@ import { Eye, EyeOff } from 'lucide-react';
 import './Input.css';
 
 export const Input = React.forwardRef(
-  ({ label, error, icon, className = '', type = 'text', ...props }, ref) => {
+  ({ label, error, helperText, icon, className = '', type = 'text', ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
     const isPassword = type === 'password';
 
     const inputType = isPassword ? (showPassword ? 'text' : 'password') : type;
@@ -28,10 +29,14 @@ export const Input = React.forwardRef(
             className={`input-field ${
               error ? 'input-field-error' : ''
             } ${
+              isFocused ? 'input-field-focused' : ''
+            } ${
               icon ? 'input-field-padding-left-icon' : 'input-field-padding-left-normal'
             } ${
               isPassword ? 'input-field-padding-right-password' : 'input-field-padding-right-normal'
             } ${className}`}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
             {...props}
           />
           {isPassword && (
@@ -45,6 +50,7 @@ export const Input = React.forwardRef(
           )}
         </div>
         {error && <p className="input-error-text">{error}</p>}
+        {!error && helperText && <p className="input-helper-text">{helperText}</p>}
       </div>
     );
   }

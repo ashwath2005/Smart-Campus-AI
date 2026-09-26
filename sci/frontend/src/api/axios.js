@@ -6,6 +6,7 @@ const baseURL = API_BASE_URL.endsWith('/api') ? API_BASE_URL : `${API_BASE_URL}/
 
 const api = axios.create({
   baseURL,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -103,8 +104,8 @@ api.interceptors.response.use(
 
       try {
         // Attempt to refresh the token using the HTTP-only refresh token cookie
-        const response = await axios.post(
-          `${baseURL}/auth/refresh`,
+        const response = await api.post(
+          `/auth/refresh`,
           {},
           { withCredentials: true, timeout: 10000 }
         );

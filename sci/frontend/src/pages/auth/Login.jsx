@@ -29,6 +29,7 @@ export const Login = () => {
             faculty: "/faculty",
             admin: "/admin",
             hod: "/hod",
+            warden: "/hod",
             security: "/gate-security",
             guardian: "/guardian-gate-pass"
           };

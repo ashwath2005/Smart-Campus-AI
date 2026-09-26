@@ -25,10 +25,13 @@ class GuardianService:
         res = await db.execute(select(User).where(User.guardian_id == guardian_id))
         ward = res.scalar_one_or_none()
         
-        # Fallback for demo guardian account (student id 1)
+        # Fallback for demo guardian account: look for student1@campus.com or first student
         if not ward:
-            res_demo = await db.execute(select(User).where(User.id == 1, User.role == "student"))
+            res_demo = await db.execute(select(User).where(User.email == "student1@campus.com"))
             ward = res_demo.scalar_one_or_none()
+            if not ward:
+                res_any = await db.execute(select(User).where(User.role == "student").limit(1))
+                ward = res_any.scalar_one_or_none()
             if ward:
                 ward.guardian_id = guardian_id
                 await db.commit()
@@ -178,21 +181,30 @@ class GuardianService:
         if gp.student_id != ward.id and guardian_user.get("role") != "admin":
             raise HTTPException(status_code=403, detail="Cannot authorize gate pass for an unlinked student.")
 
-        # Transition to PENDING_WARDEN_APPROVAL
-        updated_gp = await WorkflowEngine.transition_gate_pass(
-            db=db,
-            pass_id=pass_id,
-            actor_user=guardian_user,
-            new_state="PENDING_WARDEN_APPROVAL",
-            remarks=remarks or "Approved by parent via Guardian Portal",
-            action_name="GUARDIAN_APPROVED",
-        )
+        # Ensure parent consent is marked as verified
+        gp.parent_verified = True
+
+        # Transition to PENDING_WARDEN_APPROVAL if not already there
+        if gp.status != "PENDING_WARDEN_APPROVAL":
+            updated_gp = await WorkflowEngine.transition_gate_pass(
+                db=db,
+                pass_id=pass_id,
+                actor_user=guardian_user,
+                new_state="PENDING_WARDEN_APPROVAL",
+                remarks=remarks or "Approved by parent via Guardian Portal",
+                action_name="GUARDIAN_APPROVED",
+            )
+        else:
+            await db.commit()
+            await db.refresh(gp)
+            updated_gp = gp
 
         return {
             "success": True,
             "message": "Gate pass authorization granted. Forwarded for Warden/HOD approval.",
             "pass_id": updated_gp.id,
             "status": updated_gp.status,
+            "parent_verified": updated_gp.parent_verified,
         }
 
     @classmethod

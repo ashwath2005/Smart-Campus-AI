@@ -36,6 +36,7 @@ export const ProtectedRoute = ({
       student: '/dashboard',
       faculty: '/faculty',
       hod: '/hod',
+      warden: '/hod',
       admin: '/admin',
       security: '/gate-security',
       guardian: '/guardian-gate-pass',

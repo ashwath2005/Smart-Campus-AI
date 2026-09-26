@@ -1,23 +1,26 @@
+/* Avatar Component - Modern Enterprise UI using Design Tokens */
+
 /* Avatar Layout */
 .avatar {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  font-weight: 700;
+  border-radius: var(--radius-full);
+  font-weight: var(--font-weight-bold);
   font-family: var(--font-sans);
   overflow: hidden;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-xs);
   flex-shrink: 0;
   color: #ffffff;
-  background-image: linear-gradient(135deg, var(--accent), #5856d6);
+  background-image: linear-gradient(135deg, var(--color-accent), #5856d6);
 }
 
+/* Dark Mode */
 .dark .avatar {
   border-color: rgba(255, 255, 255, 0.08);
-  background-image: linear-gradient(135deg, var(--accent-hover), #7d7aff);
+  background-image: linear-gradient(135deg, var(--color-accent-hover), #7d7aff);
 }
 
 .avatar-img {
@@ -28,31 +31,31 @@
 
 /* Avatar Sizes */
 .avatar-xs {
-  height: 24px;
-  width: 24px;
-  font-size: 10px;
+  height: 1.5rem; /* 24px */
+  width: 1.5rem; /* 24px */
+  font-size: 0.625rem; /* 10px */
 }
 
 .avatar-sm {
-  height: 32px;
-  width: 32px;
-  font-size: 12px;
+  height: 2rem; /* 32px */
+  width: 2rem; /* 32px */
+  font-size: 0.75rem; /* 12px */
 }
 
 .avatar-md {
-  height: 40px;
-  width: 40px;
-  font-size: 14px;
+  height: 2.5rem; /* 40px */
+  width: 2.5rem; /* 40px */
+  font-size: 0.875rem; /* 14px */
 }
 
 .avatar-lg {
-  height: 56px;
-  width: 56px;
-  font-size: 18px;
+  height: 3.5rem; /* 56px */
+  width: 3.5rem; /* 56px */
+  font-size: 1.125rem; /* 18px */
 }
 
 .avatar-xl {
-  height: 80px;
-  width: 80px;
-  font-size: 24px;
+  height: 5rem; /* 80px */
+  width: 5rem; /* 80px */
+  font-size: 1.5rem; /* 24px */
 }

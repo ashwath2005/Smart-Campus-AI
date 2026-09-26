@@ -34,6 +34,7 @@ from app.routes import (
     guardian,
     incidents,
     search,
+    internal_marks,
 )
 
 api_router = APIRouter()
@@ -68,4 +69,5 @@ api_router.include_router(ai_copilot.router)
 api_router.include_router(guardian.router)
 api_router.include_router(incidents.router)
 api_router.include_router(search.router)
+api_router.include_router(internal_marks.router)
 

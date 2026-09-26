@@ -1,193 +1,310 @@
-/* variables.css - Institutional Enterprise Design Tokens (Light & Dark System) */
+/* variables.css - Smart Campus AI Design System */
 
+/* Light Mode */
 :root {
   /* Canvas & Shell Foundation */
-  --bg-canvas: #EAE9EE;
-  --bg-shell: #F4F4F6;
+  --bg-canvas: #F8FAFC;
+  --bg-shell: #F8FAFC;
   --bg-primary: #FFFFFF;
   --bg-secondary: #FFFFFF;
-  --bg-tertiary: #EEF0F4;
+  --bg-tertiary: #F1F5F9;
   --bg-card: #FFFFFF;
-  --bg-card-elevated: #FFFFFF;
+  --bg-card-elevated: #F8FAFC;
   --bg-surface: #FFFFFF;
-  --bg-elevated: #FAFAFC;
-  --bg-surface-hover: #FAFAFC;
-  --bg-surface-active: #F0F0F3;
-  --bg-hover: #FAFAFC;
+  --bg-elevated: #F8FAFC;
+  --bg-surface-hover: #F1F5F9;
+  --bg-surface-active: #E2E8F0;
+  --bg-hover: #F1F5F9;
 
   /* Typography Hierarchy */
-  --text-primary: #111118;
-  --text-secondary: #4A4A52;
-  --text-muted: #64748B;
-  --text-disabled: #94A3B8;
+  --text-primary: #0F172A;
+  --text-secondary: #64748B;
+  --text-muted: #94A3B8;
+  --text-disabled: #CBD5E1;
 
   /* Borders & Dividers */
-  --border-color: rgba(0, 0, 0, 0.08);
-  --border-subtle: rgba(0, 0, 0, 0.05);
-  --border-strong: rgba(0, 0, 0, 0.14);
-  --glass-bg: rgba(255, 255, 255, 0.9);
-  --glass-border: rgba(0, 0, 0, 0.08);
+  --border-color: #E2E8F0;
+  --border-subtle: #E2E8F0;
+  --border-strong: #CBD5E1;
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(226, 232, 240, 0.6);
 
-  /* Primary Brand Identity - Official Logo Red (#F21722) */
-  --brand: #F21722;
-  --brand-hover: #D9141E;
-  --brand-active: #BF111A;
-  --brand-soft: rgba(242, 23, 34, 0.08);
-  --brand-border: rgba(242, 23, 34, 0.22);
-  --brand-glow: rgba(242, 23, 34, 0.15);
+  /* Primary Brand Identity (Campus Tech Indigo) */
+  --brand: #4F46E5;
+  --brand-hover: #4338CA;
+  --brand-active: #3730A3;
+  --brand-soft: rgba(79, 70, 229, 0.08);
+  --brand-border: rgba(79, 70, 229, 0.2);
+  --brand-glow: rgba(79, 70, 229, 0.15);
 
-  /* Backward Compatibility Accents */
-  --accent: #F21722;
-  --accent-hover: #D9141E;
-  --accent-blue: #F21722;
-  --accent-light: rgba(242, 23, 34, 0.08);
-  --accent-border: rgba(242, 23, 34, 0.22);
-  --accent-glow: transparent;
+  /* Secondary & Accent Colors */
+  --brand-secondary: #6366F1;
+  --accent: #10B981;
+  --accent-hover: #059669;
+  --accent-blue: #3B82F6;
+  --accent-sky: #60A5FA;
+  --accent-light: rgba(16, 185, 129, 0.08);
+  --accent-border: rgba(16, 185, 129, 0.2);
+  --accent-glow: rgba(16, 185, 129, 0.15);
 
-  /* Semantic Status Colors (Calm, Informational Signals) */
-  --success: #16A34A;
-  --success-light: rgba(22, 163, 74, 0.1);
-  --success-soft: #EDFBF2;
-  --success-border: #BBF7D0;
+  /* Semantic Status Colors */
+  --success: #10B981;
+  --success-light: rgba(16, 185, 129, 0.1);
+  --success-soft: #ECFDF5;
+  --success-border: #A7F3D0;
 
-  --warning: #D97706;
-  --warning-light: rgba(217, 119, 6, 0.1);
+  --warning: #F59E0B;
+  --warning-light: rgba(245, 158, 11, 0.1);
   --warning-soft: #FFFBEB;
   --warning-border: #FEF3C7;
 
-  --danger: #E5484D;
-  --danger-light: rgba(229, 72, 77, 0.1);
-  --danger-soft: #FEECEB;
-  --danger-border: #FCA5A5;
+  --error: #EF4444;
+  --error-light: rgba(239, 68, 68, 0.1);
+  --error-soft: #FEF2F2;
+  --error-border: #FCA5A5;
 
-  --info: #2563EB;
-  --info-light: rgba(37, 99, 235, 0.1);
+  --info: #3B82F6;
+  --info-light: rgba(59, 130, 246, 0.1);
   --info-soft: #EFF6FF;
   --info-border: #BFDBFE;
 
   /* Elevation Shadows */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
-  --shadow-elevated: 0 10px 25px -4px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.02);
-  --shadow-card-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.07), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+  --shadow-elevated: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-card-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
+  --shadow-modal: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+  --success-bg: rgba(16, 185, 129, 0.12);
+  --text-body: var(--text-secondary);
 
   /* Button Tokens */
-  --btn-primary-bg: #F21722;
-  --btn-primary-hover: #D9141E;
+  --btn-primary-bg: #4F46E5;
+  --btn-primary-hover: #4338CA;
   --btn-primary-text: #FFFFFF;
-  --btn-primary-shadow: 0 2px 8px rgba(242, 23, 34, 0.2);
-  --btn-primary-border: #F21722;
+  --btn-primary-shadow: 0 1px 3px 0 rgba(79, 70, 229, 0.3);
+  --btn-primary-border: #4F46E5;
 
-  /* Geometry */
-  --radius-xl: 16px;
+  --btn-secondary-bg: #FFFFFF;
+  --btn-secondary-hover: #F8FAFC;
+  --btn-secondary-text: #0F172A;
+  --btn-secondary-border: #E2E8F0;
+
+  /* Geometry - Consistent 8px / 12px / 16px / 20px */
+  --radius-none: 0px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
   --radius-lg: 12px;
-  --radius-md: 8px;
-  --radius-sm: 4px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-full: 9999px;
 
-  /* Reference UI tokens (Mapped cleanly to semantics) */
-  --ref-bg-outer: var(--bg-canvas);
-  --ref-shell-bg: var(--bg-shell);
-  --ref-card-bg: var(--bg-card);
-  --ref-card-border: var(--border-subtle);
-  --ref-card-shadow: var(--shadow-card);
-  --ref-card-elevated-shadow: var(--shadow-elevated);
-  --ref-text-title: var(--text-primary);
-  --ref-text-body: var(--text-secondary);
-  --ref-text-muted: var(--text-muted);
-  --ref-pill-btn: #1C1C1E;
-  --ref-accent-green: #22C55E;
-  --ref-accent-red: #FF6A60;
+  /* Spacing System (4px grid + subgrid & extended scale) */
+  --spacing-0: 0px;
+  --spacing-0-25: 1px;
+  --spacing-0-375: 1.5px;
+  --spacing-0-5: 2px;
+  --spacing-0-625: 2.5px;
+  --spacing-0-75: 3px;
+  --spacing-0-9375: 3.75px;
+  --spacing-1: 4px;
+  --spacing-1-25: 5px;
+  --spacing-1-5: 6px;
+  --spacing-1-625: 6.5px;
+  --spacing-1-75: 7px;
+  --spacing-1-875: 7.5px;
+  --spacing-2: 8px;
+  --spacing-2-25: 9px;
+  --spacing-2-375: 9.5px;
+  --spacing-2-5: 10px;
+  --spacing-2-625: 10.5px;
+  --spacing-2-75: 11px;
+  --spacing-2-875: 11.5px;
+  --spacing-3: 12px;
+  --spacing-3-125: 12.5px;
+  --spacing-3-25: 13px;
+  --spacing-3-5: 14px;
+  --spacing-3-75: 15px;
+  --spacing-4: 16px;
+  --spacing-4-375: 17.5px;
+  --spacing-4-5: 18px;
+  --spacing-5: 20px;
+  --spacing-5-5: 22px;
+  --spacing-6: 24px;
+  --spacing-6-5: 26px;
+  --spacing-7: 28px;
+  --spacing-7-5: 30px;
+  --spacing-8: 32px;
+  --spacing-8-5: 34px;
+  --spacing-8-75: 35px;
+  --spacing-9: 36px;
+  --spacing-9-5: 38px;
+  --spacing-10: 40px;
+  --spacing-10-5: 42px;
+  --spacing-11: 44px;
+  --spacing-12: 48px;
+  --spacing-13: 52px;
+  --spacing-14: 56px;
+  --spacing-15: 60px;
+  --spacing-16: 64px;
+  --spacing-20: 80px;
+  --spacing-24: 96px;
+  --spacing-27-5: 110px;
+  --spacing-32: 128px;
+  --spacing-32-5: 130px;
+  --spacing-35: 140px;
+  --spacing-45: 180px;
+  --spacing-55: 220px;
+  --spacing-60: 240px;
+  --spacing-62-5: 250px;
+  --spacing-80: 320px;
+  --spacing-100: 400px;
+  --spacing-105: 420px;
+  --spacing-112: 448px;
+  --spacing-125: 500px;
 
+  /* Legacy space aliases */
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+
+  /* Transition */
   --transition-normal: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-fast: 0.12s ease;
 }
 
+/* Dark Mode - Premium True-Black + Graphite + Electric Indigo */
 .dark {
-  /* Enterprise Obsidian Dark Hierarchy (Deep background -> Shell -> Card -> Elevated) */
-  --bg-canvas: #090A0F;
-  --bg-shell: #0F1117;
-  --bg-primary: #0F1117;
-  --bg-secondary: #151821;
-  --bg-tertiary: #1C202C;
-  --bg-card: #151821;
-  --bg-card-elevated: #1C202C;
-  --bg-surface: #151821;
-  --bg-elevated: #1C202C;
-  --bg-surface-hover: #232838;
-  --bg-surface-active: #2A3042;
-  --bg-hover: #232838;
+  /* Canvas & Shell Foundation */
+  --bg-canvas: #050505;
+  --bg-shell: #080808;
+  --bg-primary: #050505;
+  --bg-secondary: #080808;
+  --bg-tertiary: #0D0D0D;
+  --bg-card: #0D0D0D;
+  --bg-card-hover: #111111;
+  --bg-card-elevated: #0F0F0F;
+  --bg-surface: #0A0A0A;
+  --bg-surface-1: #0A0A0A;
+  --bg-surface-2: #0F0F0F;
+  --bg-surface-3: #141414;
+  --bg-elevated: #0F0F0F;
+  --bg-surface-hover: #181818;
+  --bg-surface-active: #1C1C1C;
+  --bg-hover: #181818;
 
-  /* Controlled Non-Glaring Typography */
-  --text-primary: #F4F4F6;
-  --text-secondary: #A0A1AA;
-  --text-muted: #71717A;
-  --text-disabled: #52525B;
+  /* Typography Hierarchy */
+  --text-primary: #F5F5F5;
+  --text-secondary: #A3A3A3;
+  --text-muted: #737373;
+  --text-disabled: #525252;
 
-  /* Subtle Low-Contrast Borders */
-  --border-color: rgba(255, 255, 255, 0.09);
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-strong: rgba(255, 255, 255, 0.16);
-  --glass-bg: rgba(0, 0, 0, 0.92);
+  /* Borders & Dividers */
+  --border-color: #1F1F1F;
+  --border-subtle: #1F1F1F;
+  --border-hover: #2A2A2A;
+  --border-strong: #333333;
+  --input-border: #262626;
+  --glass-bg: rgba(15, 15, 15, 0.72);
   --glass-border: rgba(255, 255, 255, 0.08);
 
-  /* Primary Brand Identity - Official Logo Red in Dark Mode */
-  --brand: #F21722;
-  --brand-hover: #FF2E39;
-  --brand-active: #E0131E;
-  --brand-light: rgba(242, 23, 34, 0.15);
-  --brand-border: rgba(242, 23, 34, 0.35);
-  --brand-glow: rgba(242, 23, 34, 0.25);
+  /* Primary Brand Identity (Electric Indigo) */
+  --brand: #6366F1;
+  --brand-hover: #818CF8;
+  --brand-active: #4F46E5;
+  --brand-soft: rgba(99, 102, 241, 0.12);
+  --brand-light: rgba(99, 102, 241, 0.12);
+  --brand-border: rgba(99, 102, 241, 0.35);
+  --brand-glow: rgba(99, 102, 241, 0.15);
 
-  --accent: #F21722;
-  --accent-hover: #FF2E39;
-  --accent-blue: #F21722;
-  --accent-light: rgba(242, 23, 34, 0.15);
-  --accent-border: rgba(242, 23, 34, 0.35);
-  --accent-glow: rgba(242, 23, 34, 0.25);
+  /* Secondary Accents (Semantic) */
+  --accent: #10B981;
+  --accent-hover: #059669;
+  --accent-blue: #3B82F6;
+  --accent-light: rgba(16, 185, 129, 0.12);
+  --accent-border: rgba(16, 185, 129, 0.25);
+  --accent-glow: rgba(16, 185, 129, 0.15);
 
-  /* Restrained Informational Status Colors in Dark */
-  --success: #34D399;
-  --success-light: rgba(52, 211, 153, 0.12);
-  --success-soft: rgba(52, 211, 153, 0.12);
-  --success-border: rgba(52, 211, 153, 0.25);
+  /* Semantic Status Colors */
+  --success: #10B981;
+  --success-text: #34D399;
+  --success-light: rgba(16, 185, 129, 0.12);
+  --success-soft: rgba(16, 185, 129, 0.12);
+  --success-border: rgba(16, 185, 129, 0.25);
 
-  --warning: #FBBF24;
-  --warning-light: rgba(251, 191, 36, 0.12);
-  --warning-soft: rgba(251, 191, 36, 0.12);
-  --warning-border: rgba(251, 191, 36, 0.25);
+  --warning: #F59E0B;
+  --warning-text: #FBBF24;
+  --warning-light: rgba(245, 158, 11, 0.12);
+  --warning-soft: rgba(245, 158, 11, 0.12);
+  --warning-border: rgba(245, 158, 11, 0.25);
 
-  --danger: #F87171;
-  --danger-light: rgba(248, 113, 113, 0.12);
-  --danger-soft: rgba(248, 113, 113, 0.12);
-  --danger-border: rgba(248, 113, 113, 0.25);
+  --error: #EF4444;
+  --error-text: #F87171;
+  --error-light: rgba(239, 68, 68, 0.12);
+  --error-soft: rgba(239, 68, 68, 0.12);
+  --error-border: rgba(239, 68, 68, 0.25);
 
-  --info: #60A5FA;
-  --info-light: rgba(96, 165, 250, 0.12);
-  --info-soft: rgba(96, 165, 250, 0.12);
-  --info-border: rgba(96, 165, 250, 0.25);
+  --info: #3B82F6;
+  --info-text: #60A5FA;
+  --info-light: rgba(59, 130, 246, 0.12);
+  --info-soft: rgba(59, 130, 246, 0.12);
+  --info-border: rgba(59, 130, 246, 0.25);
 
-  /* Shadows - Ambient Dark Depth */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.45);
-  --shadow-elevated: 0 12px 30px -4px rgba(0, 0, 0, 0.65);
-  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.7);
+  /* Elevation Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.6);
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.5), 0 1px 2px -1px rgba(0, 0, 0, 0.5);
+  --shadow-elevated: 0 8px 30px rgba(0, 0, 0, 0.7);
+  --shadow-card-hover: 0 8px 24px -2px rgba(0, 0, 0, 0.75);
+  --shadow-modal: 0 20px 40px -5px rgba(0, 0, 0, 0.85);
+  --success-bg: rgba(16, 185, 129, 0.12);
+  --text-body: var(--text-secondary);
 
-  --btn-primary-bg: #F21722;
-  --btn-primary-hover: #FF2E39;
+  /* Button Tokens */
+  --btn-primary-bg: #6366F1;
+  --btn-primary-hover: #818CF8;
   --btn-primary-text: #FFFFFF;
-  --btn-primary-shadow: 0 2px 10px rgba(242, 23, 34, 0.35);
-  --btn-primary-border: #F21722;
+  --btn-primary-shadow: 0 1px 3px 0 rgba(99, 102, 241, 0.4);
+  --btn-primary-border: #6366F1;
 
-  --ref-bg-outer: var(--bg-canvas);
-  --ref-shell-bg: var(--bg-shell);
-  --ref-card-bg: var(--bg-card);
-  --ref-card-border: var(--border-subtle);
-  --ref-card-shadow: var(--shadow-card);
-  --ref-card-elevated-shadow: var(--shadow-elevated);
-  --ref-text-title: var(--text-primary);
-  --ref-text-body: var(--text-secondary);
-  --ref-text-muted: var(--text-muted);
-  --ref-pill-btn: #18181D;
-  --ref-accent-green: #34D399;
-  --ref-accent-red: #F87171;
+  --btn-secondary-bg: #141414;
+  --btn-secondary-hover: #181818;
+  --btn-secondary-text: #F5F5F5;
+  --btn-secondary-border: #2A2A2A;
+
+  /* Geometry - Consistent 8px / 12px / 16px / 20px */
+  --radius-none: 0px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-full: 9999px;
+
+  /* Centralized color aliases */
+  --color-bg-primary: #050505;
+  --color-bg-secondary: #080808;
+  --color-bg-tertiary: #0D0D0D;
+  --color-surface-1: #0A0A0A;
+  --color-surface-2: #0F0F0F;
+  --color-surface-3: #141414;
+  --color-surface-hover: #181818;
+  --color-surface-active: #1C1C1C;
+  --color-border: #1F1F1F;
+  --color-border-hover: #2A2A2A;
+  --color-border-strong: #333333;
+  --color-text-primary: #F5F5F5;
+  --color-text-secondary: #A3A3A3;
+  --color-text-muted: #737373;
+  --color-text-disabled: #525252;
+  --color-primary: #6366F1;
+  --color-primary-hover: #818CF8;
+  --color-primary-dark: #4F46E5;
+  --color-primary-soft: rgba(99, 102, 241, 0.12);
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  --color-info: #3B82F6;
 }

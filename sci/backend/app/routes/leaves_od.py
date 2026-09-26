@@ -148,7 +148,7 @@ async def list_student_leaves(
         query = query.where(StudentLeave.advisor_id == current_user["id"])
     elif role == "hod":
         query = query.where(User.department == current_user["department"])
-    elif role == "admin":
+    elif role in ["admin", "warden"]:
         if student_id:
             query = query.where(StudentLeave.student_id == student_id)
     else:
@@ -263,7 +263,7 @@ async def review_student_leave(
 async def approve_student_leave(
     leave_id: int,
     req: ApproveRequest,
-    current_user: dict = Depends(require_role("hod")),
+    current_user: dict = Depends(require_role("hod", "admin", "warden")),
     db: AsyncSession = Depends(get_db)
 ):
     res = await db.execute(select(StudentLeave).where(StudentLeave.id == leave_id))
@@ -274,7 +274,8 @@ async def approve_student_leave(
     std_res = await db.execute(select(User).where(User.id == leave.student_id))
     student = std_res.scalar_one()
 
-    if student.department != current_user["department"]:
+    user_role = current_user.get("role", "").lower()
+    if user_role not in ["admin", "warden"] and student.department != current_user.get("department"):
         raise HTTPException(status_code=403, detail="HOD can only approve leaves within their department")
 
     if req.status not in ["Approved", "Rejected"]:
@@ -391,7 +392,7 @@ async def list_student_ods(
         query = query.where(StudentOD.advisor_id == current_user["id"])
     elif role == "hod":
         query = query.where(User.department == current_user["department"])
-    elif role == "admin":
+    elif role in ["admin", "warden"]:
         if student_id:
             query = query.where(StudentOD.student_id == student_id)
     else:
@@ -507,7 +508,7 @@ async def review_student_od(
 async def approve_student_od(
     od_id: int,
     req: ApproveRequest,
-    current_user: dict = Depends(require_role("hod")),
+    current_user: dict = Depends(require_role("hod", "admin", "warden")),
     db: AsyncSession = Depends(get_db)
 ):
     res = await db.execute(select(StudentOD).where(StudentOD.id == od_id))
@@ -518,7 +519,8 @@ async def approve_student_od(
     std_res = await db.execute(select(User).where(User.id == od.student_id))
     student = std_res.scalar_one()
 
-    if student.department != current_user["department"]:
+    user_role = current_user.get("role", "").lower()
+    if user_role not in ["admin", "warden"] and student.department != current_user.get("department"):
         raise HTTPException(status_code=403, detail="HOD can only approve requests within their department")
 
     if req.status not in ["Approved", "Rejected"]:

@@ -1,24 +1,142 @@
-/* ═══════════════════════════════════════════════════════════════════════════════
+/* ════════════════════════════════════════════════════════════════════════════════
    RESPONSIVE.CSS
    Media queries mapping Tailwind breakpoints: sm (640px), md (768px), lg (1024px), xl (1280px)
-   ═══════════════════════════════════════════════════════════════════════════════ */
+   ════════════════════════════════════════════════════════════════════════════════ */
 
-/* Tailwind sm Breakpoint */
+/* Responsive padding utilities */
+.p-responsive {
+  padding: var(--spacing-5);
+}
+
 @media (min-width: 640px) {
-  /* custom rules for sm layout */
+  .p-responsive {
+    padding: var(--spacing-6);
+  }
 }
 
-/* Tailwind md Breakpoint */
-@media (min-width: 768px) {
-  /* custom rules for md layout */
-}
-
-/* Tailwind lg Breakpoint */
 @media (min-width: 1024px) {
-  /* custom rules for lg layout */
+  .p-responsive {
+    padding: var(--spacing-8);
+  }
 }
 
-/* Tailwind xl Breakpoint */
-@media (min-width: 1280px) {
-  /* custom rules for xl layout */
+/* Responsive margin utilities */
+.m-responsive {
+  margin: var(--spacing-4);
 }
+
+@media (min-width: 640px) {
+  .m-responsive {
+    margin: var(--spacing-5);
+  }
+}
+
+@media (min-width: 1024px) {
+  .m-responsive {
+    margin: var(--spacing-6);
+  }
+}
+
+/* Responsive gap utilities */
+.gap-responsive {
+  gap: var(--spacing-4);
+}
+
+@media (min-width: 640px) {
+  .gap-responsive {
+    gap: var(--spacing-5);
+  }
+}
+
+@media (min-width: 1024px) {
+  .gap-responsive {
+    gap: var(--spacing-6);
+  }
+}
+
+/* Responsive font size utilities */
+.text-responsive {
+  font-size: var(--text-body);
+  line-height: 1.5;
+}
+
+@media (min-width: 640px) {
+  .text-responsive {
+    font-size: calc(var(--text-body) + 1px);
+    line-height: 1.5;
+  }
+}
+
+@media (min-width: 1024px) {
+  .text-responsive {
+    font-size: calc(var(--text-body) + 2px);
+    line-height: 1.5;
+  }
+}
+
+/* Responsive max-width containers */
+.container-responsive {
+  width: 100%;
+  padding-left: var(--spacing-4);
+  padding-right: var(--spacing-4);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 640px) {
+  .container-responsive {
+    max-width: 640px;
+    padding-left: var(--spacing-5);
+    padding-right: var(--spacing-5);
+  }
+}
+
+@media (min-width: 768px) {
+  .container-responsive {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-responsive {
+    max-width: 1024px;
+    padding-left: var(--spacing-6);
+    padding-right: var(--spacing-6);
+  }
+}
+
+@media (min-width: 1280px) {
+  .container-responsive {
+    max-width: 1280px;
+    padding-left: var(--spacing-8);
+    padding-right: var(--spacing-8);
+  }
+}
+
+/* Hide/show on specific breakpoints */
+.hidden-sm { display: none; }
+@media (min-width: 640px) { .hidden-sm { display: block; } }
+
+.hidden-md { display: none; }
+@media (min-width: 768px) { .hidden-md { display: block; } }
+
+.hidden-lg { display: none; }
+@media (min-width: 1024px) { .hidden-lg { display: block; } }
+
+.hidden-xl { display: none; }
+@media (min-width: 1280px) { .hidden-xl { display: block; } }
+
+.visible-sm { display: none; }
+@media (min-width: 640px) { .visible-sm { display: block; } }
+@media (min-width: 768px) { .visible-sm { display: none; } }
+
+.visible-md { display: none; }
+@media (min-width: 768px) { .visible-md { display: block; } }
+@media (min-width: 1024px) { .visible-md { display: none; } }
+
+.visible-lg { display: none; }
+@media (min-width: 1024px) { .visible-lg { display: block; } }
+@media (min-width: 1280px) { .visible-lg { display: none; } }
+
+.visible-xl { display: none; }
+@media (min-width: 1280px) { .visible-xl { display: block; } }

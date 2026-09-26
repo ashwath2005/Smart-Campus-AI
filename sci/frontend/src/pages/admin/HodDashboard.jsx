@@ -24,16 +24,22 @@ export const HodDashboard = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [leavesRes, odsRes, passesRes, facRes] = await Promise.allSettled([
+      const isWardenUser = user?.role === "warden";
+      const requests = [
+        api.get("/gate-pass/all-passes"),
         api.get("/workflows/leaves"),
         api.get("/workflows/ods"),
-        api.get("/gate-pass/all-passes"),
-        api.get(`/faculty-locator/search${user?.department ? `?department=${encodeURIComponent(user.department)}` : ""}`)
-      ]);
-      if (leavesRes.status === "fulfilled") setLeaves(leavesRes.value.data || []);
-      if (odsRes.status === "fulfilled") setOds(odsRes.value.data || []);
-      if (passesRes.status === "fulfilled") setGatePasses(passesRes.value.data || []);
-      if (facRes.status === "fulfilled") setFaculties(facRes.value.data || []);
+      ];
+      if (!isWardenUser) {
+        requests.push(api.get(`/faculty-locator/search${user?.department ? `?department=${encodeURIComponent(user.department)}` : ""}`));
+      }
+      const results = await Promise.allSettled(requests);
+      const [passesRes, leavesRes, odsRes, facRes] = results;
+
+      if (passesRes && passesRes.status === "fulfilled") setGatePasses(passesRes.value.data || []);
+      if (leavesRes && leavesRes.status === "fulfilled") setLeaves(leavesRes.value.data || []);
+      if (odsRes && odsRes.status === "fulfilled") setOds(odsRes.value.data || []);
+      if (facRes && facRes.status === "fulfilled") setFaculties(facRes.value.data || []);
     } catch {
       toast.error("Failed to load department requests.");
     } finally {
@@ -76,15 +82,16 @@ export const HodDashboard = () => {
 
   const handleGatePassAction = async (passId, action) => {
     setActionLoading(prev => ({ ...prev, [`gp-${passId}`]: true }));
+    const loadId = toast.loading(`${action === "approve" ? "Approving" : "Rejecting"} gate pass #${passId}...`);
     try {
       await api.post("/gate-pass/warden-action", {
         pass_id: passId,
         action: action // "approve" or "reject"
       });
-      toast.success(`Gate pass ${action}d successfully!`);
+      toast.success(`Gate pass #${passId} ${action}d successfully!`, { id: loadId });
       fetchData();
     } catch (err) {
-      toast.error(err.response?.data?.detail || `Failed to ${action} gate pass`);
+      toast.error(err.response?.data?.detail || `Failed to ${action} gate pass`, { id: loadId });
     } finally {
       setActionLoading(prev => ({ ...prev, [`gp-${passId}`]: false }));
     }

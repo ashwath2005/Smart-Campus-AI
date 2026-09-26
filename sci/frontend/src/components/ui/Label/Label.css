@@ -1,0 +1,36 @@
+/* Label Component - Modern Enterprise Forms using Design Tokens */
+
+.label {
+  display: block;
+  font-size: 0.75rem; /* text-xs */
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-sans);
+}
+
+/* Optional: Label variants */
+.label-sm {
+  font-size: 0.6875rem; /* 11px */
+}
+
+.label-lg {
+  font-size: 0.875rem; /* text-sm */
+  font-weight: var(--font-weight-bold);
+}
+
+/* Label with required indicator */
+.label-required::after {
+  content: "*";
+  margin-left: var(--space-0-5);
+  color: var(--color-error);
+}
+
+/* Disabled label */
+.label-disabled {
+  color: var(--color-text-muted);
+}
+
+/* Dark Mode - handled automatically by design tokens */

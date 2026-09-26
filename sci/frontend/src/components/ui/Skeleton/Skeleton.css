@@ -1,37 +1,61 @@
-/* Skeleton Layout */
+/* Skeleton Component - Modern Enterprise UI using Design Tokens */
+
+/* Skeleton Base */
 .skeleton {
-  background-color: rgba(0, 0, 0, 0.06);
+  background-color: var(--color-bg-muted);
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
+/* Dark Mode */
 .dark .skeleton {
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: var(--color-bg-muted);
 }
 
+/* Skeleton Variants */
 .skeleton-circle {
-  border-radius: 50%;
-  height: 40px;
-  width: 40px;
+  border-radius: var(--radius-full);
+  height: 2.5rem; /* 40px */
+  width: 2.5rem; /* 40px */
 }
 
 .skeleton-card {
   border-radius: var(--radius-xl);
-  height: 192px;
+  height: 12rem; /* 192px */
   width: 100%;
 }
 
 .skeleton-rectangle {
   border-radius: var(--radius-md);
-  height: 128px;
+  height: 8rem; /* 128px */
   width: 100%;
 }
 
 .skeleton-text {
   border-radius: var(--radius-sm);
-  height: 16px;
+  height: 1rem; /* 16px */
   width: 100%;
 }
 
+/* Spacing */
 .skeleton-spacing {
-  margin-top: 8px;
+  margin-top: var(--space-2);
+}
+
+/* Pulse Animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Size Variants */
+.skeleton-sm {
+  transform: scale(0.8);
+}
+
+.skeleton-lg {
+  transform: scale(1.2);
 }

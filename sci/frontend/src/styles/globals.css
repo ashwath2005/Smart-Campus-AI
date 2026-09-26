@@ -1,14 +1,15 @@
-/* ═══════════════════════════════════════════════════════════════════════════════
+/* ═════════════════════════════════════════════════════════════════════════════════
    GLOBALS.CSS
-   Clean resets, scrollbars, and base surfaces.
-   ═══════════════════════════════════════════════════════════════════════════════ */
+   Clean resets, scrollbars, and base surfaces using design tokens.
+   ════════════════════════════════════════════════════════════════════════════════ */
 
 html {
   margin: 0;
   padding: 0;
-  background-color: var(--bg-primary);
+  background-color: var(--bg-canvas);
   color: var(--text-primary);
   scroll-behavior: smooth;
+  font-size: 16px; /* Base font size */
 }
 
 body {
@@ -16,21 +17,22 @@ body {
   padding: 0;
   width: 100%;
   min-height: 100vh;
-  background-color: var(--bg-primary);
+  background-color: var(--bg-canvas);
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-family: var(--font-sans);
 }
 
 #root {
   width: 100%;
   min-height: 100vh;
-  background-color: var(--bg-primary);
+  background-color: var(--bg-canvas);
 }
 
 /* Neutral Clean Background (no blueprint grids or noise) */
 .digital-grid-bg {
-  background-color: var(--bg-primary);
+  background-color: var(--bg-canvas);
 }
 
 /* Subtle Scrollbars */
@@ -44,21 +46,23 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.12);
-  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: var(--radius-sm);
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: #262626;
+  border-radius: var(--radius-sm);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.25);
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: #333333;
 }
+
 
 .custom-scrollbar {
   scrollbar-width: thin;
@@ -73,14 +77,15 @@ body {
 .custom-toast-container {
   max-width: 420px;
   width: 100%;
-  background-color: var(--bg-secondary);
-  box-shadow: var(--shadow-elevated);
+  background-color: var(--color-bg-card);
+  box-shadow: var(--shadow-md);
   border-radius: var(--radius-lg);
   pointer-events: auto;
   display: flex;
   box-sizing: border-box;
-  border: 1px solid var(--border-color);
-  padding: 14px;
+  border: 1px solid var(--color-border);
+  padding: var(--space-4);
+  gap: var(--space-3);
 }
 
 .custom-toast-body {
@@ -91,44 +96,45 @@ body {
 .custom-toast-content {
   display: flex;
   align-items: flex-start;
+  gap: var(--space-2);
 }
 
 .custom-toast-icon-wrapper {
   flex-shrink: 0;
-  padding-top: 2px;
+  padding-top: var(--space-0-5);
 }
 
 .custom-toast-info {
-  margin-left: 10px;
+  margin-left: var(--space-2-5);
   flex: 1;
 }
 
 .custom-toast-title {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-size: 0.875rem; /* text-sm */
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
   letter-spacing: -0.01em;
   margin: 0;
 }
 
 .custom-toast-message {
-  margin-top: 2px;
-  font-size: 12px;
-  color: var(--text-secondary);
+  margin-top: var(--space-0-5);
+  font-size: 0.75rem; /* text-xs */
+  color: var(--color-text-secondary);
   line-height: 1.5;
   margin-bottom: 0;
 }
 
 .custom-toast-close-container {
-  margin-left: 12px;
+  margin-left: var(--space-3);
   flex-shrink: 0;
   display: flex;
 }
 
 .custom-toast-close-btn {
-  border-radius: 4px;
-  padding: 4px;
-  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1);
+  color: var(--color-text-muted);
   background: transparent;
   border: none;
   cursor: pointer;
@@ -139,5 +145,79 @@ body {
 }
 
 .custom-toast-close-btn:hover {
-  color: var(--text-primary);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-muted);
+}
+
+/* Focus Ring Utility */
+.focus-ring {
+  --ring-offset-width: 2px;
+  --ring-color: var(--color-primary);
+  box-shadow: var(--ring-inset) 0 0 0 calc(2px + var(--ring-offset-width)) var(--ring-color);
+}
+
+/* Transition Utilities */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.transition-colors {
+  transition-property: background-color, border-color, color, opacity, box-shadow, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Animation Utilities */
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-25%);
+  }
+}
+
+/* Hover Utilities */
+.hover\:lift {
+  transition: transform 0.2s ease-in-out;
+}
+
+.hover\:lift:hover {
+  transform: translateY(-2px);
+}
+
+.hover\:scale {
+  transition: transform 0.2s ease-in-out;
+}
+
+.hover\:scale:hover {
+  transform: scale(1.02);
+}
+
+/* Active Utilities */
+.active\:scale {
+  transition: transform 0.1s ease-in-out;
+}
+
+.active\:scale:active {
+  transform: scale(0.98);
 }

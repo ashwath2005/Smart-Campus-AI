@@ -149,13 +149,15 @@ cd "d:\FInal Year\sci\backend"
 
 ---
 
-## 📚 Technical Documentation
+## 📚 Technical Documentation & Knowledge Base
 
-- [3D Campus Digital Twin Architecture](docs/THREE_JS_ARCHITECTURE.md)
-- [System Architecture](docs/PROJECT_MASTER_DOCUMENTATION.md)
-- [Algorithmic & Mathematical Formulations](complete_project_architecture_and_algorithms.md)
-- [Database Schema & ER Model](docs/schema_details.md)
-- [Test Cases & QA Validation Matrix](docs/TEST_CASES.md)
+- [📖 Master Documentation Catalog & Sitemap](docs/README.md)
+- [3D Campus Digital Twin Architecture](docs/architecture/THREE_JS_ARCHITECTURE.md)
+- [System Architecture Specification](docs/architecture/PROJECT_MASTER_DOCUMENTATION.md)
+- [Algorithmic & Mathematical Formulations](docs/algorithms/ALGORITHMS.md)
+- [Database Schema & ER Model](docs/database/schema_details.md)
+- [Test Cases & QA Validation Matrix](docs/testing/TEST_CASES.md)
+- [Complete 6-Role Workflow Matrix](docs/workflows/COMPLETE_WORKFLOW_MATRIX.md)
 
 ---
 

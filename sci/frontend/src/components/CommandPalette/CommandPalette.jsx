@@ -32,7 +32,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import api from '../../services/api';
+import api from '../../api/axios';
 import './CommandPalette.css';
 
 export const CommandPalette = ({ isOpen, onClose }) => {

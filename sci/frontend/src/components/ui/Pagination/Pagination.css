@@ -1,0 +1,87 @@
+/* Pagination Component - Modern Enterprise UI using Design Tokens */
+
+/* Pagination Container */
+.pagination-container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+}
+
+/* Pagination Button */
+.pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem; /* 36px */
+  height: 2.25rem; /* 36px */
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+  font-size: 0.875rem; /* text-sm */
+  cursor: pointer;
+  transition: var(--transition-normal);
+  user-select: none;
+}
+
+/* Pagination Button States */
+.pagination-btn:hover:not(.pagination-btn-disabled) {
+  background-color: var(--color-bg-muted);
+  color: var(--color-text-primary);
+}
+
+.pagination-btn:active:not(.pagination-btn-disabled) {
+  transform: scale(0.95);
+}
+
+.pagination-btn-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Active Page Button */
+.pagination-btn-active {
+  background-color: var(--color-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
+}
+
+.pagination-btn-active:hover {
+  background-color: var(--color-primary-700);
+}
+
+/* Pagination Dots */
+.pagination-dots {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem; /* 36px */
+  height: 2.25rem; /* 36px */
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-normal);
+}
+
+/* Size Variants */
+.pagination-sm {
+  gap: var(--space-0-5);
+}
+
+.pagination-sm .pagination-btn {
+  min-width: 2rem; /* 32px */
+  height: 2rem; /* 32px */
+  font-size: 0.75rem; /* text-xs */
+}
+
+.pagination-lg {
+  gap: var(--space-2);
+}
+
+.pagination-lg .pagination-btn {
+  min-width: 2.75rem; /* 44px */
+  height: 2.75rem; /* 44px */
+  font-size: 1rem; /* text-base */
+}
+
+/* Dark Mode - handled automatically by design tokens */

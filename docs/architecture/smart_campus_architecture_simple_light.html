@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Campus AI - System Architecture (Light Theme)</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #0f172a;
+    }
+    #slide {
+      width: 1920px;
+      height: 1080px;
+      background: #f8fafc;
+      padding: 36px 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    /* Subtle grid background */
+    #slide::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: 
+        linear-gradient(to right, #e2e8f0 1px, transparent 1px),
+        linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .content-wrapper {
+      position: relative;
+      z-index: 10;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* HEADER */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .badge-review {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      background: #e0f2fe;
+      border: 1px solid #bae6fd;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #0284c7;
+      letter-spacing: 0.5px;
+      width: fit-content;
+    }
+    .badge-review .dot {
+      width: 6px;
+      height: 6px;
+      background: #0284c7;
+      border-radius: 50%;
+    }
+    .header-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.3px;
+    }
+    .header-title span {
+      color: #0284c7;
+    }
+    .header-subtitle {
+      font-size: 13.5px;
+      color: #64748b;
+      font-weight: 500;
+    }
+    .header-right {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      padding: 8px 18px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+      text-align: right;
+    }
+    .college-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1e293b;
+    }
+    .dept-name {
+      font-size: 11.5px;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    /* TIER CONTAINERS */
+    .tier-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 12px 18px;
+      position: relative;
+      box-shadow: 0 3px 8px rgba(15, 23, 42, 0.04);
+      border: 1.5px solid;
+    }
+    .tier-tag {
+      position: absolute;
+      top: -11px;
+      left: 18px;
+      padding: 2px 12px;
+      border-radius: 5px;
+      font-size: 10.5px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* CONNECTOR BARS */
+    .connector-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      height: 16px;
+    }
+    .connector-line {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      height: 1.5px;
+      background: #cbd5e1;
+      z-index: 1;
+    }
+    .connector-badge {
+      position: relative;
+      z-index: 2;
+      background: #ffffff;
+      border: 1px solid #94a3b8;
+      border-radius: 999px;
+      padding: 1px 12px;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* TIER 1: CLIENT */
+    .tier-1 {
+      border-color: #bae6fd;
+    }
+    .tier-1 .tier-tag {
+      background: #0284c7;
+    }
+    .t1-grid {
+      display: grid;
+      grid-template-columns: 280px 1fr 280px;
+      gap: 16px;
+      align-items: stretch;
+    }
+    .t1-box {
+      background: #f0f9ff;
+      border: 1px solid #e0f2fe;
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+    }
+    .box-heading {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: #0369a1;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .roles-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      flex: 1;
+    }
+    .role-chip {
+      background: #ffffff;
+      border: 1px solid #bae6fd;
+      border-radius: 6px;
+      padding: 4px 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .react-modules {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      flex: 1;
+    }
+    .module-card {
+      background: #ffffff;
+      border: 1px solid #bae6fd;
+      border-radius: 6px;
+      padding: 6px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .module-card .name {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .module-card .desc {
+      font-size: 9.5px;
+      font-weight: 600;
+      color: #0284c7;
+      margin-top: 2px;
+    }
+    .clients-col {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+    .client-card {
+      background: #ffffff;
+      border: 1px solid #bae6fd;
+      border-radius: 6px;
+      padding: 5px 10px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .client-card .name {
+      font-size: 11px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .client-card .desc {
+      font-size: 9px;
+      color: #64748b;
+    }
+
+    /* TIER 2: API GATEWAY */
+    .tier-2 {
+      border-color: #99f6e4;
+    }
+    .tier-2 .tier-tag {
+      background: #0d9488;
+    }
+    .t2-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+    .t2-card {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      padding: 8px 12px;
+    }
+    .t2-card .name {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #15803d;
+    }
+    .t2-card .desc {
+      font-size: 9.5px;
+      color: #475569;
+      margin-top: 2px;
+    }
+
+    /* TIER 3: SERVICES */
+    .tier-3 {
+      border-color: #c7d2fe;
+    }
+    .tier-3 .tier-tag {
+      background: #4f46e5;
+    }
+    .t3-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+    .t3-card {
+      background: #eef2ff;
+      border: 1px solid #e0e7ff;
+      border-radius: 8px;
+      padding: 8px 12px;
+    }
+    .t3-card .name {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #3730a3;
+    }
+    .t3-card .desc {
+      font-size: 9.5px;
+      color: #4f46e5;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    /* TIER 4: AI & MATHEMATICAL SUITE */
+    .tier-4 {
+      border-color: #d8b4fe;
+      background: #ffffff;
+    }
+    .tier-4 .tier-tag {
+      background: #7c3aed;
+    }
+    .t4-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .algo-card {
+      background: #faf5ff;
+      border: 1px solid #e9d5ff;
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+    .algo-card.gemini-card {
+      background: #fff1f2;
+      border-color: #fecdd3;
+    }
+    .algo-card.gemini-card .algo-num {
+      background: #e11d48;
+    }
+    .algo-card.gemini-card .name {
+      color: #9f1239;
+    }
+    .algo-card.gemini-card .desc {
+      color: #be123c;
+    }
+    .algo-card.gemini-card .formula {
+      color: #e11d48;
+    }
+    .algo-header {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 2px;
+    }
+    .algo-num {
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      background: #7c3aed;
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .algo-card .name {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #581c87;
+    }
+    .algo-card .desc {
+      font-size: 9.5px;
+      color: #6b21a8;
+      line-height: 1.25;
+      margin-top: 1px;
+    }
+    .algo-card .formula {
+      font-size: 9px;
+      font-weight: 700;
+      color: #7e22ce;
+      background: rgba(255,255,255,0.7);
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-top: 4px;
+      width: fit-content;
+    }
+
+    /* TIER 5: PERSISTENCE */
+    .tier-5 {
+      border-color: #cbd5e1;
+    }
+    .tier-5 .tier-tag {
+      background: #475569;
+    }
+    .t5-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1.4fr;
+      gap: 14px;
+    }
+    .t5-group {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 12px;
+    }
+    .t5-group .title {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 5px;
+    }
+    .t5-chips {
+      display: flex;
+      gap: 8px;
+    }
+    .t5-chip {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 5px 8px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .t5-chip .name {
+      font-size: 11px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .t5-chip .desc {
+      font-size: 9px;
+      color: #64748b;
+    }
+
+    /* FOOTER */
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 4px;
+      border-top: 1px solid #e2e8f0;
+    }
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .footer-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: #64748b;
+      letter-spacing: 0.5px;
+    }
+    .feature-pill {
+      background: #ffffff;
+      border: 1px solid;
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: 10.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .pill-blue { border-color: #bae6fd; color: #0369a1; background: #f0f9ff; }
+    .pill-green { border-color: #bbf7d0; color: #15803d; background: #f0fdf4; }
+    .pill-purple { border-color: #e9d5ff; color: #7e22ce; background: #faf5ff; }
+    .pill-rose { border-color: #fecdd3; color: #be123c; background: #fff1f2; }
+    .pill-indigo { border-color: #c7d2fe; color: #3730a3; background: #eef2ff; }
+
+    .footer-right {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="slide">
+    <div class="content-wrapper">
+      
+      <!-- SLIDE HEADER -->
+      <div class="header">
+        <div class="header-left">
+          <div class="badge-review">
+            <div class="dot"></div>
+            PROJECT WORK PHASE - I | FIRST REVIEW
+          </div>
+          <div class="header-title">Smart Campus AI (SCI) — <span>System Architecture</span></div>
+          <div class="header-subtitle">
+            An Asynchronous End-to-End Operational Pipeline: Full-Stack React Client, FastAPI Core, Mathematical Intelligence Suite &amp; Generative AI Context Binding
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="college-name">SRI KRISHNA COLLEGE OF TECHNOLOGY (SKCET)</div>
+          <div class="dept-name">Department of Computer Science and Engineering | Batch 11</div>
+        </div>
+      </div>
+
+      <!-- TIER 1: CLIENT & PRESENTATION LAYER -->
+      <div class="tier-card tier-1">
+        <div class="tier-tag">1. Client &amp; Presentation Layer (React 18 + Vite)</div>
+        <div class="t1-grid">
+          
+          <!-- User Roles -->
+          <div class="t1-box">
+            <div class="box-heading">CAMPUS USER PERSONAS</div>
+            <div class="roles-grid">
+              <div class="role-chip">🎓 Student Portal</div>
+              <div class="role-chip">👨‍🏫 Faculty / HOD</div>
+              <div class="role-chip">🏛️ Admin Console</div>
+              <div class="role-chip">🛡️ Warden / Guard</div>
+            </div>
+          </div>
+
+          <!-- React 18 Modules -->
+          <div class="t1-box" style="background: #f8fafc; border-color: #e2e8f0;">
+            <div class="box-heading" style="color: #334155;">REACT 18 SINGLE PAGE APPLICATION (TAILWIND CSS · FRAMER MOTION · LUCIDE)</div>
+            <div class="react-modules">
+              <div class="module-card">
+                <div class="name">Academic Agenda</div>
+                <div class="desc">75% Attendance Guard</div>
+              </div>
+              <div class="module-card">
+                <div class="name">Digital Gate Pass</div>
+                <div class="desc">Signed QR Verification</div>
+              </div>
+              <div class="module-card">
+                <div class="name">Learning Intelligence</div>
+                <div class="desc">Active Watch Tracker</div>
+              </div>
+              <div class="module-card">
+                <div class="name">Campus Pulse</div>
+                <div class="desc">Zone Density Heatmaps</div>
+              </div>
+              <div class="module-card">
+                <div class="name">Career &amp; Placement</div>
+                <div class="desc">ATS Resume &amp; Skills</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Network Clients -->
+          <div class="t1-box">
+            <div class="box-heading">COMMUNICATION CLIENTS</div>
+            <div class="clients-col">
+              <div class="client-card">
+                <div class="name">Axios HTTP Client</div>
+                <div class="desc">REST Requests · JWT Interceptor</div>
+              </div>
+              <div class="client-card">
+                <div class="name">WebSocket &amp; Native Bridge</div>
+                <div class="desc">Live Alerts · Capacitor Haptics</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- CONNECTOR 1 -->
+      <div class="connector-row">
+        <div class="connector-line"></div>
+        <div class="connector-badge">⬇️ HTTPS REST (JSON) &amp; WSS REAL-TIME EVENT STREAMS ⬇️</div>
+      </div>
+
+      <!-- TIER 2: API GATEWAY & SECURITY LAYER -->
+      <div class="tier-card tier-2">
+        <div class="tier-tag">2. API Gateway &amp; Security Layer (FastAPI ASGI)</div>
+        <div class="t2-grid">
+          <div class="t2-card">
+            <div class="name">FastAPI ASGI Core</div>
+            <div class="desc">Uvicorn Workers · Central Router · v1 Endpoints</div>
+          </div>
+          <div class="t2-card">
+            <div class="name">Auth &amp; RBAC Route Guards</div>
+            <div class="desc">JWT Token Verify · 4-Tier Role Authorization</div>
+          </div>
+          <div class="t2-card">
+            <div class="name">Security Middleware</div>
+            <div class="desc">CORS · XSS Sanitizer · Token Bucket Rate-Limiter</div>
+          </div>
+          <div class="t2-card">
+            <div class="name">Pydantic v2 Contracts</div>
+            <div class="desc">Strict Request Validation &amp; Type Serialization</div>
+          </div>
+          <div class="t2-card">
+            <div class="name">WebSocket Dispatcher</div>
+            <div class="desc">Real-time Push &amp; Wearable Haptic Gateway</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONNECTOR 2 -->
+      <div class="connector-row">
+        <div class="connector-line"></div>
+        <div class="connector-badge">⬇️ ASYNCHRONOUS CONTROLLER DISPATCH ⬇️</div>
+      </div>
+
+      <!-- TIER 3: CORE APPLICATION SERVICES -->
+      <div class="tier-card tier-3">
+        <div class="tier-tag">3. Business Logic &amp; Domain Services Layer</div>
+        <div class="t3-grid">
+          <div class="t3-card">
+            <div class="name">Academic &amp; Timetable Service</div>
+            <div class="desc">75% Attendance Guard · Department Rosters</div>
+          </div>
+          <div class="t3-card">
+            <div class="name">Gate Pass Lifecycle Service</div>
+            <div class="desc">Multi-tier Workflow · QR Signing &amp; Invalidation</div>
+          </div>
+          <div class="t3-card">
+            <div class="name">Cognitive Learning Service</div>
+            <div class="desc">Roadmap Generation · YouTube Embeds · Quizzes</div>
+          </div>
+          <div class="t3-card">
+            <div class="name">Career &amp; Placement Service</div>
+            <div class="desc">Resume Extraction · Bigram Matching · ATS Index</div>
+          </div>
+          <div class="t3-card">
+            <div class="name">Campus Operations Service</div>
+            <div class="desc">Hardware-Free Faculty Locator · Zone Density</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONNECTOR 3 -->
+      <div class="connector-row">
+        <div class="connector-line"></div>
+        <div class="connector-badge">⬇️ MATHEMATICAL HEURISTICS &amp; AI INFERENCE PIPELINE ⬇️</div>
+      </div>
+
+      <!-- TIER 4: MATHEMATICAL INTELLIGENCE SUITE & AI ENGINES -->
+      <div class="tier-card tier-4">
+        <div class="tier-tag">4. Mathematical Intelligence Suite &amp; AI Engines (Core Innovation)</div>
+        <div class="t4-grid">
+          
+          <!-- Algo 1 -->
+          <div class="algo-card">
+            <div class="algo-header">
+              <div class="algo-num">1</div>
+              <div class="name">CSP Timetable Solver</div>
+            </div>
+            <div class="desc">Constraint Satisfaction Backtracking with zero room/faculty conflicts.</div>
+            <div class="formula">MRV (Minimum Remaining Values)</div>
+          </div>
+
+          <!-- Algo 2 -->
+          <div class="algo-card">
+            <div class="algo-header">
+              <div class="algo-num">2</div>
+              <div class="name">CLPA Cognitive Pathway</div>
+            </div>
+            <div class="desc">Rolling reinforcement classifying Practical, Reading &amp; Analytical styles.</div>
+            <div class="formula">d<sub>t</sub> = α·Score + (1-α)·d<sub>t-1</sub></div>
+          </div>
+
+          <!-- Algo 3 -->
+          <div class="algo-card">
+            <div class="algo-header">
+              <div class="algo-num">3</div>
+              <div class="name">KDPA Knowledge Decay</div>
+            </div>
+            <div class="desc">Ebbinghaus forgetting curves with dynamic prerequisite graph propagation.</div>
+            <div class="formula">R(t) = e<sup>-t / S</sup> (Retention)</div>
+          </div>
+
+          <!-- Algo 4 -->
+          <div class="algo-card">
+            <div class="algo-header">
+              <div class="algo-num">4</div>
+              <div class="name">ALRA Academic Risk Assessor</div>
+            </div>
+            <div class="desc">Latent student distress and early dropout risk detection model.</div>
+            <div class="formula">Attendance + Arrears + Marks</div>
+          </div>
+
+          <!-- Algo 5 -->
+          <div class="algo-card">
+            <div class="algo-header">
+              <div class="algo-num" style="background: #9333ea;">5</div>
+              <div class="name">DCRA+ Capacity Allocator</div>
+            </div>
+            <div class="desc">Dynamic classroom seat optimization &amp; real-time conflict reallocation.</div>
+            <div class="formula">Energy &amp; Room Utilization</div>
+          </div>
+
+          <!-- Algo 6 -->
+          <div class="algo-card">
+            <div class="algo-header">
+              <div class="algo-num" style="background: #9333ea;">6</div>
+              <div class="name">DSEA Skill-Gap Matcher</div>
+            </div>
+            <div class="desc">Fuzzy Jaccard bigram similarity between resumes and target job profiles.</div>
+            <div class="formula">J(S<sub>1</sub>,S<sub>2</sub>) = |G<sub>1</sub>∩G<sub>2</sub>| / |G<sub>1</sub>∪G<sub>2</sub>|</div>
+          </div>
+
+          <!-- Algo 7 -->
+          <div class="algo-card">
+            <div class="algo-header">
+              <div class="algo-num" style="background: #9333ea;">7</div>
+              <div class="name">Campus Pulse Engine</div>
+            </div>
+            <div class="desc">Real-time zonal crowd density analysis and 1–3 hour forward movement prediction.</div>
+            <div class="formula">Density Anomaly Matrix</div>
+          </div>
+
+          <!-- Algo 8 -->
+          <div class="algo-card gemini-card">
+            <div class="algo-header">
+              <div class="algo-num">8</div>
+              <div class="name">Generative AI Context Binding (GACB)</div>
+            </div>
+            <div class="desc">Zero-hallucination SQL snapshot injection with Google Gemini 2.5 Flash.</div>
+            <div class="formula">Structured Pydantic Schemas</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- CONNECTOR 4 -->
+      <div class="connector-row">
+        <div class="connector-line"></div>
+        <div class="connector-badge">⬇️ ASYNC DATA PERSISTENCE &amp; CLOUD INTEGRATION ⬇️</div>
+      </div>
+
+      <!-- TIER 5: PERSISTENCE & EXTERNAL ECOSYSTEM -->
+      <div class="tier-card tier-5">
+        <div class="tier-tag">5. Data Persistence &amp; External Services Layer</div>
+        <div class="t5-grid">
+          
+          <div class="t5-group">
+            <div class="title">DUAL-ENGINE PERSISTENCE (SQLAlchemy 2.0 Async)</div>
+            <div class="t5-chips">
+              <div class="t5-chip" style="border-color: #38bdf8;">
+                <div class="name" style="color: #0284c7;">🐬 MySQL 8.0 / MariaDB</div>
+                <div class="desc">Production Relational Engine</div>
+              </div>
+              <div class="t5-chip" style="border-color: #34d399;">
+                <div class="name" style="color: #059669;">🔄 SQLite 3 Dynamic Fallback</div>
+                <div class="desc">Auto Offline / Local Dev Engine</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="t5-group">
+            <div class="title">STORAGE &amp; ACCELERATION</div>
+            <div class="t5-chips">
+              <div class="t5-chip">
+                <div class="name">📁 Local Media Storage</div>
+                <div class="desc">PDFs, Resumes, QR Tokens</div>
+              </div>
+              <div class="t5-chip">
+                <div class="name">⚡ Memory LRU Cache</div>
+                <div class="desc">TTL Query Acceleration</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="t5-group">
+            <div class="title">EXTERNAL CLOUD &amp; HARDWARE-FREE SERVICES</div>
+            <div class="t5-chips">
+              <div class="t5-chip" style="border-color: #fecdd3;">
+                <div class="name" style="color: #be123c;">✨ Google Gemini API</div>
+                <div class="desc">LLM Structured Reasoning</div>
+              </div>
+              <div class="t5-chip" style="border-color: #fca5a5;">
+                <div class="name" style="color: #b91c1c;">▶️ YouTube Streaming</div>
+                <div class="desc">Curated Study Videos</div>
+              </div>
+              <div class="t5-chip" style="border-color: #e9d5ff;">
+                <div class="name" style="color: #7e22ce;">⌚ Wearable Haptics</div>
+                <div class="desc">Smartwatch Push Alerts</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- FOOTER HIGHLIGHTS -->
+      <div class="footer">
+        <div class="footer-left">
+          <div class="footer-label">KEY HIGHLIGHTS:</div>
+          <div class="feature-pill pill-blue">⚡ 100% Hardware-Free Faculty Locator</div>
+          <div class="feature-pill pill-green">🛡️ Zero-Clash CSP Timetable Solver</div>
+          <div class="feature-pill pill-purple">🧠 Ebbinghaus KDPA Retention Curves</div>
+          <div class="feature-pill pill-rose">🔒 Zero-Hallucination GACB Architecture</div>
+          <div class="feature-pill pill-indigo">🔄 Dynamic MySQL to SQLite Fallback</div>
+        </div>
+        <div class="footer-right">
+          Master Suite: 72/72 Passing (100% Test Coverage)
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

@@ -6,7 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 import { AlertTriangle, Plus, Volume2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
-export const Announcements = () => {
+const Announcements = () => {
   const { user } = useAuth();
   const [announcements, setAnnouncements] = useState([]);
   const [emergencies, setEmergencies] = useState([]);
@@ -133,3 +133,5 @@ export const Announcements = () => {
     transition={{ delay: idx * 0.05  }}
   ><Card className="pg-announcements-20"><div className="pg-announcements-21"><h4 className="pg-announcements-22">{ann.title}</h4><div className="pg-announcements-23">{ann.targetRole && ann.targetRole !== "all" && <Badge variant="info" className="pg-announcements-24">{ann.targetRole}</Badge>}{ann.targetDept && ann.targetDept !== "all" && <Badge variant="info" className="pg-announcements-25">{ann.targetDept}</Badge>}<Badge variant={ann.priority === "high" ? "warning" : "default"} className="pg-announcements-25">{ann.priority || "general"}</Badge></div></div><p className="pg-announcements-26">{ann.content}</p><div className="pg-announcements-27"><span className="pg-announcements-28">Author: {ann.postedBy}</span><span>{ann.createdAt ? ann.createdAt.split(" ")[0] : ""}</span></div></Card></motion.div>) : <Card className="pg-announcements-29">Notice board is currently empty.</Card>}</div></motion.div>;
 };
+
+export default Announcements;

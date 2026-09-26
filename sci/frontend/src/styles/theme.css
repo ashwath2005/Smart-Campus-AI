@@ -1,6 +1,32 @@
-/* ═══════════════════════════════════════════════════════════════════════════════
+/* ════════════════════════════════════════════════════════════════════════════════
    THEME.CSS
    Global CSS stylesheet variables configuration for Theme toggle controls.
    ═══════════════════════════════════════════════════════════════════════════════ */
 
 @import "./variables.css";
+
+/* Theme-specific overrides and utilities */
+:root {
+  /* CSS Variables for easy access in JS */
+  --theme-bg-canvas: var(--bg-canvas);
+  --theme-bg-shell: var(--bg-shell);
+  --theme-bg-primary: var(--bg-primary);
+  --theme-bg-card: var(--bg-card);
+  --theme-text-primary: var(--text-primary);
+  --theme-text-secondary: var(--text-secondary);
+  --theme-border-color: var(--border-color);
+  --theme-radius-md: var(--radius-md);
+  --theme-shadow-card: var(--shadow-card);
+  --theme-transition-normal: var(--transition-normal);
+}
+
+.dark {
+  /* Dark theme overrides */
+  --theme-bg-canvas: var(--bg-canvas);
+  --theme-bg-shell: var(--bg-shell);
+  --theme-bg-primary: var(--bg-primary);
+  --theme-bg-card: var(--bg-card);
+  --theme-text-primary: var(--text-primary);
+  --theme-text-secondary: var(--text-secondary);
+  --theme-border-color: var(--border-color);
+}
