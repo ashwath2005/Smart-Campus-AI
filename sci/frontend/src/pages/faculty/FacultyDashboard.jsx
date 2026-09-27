@@ -1,22 +1,97 @@
-import "./FacultyDashboard.css";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import api from "../../api/axios";
-import { Card, StatCard, Skeleton, Button, Input, Select, Tabs, Textarea, Badge } from "../../components/ui";
-import { Users, BookOpen, Clock, BarChart2, TrendingUp, AlertTriangle, Activity, Brain, Award, Save, RotateCcw, CheckCircle2, FileSpreadsheet } from "lucide-react";
+import {
+  Users,
+  BookOpen,
+  Clock,
+  Activity,
+  Sparkles,
+  ChevronDown,
+  ArrowRight,
+  CheckCircle2,
+  AlertTriangle,
+  Building,
+  GraduationCap,
+  Layers,
+  Cpu,
+  Brain,
+  Award,
+  Save,
+  RotateCcw,
+  FileSpreadsheet,
+} from "lucide-react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import "./FacultyDashboard.css";
+
 export const FacultyDashboard = () => {
+  const navigate = useNavigate();
   const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("overview");
-  const [attSubject, setAttSubject] = useState("Data Structures");
-  const [attStudentId, setAttStudentId] = useState("");
-  const [attStatus, setAttStatus] = useState("present");
-  const [attLoading, setAttLoading] = useState(false);
+  const [overviewTimeframe, setOverviewTimeframe] = useState("This semester");
+  const [chartTimeframe, setChartTimeframe] = useState("Last 7 days");
+  const [activeTab, setActiveTab] = useState("roster"); // roster | marks | ai_analytics | create_assignment
 
-  // AI Learning Analytics States
+  // Status state
+  const [currentStatus, setCurrentStatus] = useState("Available");
+  const [statusUpdating, setStatusUpdating] = useState(false);
+
+  // Roster Bulk Attendance
+  const [studentsRoster, setStudentsRoster] = useState([]);
+  const [rosterLoading, setRosterLoading] = useState(false);
+  const [bulkAttendance, setBulkAttendance] = useState({});
+  const [bulkLoading, setBulkLoading] = useState(false);
+  const [attDate, setAttDate] = useState(new Date().toISOString().split("T")[0]);
+  const [attSubject, setAttSubject] = useState("Data Structures");
+
+  // AI Learning Analytics
   const [faData, setFaData] = useState(null);
   const [faLoading, setFaLoading] = useState(false);
+
+  // Internal Marks
+  const [marksSubject, setMarksSubject] = useState("Data Structures");
+  const [marksExam, setMarksExam] = useState("cat1");
+  const [marksSemester, setMarksSemester] = useState(4);
+  const [marksMax, setMarksMax] = useState(50);
+  const [marksRoster, setMarksRoster] = useState([]);
+  const [marksValues, setMarksValues] = useState({});
+  const [marksLoading, setMarksLoading] = useState(false);
+  const [marksSaving, setMarksSaving] = useState(false);
+
+  // Quick Assignment state
+  const [assignTitle, setAssignTitle] = useState("");
+  const [assignSubject, setAssignSubject] = useState("Data Structures");
+  const [assignDesc, setAssignDesc] = useState("");
+  const [assignDueDate, setAssignDueDate] = useState("");
+  const [assignLoading, setAssignLoading] = useState(false);
+
+  const fetchFacultyData = async () => {
+    try {
+      const [analyticsRes, rosterRes] = await Promise.allSettled([
+        api.get("/faculty/dashboard-analytics"),
+        api.get("/attendance/students"),
+      ]);
+
+      if (analyticsRes.status === "fulfilled") setAnalytics(analyticsRes.value.data);
+      if (rosterRes.status === "fulfilled" && Array.isArray(rosterRes.value.data)) {
+        setStudentsRoster(rosterRes.value.data);
+        const initial = {};
+        rosterRes.value.data.forEach((s) => {
+          initial[s.id] = "present";
+        });
+        setBulkAttendance(initial);
+      }
+    } catch {
+      toast.error("Failed to load faculty telemetry");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchFacultyData();
+  }, []);
 
   const fetchFacultyAnalytics = async () => {
     setFaLoading(true);
@@ -35,1031 +110,697 @@ export const FacultyDashboard = () => {
       fetchFacultyAnalytics();
     }
   }, [activeTab]);
-  const [assignTitle, setAssignTitle] = useState("");
-  const [assignSubject, setAssignSubject] = useState("Data Structures");
-  const [assignDesc, setAssignDesc] = useState("");
-  const [assignDueDate, setAssignDueDate] = useState("");
-  const [assignLoading, setAssignLoading] = useState(false);
-  const [matTitle, setMatTitle] = useState("");
-  const [matDesc, setMatDesc] = useState("");
-  const [matSubject, setMatSubject] = useState("Data Structures");
-  const [matType, setMatType] = useState("pdf");
-  const [matLoading, setMatLoading] = useState(false);
-  const [todaySchedule, setTodaySchedule] = useState([]);
 
-  // Roster Bulk Attendance & Status state
-  const [studentsRoster, setStudentsRoster] = useState([]);
-  const [rosterLoading, setRosterLoading] = useState(false);
-  const [bulkAttendance, setBulkAttendance] = useState({}); // { [studentId]: "present" | "absent" }
-  const [bulkLoading, setBulkLoading] = useState(false);
-  const [attDate, setAttDate] = useState(new Date().toISOString().split("T")[0]);
-  const [currentStatus, setCurrentStatus] = useState("Available");
-  const [statusUpdating, setStatusUpdating] = useState(false);
-
-  const fetchRoster = async () => {
-    setRosterLoading(true);
-    try {
-      const res = await api.get("/attendance/students");
-      setStudentsRoster(res.data || []);
-      const initial = {};
-      (res.data || []).forEach(s => {
-        initial[s.id] = "present";
-      });
-      setBulkAttendance(initial);
-    } catch {
-      // quiet fallback
-    } finally {
-      setRosterLoading(false);
-    }
-  };
-
-  // ─── Internal Marks Management State & Handlers ──────────────────────────────
-  const [marksSubject, setMarksSubject] = useState("Data Structures");
-  const [marksExam, setMarksExam] = useState("cat1");
-  const [marksSemester, setMarksSemester] = useState(4);
-  const [marksMax, setMarksMax] = useState(50);
-  const [marksRoster, setMarksRoster] = useState([]);
-  const [marksValues, setMarksValues] = useState({});
-  const [marksLoading, setMarksLoading] = useState(false);
-  const [marksSaving, setMarksSaving] = useState(false);
-
-  const fetchMarksRoster = async () => {
-    setMarksLoading(true);
-    try {
-      const res = await api.get(
-        `/internal-marks/roster?subject_name=${encodeURIComponent(marksSubject)}&exam_type=${marksExam}&semester=${marksSemester}`
-      );
-      const data = res.data?.students || [];
-      setMarksRoster(data);
-      const vals = {};
-      data.forEach((s) => {
-        if (s.marks_obtained !== null && s.marks_obtained !== undefined) {
-          vals[s.student_id] = s.marks_obtained;
-        }
-      });
-      setMarksValues(vals);
-    } catch {
-      toast.error("Failed to load student roster for marks.");
-    } finally {
-      setMarksLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (activeTab === "marks") {
-      fetchMarksRoster();
-    }
-  }, [activeTab, marksSubject, marksExam, marksSemester]);
-
-  const handleMarksChange = (studentId, val) => {
-    setMarksValues((prev) => ({
-      ...prev,
-      [studentId]: val,
-    }));
-  };
-
-  const handleSaveMarks = async () => {
-    const entries = [];
-    for (const s of marksRoster) {
-      const val = marksValues[s.student_id];
-      if (val !== undefined && val !== "" && !isNaN(Number(val))) {
-        const numVal = Number(val);
-        if (numVal < 0 || numVal > marksMax) {
-          toast.error(`Marks for ${s.name} must be between 0 and ${marksMax}`);
-          return;
-        }
-        entries.push({
-          student_id: s.student_id,
-          marks_obtained: numVal,
-        });
-      }
-    }
-
-    if (entries.length === 0) {
-      toast.error("Please enter marks for at least one student before saving.");
-      return;
-    }
-
-    setMarksSaving(true);
-    try {
-      const res = await api.post("/internal-marks/batch-save", {
-        subject_name: marksSubject,
-        exam_type: marksExam,
-        semester: Number(marksSemester),
-        max_marks: Number(marksMax),
-        entries,
-      });
-      toast.success(res.data?.message || "Internal marks saved successfully!");
-      fetchMarksRoster();
-    } catch (err) {
-      toast.error(err.response?.data?.detail || "Failed to save internal marks.");
-    } finally {
-      setMarksSaving(false);
-    }
-  };
-
-  const handleQuickFill = (percentage) => {
-    const fillScore = Math.round(marksMax * (percentage / 100) * 10) / 10;
-    const nextVals = { ...marksValues };
-    marksRoster.forEach((s) => {
-      if (nextVals[s.student_id] === undefined || nextVals[s.student_id] === "") {
-        nextVals[s.student_id] = fillScore;
-      }
-    });
-    setMarksValues(nextVals);
-    toast.success(`Populated unfilled entries with ${fillScore} (${percentage}%)`);
-  };
-
-  const gradedEntries = Object.values(marksValues).filter((v) => v !== "" && !isNaN(Number(v)));
-  const gradedCount = gradedEntries.length;
-  const marksSum = gradedEntries.reduce((acc, v) => acc + Number(v), 0);
-  const avgMarks = gradedCount > 0 ? marksSum / gradedCount : 0;
-  const highestMark = gradedCount > 0 ? Math.max(...gradedEntries.map(Number)) : 0;
-
-  const fetchFacultyStatus = async () => {
-    try {
-      const res = await api.get("/faculty-locator/my-status");
-      if (res.data?.custom_status) {
-        setCurrentStatus(res.data.custom_status);
-      }
-    } catch {
-      // quiet fallback
-    }
-  };
-
-  const handleUpdateStatus = async (newStatus) => {
+  const handleUpdateStatus = async (status) => {
     setStatusUpdating(true);
     try {
-      await api.post("/faculty-locator/update-status", { custom_status: newStatus });
-      setCurrentStatus(newStatus);
-      toast.success(`Status updated to ${newStatus}`);
+      await api.post("/faculty-locator/status", { status });
+      setCurrentStatus(status);
+      toast.success(`Presence updated to ${status}`);
     } catch {
-      toast.error("Failed to update status");
+      toast.error("Failed to update availability status");
     } finally {
       setStatusUpdating(false);
     }
   };
 
-  const handleBulkSubmit = async () => {
-    if (studentsRoster.length === 0) return;
+  const handleMarkBulk = async () => {
     setBulkLoading(true);
     try {
-      const records = studentsRoster.map(s => ({
-        student_id: s.id,
-        status: bulkAttendance[s.id] || "present"
-      }));
-      await api.post("/attendance/mark-bulk", {
+      const records = Object.entries(bulkAttendance).map(([studentId, status]) => ({
+        student_id: parseInt(studentId, 10),
         subject: attSubject,
         date: attDate,
-        records
-      });
-      toast.success(`Attendance marked for ${records.length} students!`);
-    } catch (err) {
-      toast.error(err.response?.data?.detail || "Failed to submit class attendance");
+        status,
+      }));
+      await api.post("/attendance/bulk", { records });
+      toast.success(`Attendance logged for ${records.length} students!`);
+    } catch {
+      toast.error("Failed to submit class attendance records.");
     } finally {
       setBulkLoading(false);
     }
   };
 
-  const fetchAnalytics = async () => {
-    fetchFacultyStatus();
-    fetchRoster();
-    try {
-      const [ttRes, assignRes, faRes] = await Promise.allSettled([
-        api.get("/timetable/my"),
-        api.get("/assignments/"),
-        api.get("/learning-intelligence/faculty-analytics")
-      ]);
-
-      let classesCount = 0;
-      let scheduleList = [];
-      if (ttRes.status === "fulfilled" && ttRes.value.data) {
-        const schedule = ttRes.value.data.schedule || ttRes.value.data;
-        if (Array.isArray(schedule)) {
-          classesCount = schedule.length;
-          scheduleList = schedule.slice(0, 4);
-        }
-      }
-
-      let assignCount = 0;
-      if (assignRes.status === "fulfilled" && Array.isArray(assignRes.value.data)) {
-        assignCount = assignRes.value.data.length;
-      }
-
-      let studentsCount = 0;
-      if (faRes.status === "fulfilled" && faRes.value.data) {
-        setFaData(faRes.value.data);
-        studentsCount = faRes.value.data.total_students || 0;
-      }
-
-      setTodaySchedule(scheduleList);
-      setAnalytics({
-        todayClasses: classesCount || 3,
-        totalAssignments: assignCount || 4,
-        activeStudents: studentsCount || 60,
-        pendingSubmissions: assignCount > 0 ? Math.round(assignCount * 4.5) : 12
-      });
-    } catch {
-      toast.error("Failed to load faculty dashboard metrics");
-    } finally {
-      setLoading(false);
-    }
-  };
-  useEffect(() => {
-    fetchAnalytics();
-  }, []);
-
-  const handleMarkAttendance = async (e) => {
-    e.preventDefault();
-    if (!attStudentId) return;
-    setAttLoading(true);
-    try {
-      await api.post("/attendance/mark", {
-        student_id: Number(attStudentId),
-        subject: attSubject,
-        status: attStatus,
-        date: attDate || new Date().toISOString().split("T")[0]
-      });
-      toast.success("Attendance marked successfully!");
-      setAttStudentId("");
-    } catch (err) {
-      toast.error(err.message || "Failed to mark attendance. Make sure student ID is valid.");
-    } finally {
-      setAttLoading(false);
-    }
-  };
   const handleCreateAssignment = async (e) => {
     e.preventDefault();
-    if (!assignTitle || !assignDueDate) return;
+    if (!assignTitle || !assignDueDate) {
+      toast.error("Title and due date are required");
+      return;
+    }
     setAssignLoading(true);
     try {
       await api.post("/assignments/", {
         title: assignTitle,
-        description: assignDesc,
         subject: assignSubject,
-        due_date: assignDueDate
+        description: assignDesc,
+        due_date: assignDueDate,
       });
-      toast.success("Assignment created successfully!");
+      toast.success("Assignment published successfully!");
       setAssignTitle("");
       setAssignDesc("");
       setAssignDueDate("");
     } catch {
-      toast.error("Failed to create assignment");
+      toast.error("Failed to publish assignment");
     } finally {
       setAssignLoading(false);
     }
   };
-  const handleUploadMaterial = async (e) => {
-    e.preventDefault();
-    if (!matTitle) return;
-    setMatLoading(true);
-    try {
-      const formData = new FormData();
-      formData.append("title", matTitle);
-      formData.append("description", matDesc);
-      formData.append("subject_name", matSubject);
-      formData.append("material_type", matType);
-      await api.post("/study-materials/", formData, {
-        headers: { "Content-Type": "multipart/form-data" }
-      });
-      toast.success("Study material posted successfully!");
-      setMatTitle("");
-      setMatDesc("");
-    } catch {
-      toast.error("Failed to upload study material");
-    } finally {
-      setMatLoading(false);
-    }
-  };
-  if (loading) {
-    return <div className="pg-facultydashboard-1"><Skeleton variant="text" className="pg-facultydashboard-2" /><div className="pg-facultydashboard-3"><Skeleton variant="card" count={4} /></div></div>;
-  }
-  const subjectOptions = [
-    { value: "Data Structures", label: "Data Structures" },
-    { value: "Operating Systems", label: "Operating Systems" },
-    { value: "Database Systems", label: "Database Systems" },
-    { value: "Computer Networks", label: "Computer Networks" }
-  ];
-  const facultyTabs = [
-    { id: "overview", label: "Overview" },
-    { id: "attendance", label: "Mark Attendance" },
-    { id: "marks", label: "Enter Internal Marks" },
-    { id: "assignment", label: "Create Assignment" },
-    { id: "material", label: "Upload Material" },
-    { id: "ai_analytics", label: "AI Learning Analytics" }
-  ];
-  return <motion.div
-    initial={{ opacity: 0, y: 15 }}
-    animate={{ opacity: 1, y: 0 }}
-    className="pg-facultydashboard-4"
-  >{
-    /* Header */
-  }<div className="pg-facultydashboard-5"><h2 className="pg-facultydashboard-6">
-          Faculty Console
-        </h2><p className="pg-facultydashboard-7">
-          Mark subject attendance, create coursework assignments, and upload materials.
-        </p></div>
 
-    {/* Today's Priorities & Quick Status Switcher */}
-    <Card style={{ marginBottom: "1.5rem", background: "linear-gradient(135deg, rgba(227, 27, 35, 0.08) 0%, rgba(20, 20, 25, 0.6) 100%)", borderColor: "rgba(227, 27, 35, 0.25)" }}>
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "1rem" }}>
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.25rem" }}>
-            <Activity size={18} style={{ color: "#E31B23" }} />
-            <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#fff", margin: 0 }}>Today's Teaching Priorities</h3>
+  const attendanceAvg = analytics?.averageAttendance ?? 86.4;
+  const classesToday = analytics?.classesToday ?? 3;
+  const totalStudentsEnrolled = analytics?.totalStudents ?? 142;
+
+  // 9 Velocity Bars matching reference rhythm
+  const chartBars = [
+    { label: "1", height: 50, active: false },
+    { label: "2", height: 62, active: false },
+    { label: "3", height: 44, active: false },
+    { label: "4", height: 75, active: false },
+    { label: "5", height: 48, active: false },
+    { label: "6", height: 90, active: true, tag: "94%" },
+    { label: "7", height: 68, active: false },
+    { label: "8", height: 55, active: false },
+    { label: "9", height: 82, active: false },
+  ];
+
+  // 5 Campus Activity Facilities matching reference
+  const displayLocations = [
+    {
+      id: "block-a",
+      name: "Lecture Hall A-204",
+      category: "Data Structures & Algos",
+      activityScore: "92.0%",
+      status: "Active",
+      icon: Building,
+      tileClass: "tile-indigo",
+    },
+    {
+      id: "lab-block",
+      name: "Computing Systems Lab 2",
+      category: "Systems & Network Lab",
+      activityScore: "88.5%",
+      status: "Active",
+      icon: Cpu,
+      tileClass: "tile-sky",
+    },
+    {
+      id: "ai-lab",
+      name: "AI & Robotics PG Suite",
+      category: "Cognitive Research",
+      activityScore: "95.0%",
+      status: "Active",
+      icon: Sparkles,
+      tileClass: "tile-emerald",
+    },
+    {
+      id: "block-c",
+      name: "Seminar Hall C-1",
+      category: "Department Faculty Room",
+      activityScore: "74.0%",
+      status: "Normal",
+      icon: GraduationCap,
+      tileClass: "tile-amber",
+    },
+    {
+      id: "campus-3d",
+      name: "Campus Digital Twin 3D",
+      category: "Spatial Telemetry",
+      activityScore: "99.1%",
+      status: "Active",
+      icon: Layers,
+      tileClass: "tile-purple",
+    },
+  ];
+
+  // Dispatches
+  const displayDispatches = [
+    {
+      id: "disp-1",
+      author: "HOD Office",
+      context: "on Curriculum Sync",
+      time: "09:15 AM",
+      message: "Internal CAT-1 marks submission window opens this Friday.",
+      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80",
+    },
+    {
+      id: "disp-2",
+      author: "Priya P.",
+      context: "on Data Structures",
+      time: "08:50 AM",
+      message: "Assignment #3 submission uploaded for verification.",
+      avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&auto=format&fit=crop&q=80",
+    },
+  ];
+
+  const facultyPeers = [
+    { name: "Dr. Sunita", role: "HOD", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80" },
+    { name: "Dr. Amit", role: "Faculty", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80" },
+    { name: "Dr. Sneha", role: "Faculty", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80" },
+    { name: "Rahul S.", role: "Student CR", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80" },
+    { name: "Priya P.", role: "Student CR", avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&auto=format&fit=crop&q=80" },
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.18 }}
+      className="ref-dashboard-container"
+    >
+      {/* 2-Column Master Grid */}
+      <div className="ref-dashboard-layout">
+        
+        {/* ============================================================
+            LEFT COLUMN: OVERVIEW & TEACHING ENGAGEMENT VELOCITY
+            ============================================================ */}
+        <div className="ref-main-column">
+
+          {/* 1. Overview Card */}
+          <div className="ref-card ref-overview-card">
+            <div className="ref-card-header">
+              <h2 className="ref-card-title">Overview</h2>
+              <div className="ref-pill-dropdown">
+                <span>{overviewTimeframe}</span>
+                <ChevronDown size={14} className="ref-dropdown-caret" />
+              </div>
+            </div>
+
+            {/* Metric Boxes Row */}
+            <div className="ref-metrics-row">
+              <div className="ref-metric-box elevated">
+                <div className="ref-metric-label-row">
+                  <Clock size={16} className="ref-metric-icon" />
+                  <span className="ref-metric-label">Course Attendance Rate</span>
+                </div>
+                <div className="ref-metric-val-row">
+                  <span className="ref-metric-value">{attendanceAvg}%</span>
+                  <div className="ref-trend-pill up">
+                    <span>↑ 3.8%</span>
+                  </div>
+                </div>
+                <span className="ref-trend-subtext">Across {totalStudentsEnrolled} registered students</span>
+              </div>
+
+              <div className="ref-metric-box flush">
+                <div className="ref-metric-label-row">
+                  <Activity size={16} className="ref-metric-icon" />
+                  <span className="ref-metric-label">Scheduled Sessions</span>
+                </div>
+                <div className="ref-metric-val-row">
+                  <span className="ref-metric-value">{classesToday}</span>
+                  <div className="ref-trend-pill up">
+                    <span>Active</span>
+                  </div>
+                </div>
+                <span className="ref-trend-subtext">Next session at 10:30 AM in A-204</span>
+              </div>
+            </div>
+
+            {/* Contextual Statement */}
+            <div className="ref-context-statement">
+              <p className="ref-statement-heading">
+                {classesToday} academic lectures and lab sessions scheduled today!
+              </p>
+              <p className="ref-statement-sub">
+                Availability status: <strong style={{ color: "var(--brand)" }}>{currentStatus}</strong> • Class attendance roster ready for sync.
+              </p>
+            </div>
+
+            {/* Attention Section */}
+            <div className="ref-attention-section">
+              <div className="ref-attention-header">
+                <span className="ref-attention-title">✦ WHAT NEEDS FACULTY ATTENTION?</span>
+                <span className="ref-live-intel-badge">Live Class Intelligence</span>
+              </div>
+
+              <div className="ref-attention-cards-grid">
+                <div
+                  className="ref-attention-card cursor-pointer"
+                  onClick={() => setActiveTab("roster")}
+                >
+                  <div className="ref-attention-card-top">
+                    <div className="ref-attention-card-left">
+                      <Users size={15} className="ref-attention-card-icon" />
+                      <span className="ref-attention-card-id">Class Roster</span>
+                    </div>
+                    <span className="ref-attention-status-pill approved">READY</span>
+                  </div>
+                  <p className="ref-attention-card-desc">
+                    {studentsRoster.length} students queued for today's roll call.
+                  </p>
+                </div>
+
+                <div
+                  className="ref-attention-card cursor-pointer"
+                  onClick={() => setActiveTab("ai_analytics")}
+                >
+                  <div className="ref-attention-card-top">
+                    <div className="ref-attention-card-left">
+                      <Brain size={15} className="ref-attention-card-icon" />
+                      <span className="ref-attention-card-id">Cognitive Engine</span>
+                    </div>
+                    <span className="ref-attention-status-pill due-soon">ALRA / KDPA</span>
+                  </div>
+                  <p className="ref-attention-card-desc">
+                    AI identified 2 students requiring retention reinforcement.
+                  </p>
+                </div>
+              </div>
+
+              {/* Peers / Students Avatars */}
+              <div className="ref-avatars-action-row">
+                <div className="ref-avatars-list">
+                  {facultyPeers.map((peer, i) => (
+                    <div key={i} className="ref-avatar-unit">
+                      <img src={peer.avatar} alt={peer.name} className="ref-user-avatar" />
+                      <span className="ref-user-name">{peer.name}</span>
+                    </div>
+                  ))}
+                  <button
+                    className="ref-view-all-circle-btn"
+                    onClick={() => navigate("/faculty-locator")}
+                    title="View Department Roster"
+                  >
+                    <div className="ref-circle-arrow-box">
+                      <ArrowRight size={14} />
+                    </div>
+                    <span className="ref-view-all-text">View all</span>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
-          <p style={{ fontSize: "13px", color: "var(--text-secondary)", margin: 0 }}>
-            {analytics?.todayClasses || 0} scheduled sessions today • {analytics?.pendingSubmissions || 0} submissions ready for review
-          </p>
+
+          {/* 2. Engagement Velocity Bar Chart Card */}
+          <div className="ref-card ref-chart-card">
+            <div className="ref-card-header">
+              <h2 className="ref-card-title">Academic Engagement</h2>
+              <div className="ref-pill-dropdown">
+                <span>{chartTimeframe}</span>
+                <ChevronDown size={14} className="ref-dropdown-caret" />
+              </div>
+            </div>
+
+            <div className="ref-chart-body">
+              <div className="ref-chart-kpi-block">
+                <span className="ref-chart-kpi-value">94%</span>
+                <span className="ref-chart-kpi-label">Class Attendance</span>
+              </div>
+
+              <div className="ref-chart-bars-track">
+                {chartBars.map((bar, i) => (
+                  <div key={i} className="ref-chart-bar-column">
+                    {bar.active && (
+                      <div className="ref-bar-tooltip-bubble">
+                        <span>{bar.tag}</span>
+                        <div className="ref-bar-target-ring" />
+                      </div>
+                    )}
+                    <div
+                      className={`ref-chart-bar-pill ${bar.active ? "highlighted" : ""}`}
+                      style={{ height: `${bar.height}%` }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <span style={{ fontSize: "12px", color: "var(--text-secondary)" }}>My Campus Status:</span>
-          {["Available", "In Class", "Busy", "Meeting"].map((st) => (
+
+        {/* ============================================================
+            RIGHT COLUMN: FACULTY VENUES & DISPATCHES
+            ============================================================ */}
+        <div className="ref-side-column">
+
+          {/* 3. Campus Activity Card */}
+          <div className="ref-card ref-products-card">
+            <h3 className="ref-products-title">Academic Venues</h3>
+
+            <div className="ref-products-list">
+              {displayLocations.map((loc) => {
+                const IconComponent = loc.icon;
+                return (
+                  <div
+                    key={loc.id}
+                    className="ref-product-item"
+                    onClick={() => navigate("/timetable")}
+                  >
+                    <div className={`ref-product-icon-box ${loc.tileClass}`}>
+                      <IconComponent size={16} />
+                    </div>
+                    <div className="ref-product-details">
+                      <span className="ref-product-name">{loc.name}</span>
+                      <span className="ref-product-category">{loc.category}</span>
+                    </div>
+                    <div className="ref-product-right-col">
+                      <span className="ref-product-score">{loc.activityScore}</span>
+                      <span className="ref-status-capsule active">{loc.status}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
             <button
-              key={st}
-              disabled={statusUpdating}
-              onClick={() => handleUpdateStatus(st)}
+              className="ref-all-products-btn"
+              onClick={() => navigate("/campus-pulse")}
+            >
+              Open Campus Pulse 3D
+            </button>
+          </div>
+
+          {/* 4. Campus Dispatches Card */}
+          <div className="ref-card ref-comments-card">
+            <h3 className="ref-comments-title">Department Dispatches</h3>
+
+            <div className="ref-comments-list">
+              {displayDispatches.map((disp) => (
+                <div key={disp.id} className="ref-comment-item">
+                  <div className="ref-comment-avatar-col">
+                    <img src={disp.avatar} alt={disp.author} className="ref-comment-avatar" />
+                  </div>
+                  <div className="ref-comment-content">
+                    <div className="ref-comment-meta">
+                      <span className="ref-comment-author">{disp.author}</span>
+                      <span className="ref-comment-context">{disp.context}</span>
+                      <span className="ref-comment-time">{disp.time}</span>
+                    </div>
+                    <p className="ref-comment-text">{disp.message}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* ============================================================
+          FACULTY OPERATIONAL WORKSPACE (ROSTER, MARKS, AI)
+          ============================================================ */}
+      <div className="ref-card" style={{ marginTop: "24px" }}>
+        {/* Workspace Tab Header */}
+        <div style={{ display: "flex", gap: "8px", borderBottom: "1px solid var(--border-color)", paddingBottom: "14px", marginBottom: "20px", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", gap: "8px" }}>
+            <button
+              onClick={() => setActiveTab("roster")}
+              className="ref-pill-dropdown"
               style={{
-                background: currentStatus === st ? "#E31B23" : "#181920",
-                color: currentStatus === st ? "#fff" : "#90929b",
-                border: `1px solid ${currentStatus === st ? "#E31B23" : "#2d3039"}`,
-                borderRadius: "6px",
-                padding: "4px 10px",
-                fontSize: "12px",
+                background: activeTab === "roster" ? "var(--brand, #6366F1)" : "var(--bg-card)",
+                color: activeTab === "roster" ? "#FFFFFF" : "var(--text-secondary)",
+                borderColor: activeTab === "roster" ? "var(--brand, #6366F1)" : "var(--border-color)",
                 fontWeight: 600,
-                cursor: "pointer",
-                transition: "all 0.15s ease"
               }}
             >
-              {st}
+              <Users size={14} /> Class Roll Call
             </button>
-          ))}
+
+            <button
+              onClick={() => setActiveTab("ai_analytics")}
+              className="ref-pill-dropdown"
+              style={{
+                background: activeTab === "ai_analytics" ? "var(--brand, #6366F1)" : "var(--bg-card)",
+                color: activeTab === "ai_analytics" ? "#FFFFFF" : "var(--text-secondary)",
+                borderColor: activeTab === "ai_analytics" ? "var(--brand, #6366F1)" : "var(--border-color)",
+                fontWeight: 600,
+              }}
+            >
+              <Brain size={14} /> AI Cognitive Insights
+            </button>
+
+            <button
+              onClick={() => setActiveTab("create_assignment")}
+              className="ref-pill-dropdown"
+              style={{
+                background: activeTab === "create_assignment" ? "var(--brand, #6366F1)" : "var(--bg-card)",
+                color: activeTab === "create_assignment" ? "#FFFFFF" : "var(--text-secondary)",
+                borderColor: activeTab === "create_assignment" ? "var(--brand, #6366F1)" : "var(--border-color)",
+                fontWeight: 600,
+              }}
+            >
+              <BookOpen size={14} /> New Assignment
+            </button>
+          </div>
+
+          {/* Quick Faculty Status Selector */}
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>My Status:</span>
+            {["Available", "In Class", "In Meeting"].map((st) => (
+              <button
+                key={st}
+                disabled={statusUpdating}
+                onClick={() => handleUpdateStatus(st)}
+                style={{
+                  fontSize: "11px",
+                  padding: "4px 10px",
+                  borderRadius: "9999px",
+                  border: "1px solid",
+                  borderColor: currentStatus === st ? "var(--brand)" : "var(--border-color)",
+                  background: currentStatus === st ? "var(--brand)" : "transparent",
+                  color: currentStatus === st ? "#fff" : "var(--text-secondary)",
+                  cursor: "pointer",
+                }}
+              >
+                {st}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
-    </Card>
 
-    {/* Analytics widgets */
-  }<div className="pg-facultydashboard-8"><StatCard label="Today's Classes" value={analytics?.todayClasses ?? 0} icon={<Clock size={18} />} /><StatCard label="Total Coursework" value={analytics?.totalAssignments ?? 0} icon={<BookOpen size={18} />} /><StatCard label="Active Students" value={analytics?.activeStudents ?? 0} icon={<Users size={18} />} /><StatCard label="Pending Grading" value={analytics?.pendingSubmissions ?? 0} icon={<BarChart2 size={18} />} /></div>{
-    /* Tabs */
-  }<div className="pg-facultydashboard-9"><Tabs tabs={facultyTabs} activeTab={activeTab} onChange={(id) => setActiveTab(id)} /></div>{
-    /* Tab Panels */
-  }<div className="pg-facultydashboard-10">{activeTab === "overview" && <div className="pg-facultydashboard-11"><Card className="pg-facultydashboard-12"><h3 className="pg-facultydashboard-13">
-                Overview & Schedule
-              </h3><p className="pg-facultydashboard-14">
-                Here is your schedule for the semester lectures. Verify classes mapped under your profile.
-              </p>              <div className="pg-facultydashboard-15">
-                {todaySchedule.length > 0 ? (
-                  todaySchedule.map((item, idx) => (
-                    <div key={idx} className="pg-facultydashboard-16">
-                      <div>
-                        <p className="pg-facultydashboard-17">{item.subject || item.subject_name || "Data Structures"}</p>
-                        <p className="pg-facultydashboard-18">{item.day || "Today"} • Room {item.room || item.classroom || "101"}</p>
-                      </div>
-                      <span className="pg-facultydashboard-19">
-                        {item.start_time || item.startTime || "09:00"} - {item.end_time || item.endTime || "10:00"}
-                      </span>
-                    </div>
-                  ))
-                ) : (
-                  <>
-                    <div className="pg-facultydashboard-16">
-                      <div>
-                        <p className="pg-facultydashboard-17">Data Structures</p>
-                        <p className="pg-facultydashboard-18">Monday • Room 101</p>
-                      </div>
-                      <span className="pg-facultydashboard-19">
-                        09:00 - 10:00
-                      </span>
-                    </div>
-                    <div className="pg-facultydashboard-16">
-                      <div>
-                        <p className="pg-facultydashboard-17">Operating Systems</p>
-                        <p className="pg-facultydashboard-18">Wednesday • Room 102</p>
-                      </div>
-                      <span className="pg-facultydashboard-19">
-                        09:00 - 10:00
-                      </span>
-                    </div>
-                  </>
-                )}
-              </div>
-            </Card>
-            <Card className="pg-facultydashboard-20">
-              <h3 className="pg-facultydashboard-13">
-                Faculty Notice
-              </h3>
-              <p className="pg-facultydashboard-21">
-                Verify assignments grading before the mid-semester compilation deadline. Submissions marked pending require grading status updates.
-              </p>
-            </Card>
-          </div>
-        }{activeTab === "attendance" && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-            <Card className="pg-facultydashboard-22">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", flexWrap: "wrap", gap: "0.75rem" }}>
-                <div>
-                  <h3 className="pg-facultydashboard-23" style={{ margin: 0 }}>
-                    Class Attendance Roster
-                  </h3>
-                  <p style={{ fontSize: "12px", color: "var(--text-secondary)", margin: "4px 0 0 0" }}>
-                    Mark attendance for all registered students in one step.
-                  </p>
-                </div>
-                <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
-                  <input
-                    type="date"
-                    value={attDate}
-                    onChange={(e) => setAttDate(e.target.value)}
-                    style={{
-                      background: "#0d0e12",
-                      border: "1px solid #2d3039",
-                      borderRadius: "6px",
-                      color: "#fff",
-                      padding: "6px 12px",
-                      fontSize: "13px"
-                    }}
-                  />
-                  <Select
-                    options={subjectOptions}
-                    value={attSubject}
-                    onChange={(e) => setAttSubject(e.target.value)}
-                  />
-                </div>
+        {/* Tab 1: Class Roll Call Roster */}
+        {activeTab === "roster" && (
+          <div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
+              <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                <input
+                  type="date"
+                  value={attDate}
+                  onChange={(e) => setAttDate(e.target.value)}
+                  style={{
+                    padding: "6px 12px",
+                    borderRadius: "8px",
+                    border: "1px solid var(--border-color)",
+                    background: "var(--bg-surface)",
+                    color: "var(--text-primary)",
+                    fontSize: "12px",
+                  }}
+                />
+                <select
+                  value={attSubject}
+                  onChange={(e) => setAttSubject(e.target.value)}
+                  style={{
+                    padding: "6px 12px",
+                    borderRadius: "8px",
+                    border: "1px solid var(--border-color)",
+                    background: "var(--bg-surface)",
+                    color: "var(--text-primary)",
+                    fontSize: "12px",
+                  }}
+                >
+                  <option value="Data Structures">Data Structures</option>
+                  <option value="Operating Systems">Operating Systems</option>
+                  <option value="Database Systems">Database Systems</option>
+                </select>
               </div>
 
-              {rosterLoading ? (
-                <Skeleton variant="card" count={3} />
-              ) : studentsRoster.length > 0 ? (
-                <div>
-                  <div style={{ overflowX: "auto" }}>
-                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
-                      <thead>
-                        <tr style={{ borderBottom: "1px solid #232530", color: "#90929b", textAlign: "left" }}>
-                          <th style={{ padding: "8px 12px" }}>Roll / ID</th>
-                          <th style={{ padding: "8px 12px" }}>Student Name</th>
-                          <th style={{ padding: "8px 12px" }}>Department</th>
-                          <th style={{ padding: "8px 12px", textAlign: "right" }}>Attendance Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {studentsRoster.map((s) => {
-                          const isPres = (bulkAttendance[s.id] || "present") === "present";
-                          return (
-                            <tr key={s.id} style={{ borderBottom: "1px solid #191b22" }}>
-                              <td style={{ padding: "10px 12px", color: "#90929b", fontFamily: "monospace" }}>
-                                {s.roll_number !== "N/A" ? s.roll_number : `#${s.id}`}
-                              </td>
-                              <td style={{ padding: "10px 12px", color: "#fff", fontWeight: 600 }}>
-                                {s.name}
-                              </td>
-                              <td style={{ padding: "10px 12px", color: "#90929b" }}>
-                                {s.department}
-                              </td>
-                              <td style={{ padding: "10px 12px", textAlign: "right" }}>
-                                <div style={{ display: "inline-flex", borderRadius: "6px", border: "1px solid #2d3039", overflow: "hidden" }}>
-                                  <button
-                                    type="button"
-                                    onClick={() => setBulkAttendance(prev => ({ ...prev, [s.id]: "present" }))}
-                                    style={{
-                                      background: isPres ? "#10b981" : "#14151b",
-                                      color: isPres ? "#fff" : "#90929b",
-                                      border: "none",
-                                      padding: "4px 12px",
-                                      fontSize: "12px",
-                                      fontWeight: 600,
-                                      cursor: "pointer"
-                                    }}
-                                  >
-                                    Present
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => setBulkAttendance(prev => ({ ...prev, [s.id]: "absent" }))}
-                                    style={{
-                                      background: !isPres ? "#ef4444" : "#14151b",
-                                      color: !isPres ? "#fff" : "#90929b",
-                                      border: "none",
-                                      padding: "4px 12px",
-                                      fontSize: "12px",
-                                      fontWeight: 600,
-                                      cursor: "pointer"
-                                    }}
-                                  >
-                                    Absent
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
+              <button
+                onClick={handleMarkBulk}
+                disabled={bulkLoading}
+                className="ref-all-products-btn"
+                style={{ width: "auto", padding: "8px 20px", display: "inline-flex", alignItems: "center", gap: "6px" }}
+              >
+                <Save size={14} />
+                {bulkLoading ? "Submitting..." : "Save Attendance"}
+              </button>
+            </div>
 
-                  <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "1.25rem", gap: "0.75rem" }}>
-                    <Button
-                      onClick={handleBulkSubmit}
-                      loading={bulkLoading}
-                      style={{ background: "#E31B23", color: "#fff" }}
-                    >
-                      Save & Publish Roster Attendance
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <form onSubmit={handleMarkAttendance} className="pg-facultydashboard-24">
-                  <Select
-                    label="Subject"
-                    options={subjectOptions}
-                    value={attSubject}
-                    onChange={(e) => setAttSubject(e.target.value)}
-                  />
-                  <Input
-                    label="Student ID (Database ID)"
-                    placeholder="e.g. 1"
-                    value={attStudentId}
-                    onChange={(e) => setAttStudentId(e.target.value)}
-                    required
-                  />
-                  <Select
-                    label="Presence Status"
-                    options={[
-                      { value: "present", label: "Present" },
-                      { value: "absent", label: "Absent" }
-                    ]}
-                    value={attStatus}
-                    onChange={(e) => setAttStatus(e.target.value)}
-                  />
-                  <Button type="submit" loading={attLoading} className="pg-facultydashboard-25">
-                    Mark Attendance
-                  </Button>
-                </form>
-              )}
-            </Card>
-          </div>
-        )}
-
-        {/* ─── Dedicated Enter Internal Marks Tab Panel ───────────────────────── */}
-        {activeTab === "marks" && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-            {/* Header & Controls Card */}
-            <Card style={{ padding: "20px", background: "#131418", border: "1px solid #232630" }}>
-              <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "16px", marginBottom: "20px" }}>
-                <div>
-                  <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#fff", display: "flex", alignItems: "center", gap: "8px", margin: 0 }}>
-                    <Award size={18} style={{ color: "#E31B23" }} />
-                    Continuous Assessment & Internal Marks Roster
-                  </h3>
-                  <p style={{ fontSize: "12.5px", color: "var(--text-secondary)", margin: "4px 0 0 0" }}>
-                    Select subject and assessment type, enter student marks, and publish directly to academic databases & student portals.
-                  </p>
-                </div>
-                <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={fetchMarksRoster}
-                    disabled={marksLoading}
-                  >
-                    <RotateCcw size={14} style={{ marginRight: "6px" }} /> Refresh
-                  </Button>
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={handleSaveMarks}
-                    loading={marksSaving}
-                    disabled={marksSaving || marksRoster.length === 0}
-                    style={{ background: "#E31B23", color: "#fff" }}
-                  >
-                    <Save size={14} style={{ marginRight: "6px" }} /> Save All Marks
-                  </Button>
-                </div>
-              </div>
-
-              {/* Assessment Configuration Controls */}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "14px" }}>
-                <div>
-                  <label style={{ display: "block", fontSize: "12px", color: "#90929b", marginBottom: "6px" }}>Subject</label>
-                  <Select
-                    value={marksSubject}
-                    onChange={(e) => setMarksSubject(e.target.value)}
-                    options={subjectOptions}
-                  />
-                </div>
-                <div>
-                  <label style={{ display: "block", fontSize: "12px", color: "#90929b", marginBottom: "6px" }}>Semester</label>
-                  <Select
-                    value={marksSemester}
-                    onChange={(e) => setMarksSemester(Number(e.target.value))}
-                    options={[1, 2, 3, 4, 5, 6, 7, 8].map((s) => ({ value: s, label: `Semester ${s}` }))}
-                  />
-                </div>
-                <div>
-                  <label style={{ display: "block", fontSize: "12px", color: "#90929b", marginBottom: "6px" }}>Assessment / Exam Type</label>
-                  <Select
-                    value={marksExam}
-                    onChange={(e) => setMarksExam(e.target.value)}
-                    options={[
-                      { value: "cat1", label: "CAT-1 (Continuous Assessment 1)" },
-                      { value: "cat2", label: "CAT-2 (Continuous Assessment 2)" },
-                      { value: "cat3", label: "CAT-3 (Continuous Assessment 3)" },
-                      { value: "model", label: "Model Examination" },
-                      { value: "assignment", label: "Internal Coursework" },
-                    ]}
-                  />
-                </div>
-                <div>
-                  <label style={{ display: "block", fontSize: "12px", color: "#90929b", marginBottom: "6px" }}>Maximum Marks</label>
-                  <Input
-                    type="number"
-                    value={marksMax}
-                    onChange={(e) => setMarksMax(Number(e.target.value))}
-                    min={10}
-                    max={100}
-                  />
-                </div>
-              </div>
-
-              {/* Summary Stats & Quick Actions Bar */}
-              <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "12px", marginTop: "16px", paddingTop: "14px", borderTop: "1px solid #232630" }}>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" }}>
-                  <Badge variant="info">Enrolled: {marksRoster.length} Students</Badge>
-                  <Badge variant={gradedCount > 0 ? "success" : "warning"}>Graded: {gradedCount} / {marksRoster.length}</Badge>
-                  {gradedCount > 0 && (
-                    <>
-                      <Badge variant="neutral">Class Average: {avgMarks.toFixed(1)} / {marksMax} ({((avgMarks / marksMax) * 100).toFixed(0)}%)</Badge>
-                      <Badge variant="neutral">Top Score: {highestMark} / {marksMax}</Badge>
-                    </>
-                  )}
-                </div>
-                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                  <span style={{ fontSize: "12px", color: "#90929b" }}>Quick Fill:</span>
-                  <button
-                    type="button"
-                    onClick={() => handleQuickFill(85)}
-                    style={{ background: "#1c1e24", border: "1px solid #2d3039", color: "#fff", borderRadius: "4px", padding: "3px 8px", fontSize: "11px", cursor: "pointer" }}
-                  >
-                    85% (High)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleQuickFill(70)}
-                    style={{ background: "#1c1e24", border: "1px solid #2d3039", color: "#fff", borderRadius: "4px", padding: "3px 8px", fontSize: "11px", cursor: "pointer" }}
-                  >
-                    70% (Avg)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setMarksValues({})}
-                    style={{ background: "rgba(227, 27, 35, 0.1)", border: "1px solid rgba(227, 27, 35, 0.3)", color: "#ff4d4f", borderRadius: "4px", padding: "3px 8px", fontSize: "11px", cursor: "pointer" }}
-                  >
-                    Clear All
-                  </button>
-                </div>
-              </div>
-            </Card>
-
-            {/* Student Marks Entry Table Card */}
-            <Card style={{ padding: "20px", background: "#131418", border: "1px solid #232630" }}>
-              {marksLoading ? (
-                <div style={{ padding: "40px 0" }}>
-                  <Skeleton variant="card" count={2} />
-                </div>
-              ) : marksRoster.length === 0 ? (
-                <div style={{ padding: "40px 0", textAlign: "center", color: "#90929b" }}>
-                  <FileSpreadsheet size={32} style={{ margin: "0 auto 12px auto", opacity: 0.5 }} />
-                  <p style={{ margin: 0, fontSize: "14px" }}>No students registered under Semester {marksSemester} for this section.</p>
-                </div>
-              ) : (
-                <div style={{ overflowX: "auto" }}>
-                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
-                    <thead>
-                      <tr style={{ borderBottom: "1px solid #2d3039", textAlign: "left", color: "#90929b" }}>
-                        <th style={{ padding: "10px 12px", width: "120px" }}>Roll Number</th>
-                        <th style={{ padding: "10px 12px" }}>Student Name</th>
-                        <th style={{ padding: "10px 12px", width: "140px" }}>Department</th>
-                        <th style={{ padding: "10px 12px", width: "110px", textAlign: "center" }}>Max Marks</th>
-                        <th style={{ padding: "10px 12px", width: "150px", textAlign: "center" }}>Marks Scored</th>
-                        <th style={{ padding: "10px 12px", width: "100px", textAlign: "center" }}>Percent</th>
-                        <th style={{ padding: "10px 12px", width: "130px", textAlign: "center" }}>Grade Preview</th>
-                        <th style={{ padding: "10px 12px", width: "120px", textAlign: "center" }}>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {marksRoster.map((s) => {
-                        const val = marksValues[s.student_id];
-                        const hasVal = val !== undefined && val !== "" && !isNaN(Number(val));
-                        const numVal = hasVal ? Number(val) : null;
-                        const pct = numVal !== null && marksMax > 0 ? (numVal / marksMax) * 100 : null;
-
-                        let grade = "—";
-                        let gradeColor = "#90929b";
-                        if (pct !== null) {
-                          if (pct >= 90) { grade = "O (10)"; gradeColor = "#10b981"; }
-                          else if (pct >= 80) { grade = "A+ (9)"; gradeColor = "#10b981"; }
-                          else if (pct >= 70) { grade = "A (8)"; gradeColor = "#3b82f6"; }
-                          else if (pct >= 60) { grade = "B+ (7)"; gradeColor = "#f59e0b"; }
-                          else if (pct >= 50) { grade = "B (6)"; gradeColor = "#f59e0b"; }
-                          else { grade = "RA (0)"; gradeColor = "#ef4444"; }
-                        }
-
-                        const isModified = hasVal && numVal !== s.marks_obtained;
-
-                        return (
-                          <tr
-                            key={s.student_id}
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
+                <thead>
+                  <tr style={{ borderBottom: "1px solid var(--border-color)", color: "var(--text-muted)", textAlign: "left" }}>
+                    <th style={{ padding: "10px" }}>Roll No / ID</th>
+                    <th style={{ padding: "10px" }}>Student Name</th>
+                    <th style={{ padding: "10px", textAlign: "right" }}>Attendance Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {studentsRoster.slice(0, 8).map((student) => {
+                    const st = bulkAttendance[student.id] || "present";
+                    return (
+                      <tr key={student.id} style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+                        <td style={{ padding: "10px", fontWeight: 600, color: "var(--text-primary)" }}>
+                          {student.register_number || student.id}
+                        </td>
+                        <td style={{ padding: "10px", color: "var(--text-secondary)" }}>
+                          {student.name}
+                        </td>
+                        <td style={{ padding: "10px", textAlign: "right" }}>
+                          <button
+                            onClick={() =>
+                              setBulkAttendance((prev) => ({
+                                ...prev,
+                                [student.id]: st === "present" ? "absent" : "present",
+                              }))
+                            }
                             style={{
-                              borderBottom: "1px solid #1c1e24",
-                              transition: "background 0.15s ease",
+                              padding: "4px 12px",
+                              borderRadius: "9999px",
+                              fontSize: "11px",
+                              fontWeight: 700,
+                              cursor: "pointer",
+                              border: "none",
+                              background: st === "present" ? "var(--success-soft)" : "var(--danger-soft, rgba(239, 68, 68, 0.15))",
+                              color: st === "present" ? "var(--success)" : "var(--danger, #ef4444)",
                             }}
                           >
-                            <td style={{ padding: "12px", color: "#90929b", fontFamily: "var(--font-mono)", fontWeight: 600 }}>
-                              {s.roll_number}
-                            </td>
-                            <td style={{ padding: "12px", color: "#fff", fontWeight: 600 }}>
-                              {s.name}
-                              <div style={{ fontSize: "11px", color: "#6b7280", fontWeight: 400 }}>{s.email}</div>
-                            </td>
-                            <td style={{ padding: "12px", color: "#90929b" }}>
-                              {s.department}
-                            </td>
-                            <td style={{ padding: "12px", textAlign: "center", color: "#90929b", fontWeight: 600 }}>
-                              {marksMax}
-                            </td>
-                            <td style={{ padding: "12px", textAlign: "center" }}>
-                              <input
-                                type="number"
-                                min={0}
-                                max={marksMax}
-                                step="0.5"
-                                value={val !== undefined ? val : ""}
-                                onChange={(e) => handleMarksChange(s.student_id, e.target.value)}
-                                placeholder="0.0"
-                                style={{
-                                  width: "90px",
-                                  padding: "6px 10px",
-                                  background: "#181920",
-                                  border: isModified ? "1px solid #E31B23" : "1px solid #2d3039",
-                                  borderRadius: "6px",
-                                  color: "#fff",
-                                  fontSize: "13px",
-                                  fontWeight: "700",
-                                  textAlign: "center",
-                                  outline: "none",
-                                }}
-                              />
-                            </td>
-                            <td style={{ padding: "12px", textAlign: "center", color: "#fff", fontWeight: 600 }}>
-                              {pct !== null ? `${pct.toFixed(0)}%` : "—"}
-                            </td>
-                            <td style={{ padding: "12px", textAlign: "center", color: gradeColor, fontWeight: 700 }}>
-                              {grade}
-                            </td>
-                            <td style={{ padding: "12px", textAlign: "center" }}>
-                              {isModified ? (
-                                <Badge variant="warning">Unsaved</Badge>
-                              ) : s.recorded ? (
-                                <Badge variant="success">Published</Badge>
-                              ) : (
-                                <Badge variant="neutral">Pending</Badge>
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-
-                  <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px", gap: "12px" }}>
-                    <Button
-                      variant="primary"
-                      onClick={handleSaveMarks}
-                      loading={marksSaving}
-                      disabled={marksSaving || marksRoster.length === 0}
-                      style={{ background: "#E31B23", color: "#fff" }}
-                    >
-                      <Save size={15} style={{ marginRight: "6px" }} /> Save & Publish Marks
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </Card>
+                            {st === "present" ? "✓ Present" : "✕ Absent"}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
-        {activeTab === "assignment" && <Card className="pg-facultydashboard-22"><h3 className="pg-facultydashboard-23">
-              Create Coursework Assignment
-            </h3><form onSubmit={handleCreateAssignment} className="pg-facultydashboard-24"><Input
-    label="Assignment Title"
-    placeholder="e.g. Operating System Threading Lab"
-    value={assignTitle}
-    onChange={(e) => setAssignTitle(e.target.value)}
-    required
-  /><Select
-    label="Subject"
-    options={subjectOptions}
-    value={assignSubject}
-    onChange={(e) => setAssignSubject(e.target.value)}
-  /><Textarea
-    label="Instructions / Description"
-    rows={3}
-    placeholder="Details of assignment instructions..."
-    value={assignDesc}
-    onChange={(e) => setAssignDesc(e.target.value)}
-  /><Input
-    label="Due Date"
-    type="date"
-    value={assignDueDate}
-    onChange={(e) => setAssignDueDate(e.target.value)}
-    required
-  /><Button type="submit" loading={assignLoading} className="pg-facultydashboard-25">
-                Publish Assignment
-              </Button></form></Card>}{activeTab === "material" && <Card className="pg-facultydashboard-22"><h3 className="pg-facultydashboard-23">
-              Upload Study Material Notes
-            </h3><form onSubmit={handleUploadMaterial} className="pg-facultydashboard-24"><Input
-    label="Document Title"
-    placeholder="e.g. CPU Scheduling Slides"
-    value={matTitle}
-    onChange={(e) => setMatTitle(e.target.value)}
-    required
-  /><Select
-    label="Subject"
-    options={subjectOptions}
-    value={matSubject}
-    onChange={(e) => setMatSubject(e.target.value)}
-  /><Select
-    label="Material Type"
-    options={[
-      { value: "pdf", label: "PDF Document" },
-      { value: "slides", label: "Slides Presentation" },
-      { value: "notes", label: "Lecture Notes" },
-      { value: "video", label: "Video Lecture" }
-    ]}
-    value={matType}
-    onChange={(e) => setMatType(e.target.value)}
-  /><Textarea
-    label="Description / Notes details"
-    rows={3}
-    placeholder="Provide short details..."
-    value={matDesc}
-    onChange={(e) => setMatDesc(e.target.value)}
-  /><Button type="submit" loading={matLoading} className="pg-facultydashboard-25">
-                Upload Material
-              </Button></form></Card>}{activeTab === "ai_analytics" && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-              {/* Headline metrics */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-                <Card style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <Brain size={24} style={{ color: '#E31B23' }} />
-                  <div>
-                    <div style={{ fontSize: '12px', color: '#90929b' }}>Avg. Knowledge Retention</div>
-                    <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#fff' }}>
-                      {faData?.avg_retention ? `${faData.avg_retention.toFixed(1)}%` : '82.4%'}
-                    </div>
-                  </div>
-                </Card>
-                <Card style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <Users size={24} style={{ color: '#E31B23' }} />
-                  <div>
-                    <div style={{ fontSize: '12px', color: '#90929b' }}>Students Tracked</div>
-                    <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#fff' }}>
-                      {faData?.total_students || 1}
-                    </div>
-                  </div>
-                </Card>
-                <Card style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <Activity size={24} style={{ color: '#E31B23' }} />
-                  <div>
-                    <div style={{ fontSize: '12px', color: '#90929b' }}>Learning Styles Analyzed</div>
-                    <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#fff' }}>
-                      {faData?.learning_style_distribution?.length || 4} Profiles
-                    </div>
-                  </div>
-                </Card>
+        {/* Tab 2: AI Cognitive Insights */}
+        {activeTab === "ai_analytics" && (
+          <div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px" }}>
+              <div className="ref-metric-box elevated">
+                <div className="ref-metric-label-row">
+                  <Brain size={16} className="ref-metric-icon" />
+                  <span className="ref-metric-label">ALRA Latent Risk Score</span>
+                </div>
+                <div className="ref-metric-val-row">
+                  <span className="ref-metric-value">{faData?.riskIndex ?? "Low"}</span>
+                </div>
+                <span className="ref-trend-subtext">Cognitive learning pathway stable across cohort</span>
               </div>
 
-              {faLoading ? (
-                <Skeleton variant="card" count={3} />
-              ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
-                  {/* Left Column: Heatmap and Styles */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                    {/* Department Heatmap */}
-                    <Card style={{ padding: '20px' }}>
-                      <h3 style={{ margin: '0 0 16px 0', fontSize: '15px', color: '#fff', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <TrendingUp size={16} style={{ color: '#E31B23' }} /> Department Knowledge Heatmap
-                      </h3>
-                      <div style={{ overflowX: 'auto' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', color: '#fff' }}>
-                          <thead>
-                            <tr style={{ borderBottom: '1px solid #2d3039', textAlign: 'left' }}>
-                              <th style={{ padding: '10px', color: '#90929b' }}>Concept Topic</th>
-                              <th style={{ padding: '10px', color: '#90929b' }}>Avg. Mastery</th>
-                              <th style={{ padding: '10px', color: '#90929b' }}>Avg. Retention</th>
-                              <th style={{ padding: '10px', color: '#90929b' }}>Health Status</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {faData?.topic_summary && faData.topic_summary.length > 0 ? (
-                              faData.topic_summary.map((t, idx) => {
-                                const isLow = t.avg_retention < 50.0;
-                                return (
-                                  <tr key={idx} style={{ borderBottom: '1px solid #1c1e24' }}>
-                                    <td style={{ padding: '12px 10px', fontWeight: '500' }}>{t.topic}</td>
-                                    <td style={{ padding: '12px 10px' }}>{t.avg_mastery.toFixed(1)}%</td>
-                                    <td style={{ padding: '12px 10px', color: isLow ? '#E31B23' : '#4ade80', fontWeight: '600' }}>
-                                      {t.avg_retention.toFixed(1)}%
-                                    </td>
-                                    <td style={{ padding: '12px 10px' }}>
-                                      <Badge variant={isLow ? "danger" : "success"}>
-                                        {isLow ? "Needs Revision" : "Healthy"}
-                                      </Badge>
-                                    </td>
-                                  </tr>
-                                );
-                              })
-                            ) : (
-                              <tr>
-                                <td colSpan={4} style={{ padding: '20px', textAlign: 'center', color: '#90929b' }}>
-                                  No cognitive logs indexed. Ensure students have initialized study records.
-                                </td>
-                              </tr>
-                            )}
-                          </tbody>
-                        </table>
-                      </div>
-                    </Card>
-
-                    {/* Learning Style Distributions */}
-                    <Card style={{ padding: '20px' }}>
-                      <h3 style={{ margin: '0 0 16px 0', fontSize: '15px', color: '#fff', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Brain size={16} style={{ color: '#E31B23' }} /> Cognitive Learning Style Distribution
-                      </h3>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
-                        {faData?.learning_style_distribution && faData.learning_style_distribution.length > 0 ? (
-                          faData.learning_style_distribution.map((dist, idx) => (
-                            <div key={idx} style={{ padding: '12px', background: '#1c1e24', borderRadius: '8px', border: '1px solid #2d3039', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                              <span style={{ fontSize: '13px', color: '#fff' }}>{dist.style}</span>
-                              <Badge variant="info">{dist.count} students</Badge>
-                            </div>
-                          ))
-                        ) : (
-                          <p style={{ fontSize: '13px', color: '#90929b', gridColumn: 'span 2', textAlign: 'center' }}>
-                            No cognitive style mappings logged.
-                          </p>
-                        )}
-                      </div>
-                    </Card>
-                  </div>
-
-                  {/* Right Column: High Risk Student Warnings */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                    <Card style={{ padding: '20px' }}>
-                      <h3 style={{ margin: '0 0 16px 0', fontSize: '15px', color: '#fff', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <AlertTriangle size={16} style={{ color: '#E31B23' }} /> High-Risk Candidates (Decay Warning)
-                      </h3>
-                      <p style={{ margin: '0 0 16px 0', fontSize: '12px', color: '#90929b', lineHeight: '1.4' }}>
-                        The following students have an average Ebbinghaus retention score under 50% across department subjects. Recommend extra revision resources.
-                      </p>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                        {faData?.high_risk_students && faData.high_risk_students.length > 0 ? (
-                          faData.high_risk_students.map((student, idx) => (
-                            <div key={idx} style={{ padding: '12px', background: 'rgba(227, 27, 35, 0.05)', border: '1px solid rgba(227, 27, 35, 0.2)', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                              <div>
-                                <h4 style={{ margin: 0, fontSize: '13px', color: '#fff', fontWeight: '600' }}>{student.name}</h4>
-                                <span style={{ fontSize: '11px', color: '#90929b' }}>ID: {student.student_id}</span>
-                              </div>
-                              <span style={{ color: '#E31B23', fontWeight: 'bold', fontSize: '14px' }}>
-                                {student.avg_retention.toFixed(1)}% Ret.
-                              </span>
-                            </div>
-                          ))
-                        ) : (
-                          <p style={{ fontSize: '13px', color: '#90929b', textAlign: 'center', margin: '20px 0' }}>
-                            No high-risk students flagged. Great job!
-                          </p>
-                        )}
-                      </div>
-                    </Card>
-
-                    <Card style={{ padding: '20px' }}>
-                      <h3 style={{ margin: '0 0 12px 0', fontSize: '14px', color: '#fff' }}>Weakest Class Topics</h3>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        {faData?.weakest_topics && faData.weakest_topics.length > 0 ? (
-                          faData.weakest_topics.map((wt, idx) => (
-                            <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', paddingBottom: '6px', borderBottom: '1px solid #1c1e24' }}>
-                              <span style={{ color: '#fff' }}>{wt.topic}</span>
-                              <span style={{ color: '#E31B23', fontWeight: '600' }}>{wt.avg_mastery.toFixed(1)}% Mastery</span>
-                            </div>
-                          ))
-                        ) : (
-                          <p style={{ fontSize: '12px', color: '#90929b' }}>All topics average above 60% mastery.</p>
-                        )}
-                      </div>
-                    </Card>
-                  </div>
+              <div className="ref-metric-box flush">
+                <div className="ref-metric-label-row">
+                  <Award size={16} className="ref-metric-icon" />
+                  <span className="ref-metric-label">KDPA Retention Index</span>
                 </div>
-              )}
+                <div className="ref-metric-val-row">
+                  <span className="ref-metric-value">91.2%</span>
+                </div>
+                <span className="ref-trend-subtext">Ebbinghaus decay curve within optimal threshold</span>
+              </div>
             </div>
-          )}</div></motion.div>;
+          </div>
+        )}
+
+        {/* Tab 3: Create Assignment */}
+        {activeTab === "create_assignment" && (
+          <form onSubmit={handleCreateAssignment} style={{ display: "flex", flexDirection: "column", gap: "14px", maxWidth: "600px" }}>
+            <div>
+              <label style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-secondary)", marginBottom: "4px", display: "block" }}>
+                Assignment Title
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. Balanced BST Implementation"
+                value={assignTitle}
+                onChange={(e) => setAssignTitle(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "8px 12px",
+                  borderRadius: "8px",
+                  border: "1px solid var(--border-color)",
+                  background: "var(--bg-surface)",
+                  color: "var(--text-primary)",
+                  fontSize: "13px",
+                  boxSizing: "border-box",
+                }}
+              />
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+              <div>
+                <label style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-secondary)", marginBottom: "4px", display: "block" }}>
+                  Subject
+                </label>
+                <select
+                  value={assignSubject}
+                  onChange={(e) => setAssignSubject(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "8px 12px",
+                    borderRadius: "8px",
+                    border: "1px solid var(--border-color)",
+                    background: "var(--bg-surface)",
+                    color: "var(--text-primary)",
+                    fontSize: "13px",
+                  }}
+                >
+                  <option value="Data Structures">Data Structures</option>
+                  <option value="Operating Systems">Operating Systems</option>
+                  <option value="Database Systems">Database Systems</option>
+                </select>
+              </div>
+
+              <div>
+                <label style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-secondary)", marginBottom: "4px", display: "block" }}>
+                  Due Date
+                </label>
+                <input
+                  type="date"
+                  value={assignDueDate}
+                  onChange={(e) => setAssignDueDate(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "8px 12px",
+                    borderRadius: "8px",
+                    border: "1px solid var(--border-color)",
+                    background: "var(--bg-surface)",
+                    color: "var(--text-primary)",
+                    fontSize: "13px",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-secondary)", marginBottom: "4px", display: "block" }}>
+                Description
+              </label>
+              <textarea
+                rows={3}
+                placeholder="Include submission criteria..."
+                value={assignDesc}
+                onChange={(e) => setAssignDesc(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "8px 12px",
+                  borderRadius: "8px",
+                  border: "1px solid var(--border-color)",
+                  background: "var(--bg-surface)",
+                  color: "var(--text-primary)",
+                  fontSize: "13px",
+                  boxSizing: "border-box",
+                }}
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={assignLoading}
+              className="ref-all-products-btn"
+              style={{ width: "auto", padding: "8px 24px", alignSelf: "flex-start" }}
+            >
+              {assignLoading ? "Publishing..." : "Publish Assignment"}
+            </button>
+          </form>
+        )}
+      </div>
+    </motion.div>
+  );
 };
+
+export default FacultyDashboard;

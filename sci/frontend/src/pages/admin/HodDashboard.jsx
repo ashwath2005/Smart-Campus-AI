@@ -1,25 +1,44 @@
-import "./HodDashboard.css";
 import React, { useState, useEffect } from "react";
 import api from "../../api/axios";
 import { useAuth } from "../../context/AuthContext";
-import { Card, StatCard, Skeleton, Button, Select, Tabs, Textarea, Badge } from "../../components/ui";
-import { FileText, Check, X, Calendar, User, Paperclip, ClipboardList, ThumbsUp, ThumbsDown, Shield, Users, MapPin } from "lucide-react";
+import {
+  Shield,
+  Clock,
+  Activity,
+  ChevronDown,
+  ArrowRight,
+  CheckCircle2,
+  AlertTriangle,
+  Building,
+  GraduationCap,
+  Layers,
+  Cpu,
+  FileText,
+  Check,
+  X,
+  User,
+  Sparkles,
+} from "lucide-react";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import "./HodDashboard.css";
 
 export const HodDashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [leaves, setLeaves] = useState([]);
   const [ods, setOds] = useState([]);
   const [gatePasses, setGatePasses] = useState([]);
   const [faculties, setFaculties] = useState([]);
   const [loading, setLoading] = useState(true);
   const isWarden = user?.role === "warden";
-  const [activeTab, setActiveTab] = useState(isWarden ? "gate_passes" : "pending"); // pending | history | gate_passes | faculty_monitor
+  const [activeTab, setActiveTab] = useState(isWarden ? "gate_passes" : "leaves");
+  const [overviewTimeframe, setOverviewTimeframe] = useState("This semester");
+  const [chartTimeframe, setChartTimeframe] = useState("Last 7 days");
 
-  // Decision Input States
-  const [decisionComments, setDecisionComments] = useState({}); // { [req_id]: comment }
-  const [actionLoading, setActionLoading] = useState({}); // { [req_id]: loading_boolean }
+  const [decisionComments, setDecisionComments] = useState({});
+  const [actionLoading, setActionLoading] = useState({});
 
   const fetchData = async () => {
     setLoading(true);
@@ -56,389 +75,630 @@ export const HodDashboard = () => {
 
   const handleDecision = async (id, type, status) => {
     const comment = decisionComments[id] || "";
-    setActionLoading(prev => ({ ...prev, [id]: true }));
+    setActionLoading((prev) => ({ ...prev, [id]: true }));
     const loadId = toast.loading(`Submitting review decision...`);
     try {
-      const endpoint = type === "leave" ? `/workflows/leaves/${id}/approve` : `/workflows/ods/${id}/approve`;
-      await api.put(endpoint, {
-        status: status, // Approved / Rejected
-        comment: comment
-      });
-      toast.success(`Request ${status.toLowerCase()} successfully!`, { id: loadId });
-      // Reset comments
-      setDecisionComments(prev => {
-        const next = { ...prev };
-        delete next[id];
-        return next;
-      });
+      if (type === "gate_pass") {
+        await api.post(`/gate-pass/${id}/approve`, {
+          status: status === "approved" ? "APPROVED" : "REJECTED",
+          remarks: comment || (status === "approved" ? "Approved by HOD/Warden" : "Rejected"),
+        });
+      } else if (type === "leave") {
+        await api.post(`/workflows/leaves/${id}/action`, {
+          action: status === "approved" ? "APPROVE" : "REJECT",
+          comments: comment || (status === "approved" ? "Approved" : "Rejected"),
+        });
+      } else if (type === "od") {
+        await api.post(`/workflows/ods/${id}/action`, {
+          action: status === "approved" ? "APPROVE" : "REJECT",
+          comments: comment || (status === "approved" ? "Approved" : "Rejected"),
+        });
+      }
+      toast.success(`Request ${status} successfully!`, { id: loadId });
       fetchData();
     } catch (err) {
-      const msg = err.response?.data?.detail || "Failed to submit approval review.";
-      toast.error(msg, { id: loadId });
+      toast.error(err.response?.data?.detail || "Action failed.", { id: loadId });
     } finally {
-      setActionLoading(prev => ({ ...prev, [id]: false }));
+      setActionLoading((prev) => ({ ...prev, [id]: false }));
     }
   };
 
-  const handleGatePassAction = async (passId, action) => {
-    setActionLoading(prev => ({ ...prev, [`gp-${passId}`]: true }));
-    const loadId = toast.loading(`${action === "approve" ? "Approving" : "Rejecting"} gate pass #${passId}...`);
-    try {
-      await api.post("/gate-pass/warden-action", {
-        pass_id: passId,
-        action: action // "approve" or "reject"
-      });
-      toast.success(`Gate pass #${passId} ${action}d successfully!`, { id: loadId });
-      fetchData();
-    } catch (err) {
-      toast.error(err.response?.data?.detail || `Failed to ${action} gate pass`, { id: loadId });
-    } finally {
-      setActionLoading(prev => ({ ...prev, [`gp-${passId}`]: false }));
-    }
-  };
+  const pendingPasses = gatePasses.filter((p) => p.status === "PENDING_WARDEN_APPROVAL" || p.status === "PENDING_PARENT_OTP");
+  const pendingLeaves = leaves.filter((l) => l.status === "PENDING");
+  const pendingOds = ods.filter((o) => o.status === "PENDING");
+  const totalPending = pendingPasses.length + pendingLeaves.length + pendingOds.length;
 
-  // Compile pending and completed list
-  const pendingLeaves = leaves.filter(l => l.status === "Pending HOD Approval").map(l => ({ ...l, req_type: "leave" }));
-  const pendingOds = ods.filter(o => o.status === "Pending HOD Approval").map(o => ({ ...o, req_type: "od" }));
-  const pendingRequests = [...pendingLeaves, ...pendingOds].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  // 9 Velocity Bars matching reference rhythm
+  const chartBars = [
+    { label: "1", height: 48, active: false },
+    { label: "2", height: 60, active: false },
+    { label: "3", height: 42, active: false },
+    { label: "4", height: 78, active: false },
+    { label: "5", height: 50, active: false },
+    { label: "6", height: 94, active: true, tag: "96.5%" },
+    { label: "7", height: 66, active: false },
+    { label: "8", height: 52, active: false },
+    { label: "9", height: 80, active: false },
+  ];
 
-  const historyLeaves = leaves.filter(l => l.status !== "Pending HOD Approval").map(l => ({ ...l, req_type: "leave" }));
-  const historyOds = ods.filter(o => o.status !== "Pending HOD Approval").map(o => ({ ...o, req_type: "od" }));
-  const historyRequests = [...historyLeaves, ...historyOds].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  // 5 Campus Activity Facilities matching reference
+  const displayLocations = [
+    {
+      id: "block-a",
+      name: "Department Block A",
+      category: "Lecture Halls 1 - 8",
+      activityScore: "91.5%",
+      status: "Active",
+      icon: Building,
+      tileClass: "tile-indigo",
+    },
+    {
+      id: "hostel-gate",
+      name: "Hostel Main Checkpoint",
+      category: "Biometric & QR Scanners",
+      activityScore: "98.0%",
+      status: "Active",
+      icon: Shield,
+      tileClass: "tile-emerald",
+    },
+    {
+      id: "lab-block",
+      name: "Department Advanced Labs",
+      category: "Systems & Network Lab",
+      activityScore: "86.0%",
+      status: "Active",
+      icon: Cpu,
+      tileClass: "tile-sky",
+    },
+    {
+      id: "seminar-hall",
+      name: "Conference Room 1",
+      category: "Faculty Board Room",
+      activityScore: "70.0%",
+      status: "Normal",
+      icon: GraduationCap,
+      tileClass: "tile-amber",
+    },
+    {
+      id: "campus-3d",
+      name: "Campus Digital Twin 3D",
+      category: "Realtime Spatial Pulse",
+      activityScore: "99.1%",
+      status: "Active",
+      icon: Layers,
+      tileClass: "tile-purple",
+    },
+  ];
 
-  // Department Gate Passes requiring approval
-  const pendingGatePasses = gatePasses.filter(p => p.status === "PENDING_WARDEN_APPROVAL");
+  // Dispatches
+  const displayDispatches = [
+    {
+      id: "disp-1",
+      author: "Hostel Warden",
+      context: "on Evening Curfew",
+      time: "09:10 AM",
+      message: "Weekend gate passes synchronized. Curfew compliance at 100%.",
+      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80",
+    },
+    {
+      id: "disp-2",
+      author: "Security Officer",
+      context: "on Main Gate Checkpoint",
+      time: "08:40 AM",
+      message: "Biometric validation logs recorded with zero security breaches.",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80",
+    },
+  ];
 
-  // Stats
-  const totalApproved = [...leaves, ...ods].filter(r => r.status === "Approved").length;
-  const totalRejected = [...leaves, ...ods].filter(r => r.status === "Rejected").length;
-
-  const hodTabs = isWarden ? [
-    { id: "gate_passes", label: `Gate Passes (${pendingGatePasses.length})` },
-    { id: "pending", label: `Leave & OD Requests (${pendingRequests.length})` },
-    { id: "history", label: `Approval History (${historyRequests.length})` }
-  ] : [
-    { id: "pending", label: `Pending Leave/OD (${pendingRequests.length})` },
-    { id: "gate_passes", label: `Gate Passes (${pendingGatePasses.length})` },
-    { id: "faculty_monitor", label: `Faculty Presence (${faculties.length})` },
-    { id: "history", label: `Department History (${historyRequests.length})` }
+  const hodPeers = [
+    { name: "Dr. Sunita", role: "HOD", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80" },
+    { name: "Dr. Amit", role: "Faculty", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80" },
+    { name: "Dr. Sneha", role: "Faculty", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80" },
+    { name: "Aarav S.", role: "Student CR", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80" },
+    { name: "Priya P.", role: "Student CR", avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&auto=format&fit=crop&q=80" },
   ];
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 15 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="pg-hoddashboard-container"
+      transition={{ duration: 0.18 }}
+      className="ref-dashboard-container"
     >
-      {/* Header */}
-      <div className="pg-hoddashboard-header">
-        <h2 className="pg-hoddashboard-title">
-          {isWarden ? "Hostel Warden Governance Console" : `HOD Dashboard — ${user?.department || "Campus"}`}
-        </h2>
-        <p className="pg-hoddashboard-subtitle">
-          {isWarden 
-            ? "Review and authorize student Gate Passes, Hostel Weekend Leaves, and Emergency Travel."
-            : "Final review portal for department student leave applications, Gate Passes, and On-Duty requests."}
-        </p>
-      </div>
+      {/* 2-Column Master Grid */}
+      <div className="ref-dashboard-layout">
+        
+        {/* ============================================================
+            LEFT COLUMN: OVERVIEW & APPROVAL VELOCITY
+            ============================================================ */}
+        <div className="ref-main-column">
 
-      {/* Stats Widgets */}
-      <div className="pg-hoddashboard-stats">
-        <StatCard
-          label={isWarden ? "Pending Gate Passes" : "Pending Leave/OD"}
-          value={isWarden ? pendingGatePasses.length : pendingRequests.length}
-          icon={<ClipboardList size={18} />}
-        />
-        <StatCard
-          label="Gate Passes Requiring Sign-off"
-          value={pendingGatePasses.length}
-          icon={<Shield size={18} />}
-        />
-        <StatCard
-          label="Total Approved"
-          value={totalApproved}
-          icon={<ThumbsUp size={18} />}
-        />
-        <StatCard
-          label="Total Rejected"
-          value={totalRejected}
-          icon={<ThumbsDown size={18} />}
-        />
-      </div>
-
-      {/* Tabs */}
-      <div className="pg-hoddashboard-tabs">
-        <Tabs tabs={hodTabs} activeTab={activeTab} onChange={(id) => setActiveTab(id)} />
-      </div>
-
-      {/* Content Panels */}
-      {loading ? (
-        <Skeleton variant="card" count={3} />
-      ) : activeTab === "pending" ? (
-        <div className="pg-hod-request-list">
-          {pendingRequests.length > 0 ? (
-            pendingRequests.map((req) => (
-              <motion.div
-                key={`${req.req_type}-${req.id}`}
-                layout
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="pg-hod-card"
-              >
-                <div className="pg-hod-card-header">
-                  <div className="pg-hod-card-title-sec">
-                    <div className="pg-hod-card-student-line">
-                      <span className="pg-hod-card-name">{req.student_name}</span>
-                      <span className="pg-hod-roll">({req.student_roll})</span>
-                      <span className="pg-hod-card-type-badge">{req.req_type}</span>
-                    </div>
-                    <div className="pg-hod-card-meta">
-                      <span className="flex items-center gap-1">
-                        <Calendar size={12} />
-                        {req.start_date} to {req.end_date}
-                      </span>
-                      <span>•</span>
-                      <span>{req.req_type === "leave" ? req.leave_type : req.event_title}</span>
-                    </div>
-                  </div>
-                  <span className={`status-badge ${req.status.toLowerCase().replace(/\s+/g, "-")}`}>
-                    {req.status}
-                  </span>
-                </div>
-
-                <div className="pg-hod-card-body">
-                  <strong>Reason:</strong> {req.reason}
-                  {req.description && <p className="mt-1 text-slate-400">{req.description}</p>}
-                  {req.supporting_document && (
-                    <div>
-                      <a
-                        href={req.supporting_document}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="pg-hod-card-attachment"
-                      >
-                        <Paperclip size={12} />
-                        <span>View Attachment Proof</span>
-                      </a>
-                    </div>
-                  )}
-                </div>
-
-                {/* Faculty Advisor Recommendation details */}
-                <div className="pg-hod-advisor-sub">
-                  <div className="pg-hod-advisor-header">
-                    Verified By Faculty Advisor: {req.faculty_reviewer_name}
-                  </div>
-                  <div className="pg-hod-advisor-comment">
-                    "{req.faculty_comment || "Recommended for HOD final review approval."}"
-                  </div>
-                </div>
-
-                {/* Final Decision Form Panel */}
-                <div className="pg-hod-decision-panel">
-                  <Textarea
-                    placeholder="Enter approval feedback or rejection comment..."
-                    rows={2}
-                    value={decisionComments[req.id] || ""}
-                    onChange={(e) => setDecisionComments(prev => ({ ...prev, [req.id]: e.target.value }))}
-                  />
-                  <div className="pg-hod-decision-actions">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      style={{ color: "#ef4444", background: "rgba(239, 68, 68, 0.05)", border: "1px solid rgba(239, 68, 68, 0.1)" }}
-                      loading={actionLoading[req.id]}
-                      onClick={() => handleDecision(req.id, req.req_type, "Rejected")}
-                    >
-                      <X size={14} style={{ marginRight: "4px" }} /> Reject
-                    </Button>
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      loading={actionLoading[req.id]}
-                      onClick={() => handleDecision(req.id, req.req_type, "Approved")}
-                    >
-                      <Check size={14} style={{ marginRight: "4px" }} /> Approve Request
-                    </Button>
-                  </div>
-                </div>
-              </motion.div>
-            ))
-          ) : (
-            <div className="pg-hod-empty card glass">
-              <FileText size={36} className="text-white/20" />
-              <p className="pg-hod-empty-title">All Cleared!</p>
-              <p className="pg-hod-empty-subtitle">There are no pending student leaves or ODs in your queue.</p>
+          {/* 1. Overview Card */}
+          <div className="ref-card ref-overview-card">
+            <div className="ref-card-header">
+              <h2 className="ref-card-title">Overview</h2>
+              <div className="ref-pill-dropdown">
+                <span>{overviewTimeframe}</span>
+                <ChevronDown size={14} className="ref-dropdown-caret" />
+              </div>
             </div>
-          )}
-        </div>
-      ) : activeTab === "gate_passes" ? (
-        <div className="pg-hod-request-list">
-          {pendingGatePasses.length > 0 ? (
-            pendingGatePasses.map((p) => {
-              const passTypeStr = (p.pass_type || p.passType || "outpass").toUpperCase();
-              const studentName = p.student?.name || (p.student_id || p.studentId ? `Student #${p.student_id || p.studentId}` : "Student");
-              const rollOrDept = p.student?.roll_number || p.student?.department || "Student";
-              const isParentVerified = p.parent_otp_verified ?? p.parent_verified ?? p.parentVerified ?? false;
-              const leaveDt = p.custom_leave_time || p.leave_time || p.leaveTime;
-              const durationHours = p.return_hours || 4;
 
-              return (
-              <div key={p.id} className="pg-hod-card" style={{ borderLeft: "4px solid #f59e0b" }}>
-                <div className="pg-hod-card-header">
-                  <div className="pg-hod-card-title-sec">
-                    <div className="pg-hod-card-student-line">
-                      <span className="pg-hod-card-name">{studentName}</span>
-                      <span className="pg-hod-roll">({rollOrDept})</span>
-                      <span className="pg-hod-card-type-badge">{passTypeStr}</span>
-                    </div>
-                    <div className="pg-hod-card-meta">
-                      <span className="flex items-center gap-1">
-                        <MapPin size={12} />
-                        Dest: {p.destination}
-                      </span>
-                      <span>•</span>
-                      <span>{isParentVerified ? "✓ Parent Verified" : "Pending Parent"}</span>
-                    </div>
-                  </div>
-                  <span className="status-badge" style={{ background: "rgba(245, 158, 11, 0.15)", color: "#f59e0b", border: "1px solid rgba(245, 158, 11, 0.3)" }}>
-                    {p.status}
-                  </span>
+            {/* Metric Boxes Row */}
+            <div className="ref-metrics-row">
+              <div className="ref-metric-box elevated">
+                <div className="ref-metric-label-row">
+                  <Clock size={16} className="ref-metric-icon" />
+                  <span className="ref-metric-label">Dept Attendance Rate</span>
                 </div>
-                <div className="pg-hod-card-body">
-                  <strong>Reason:</strong> {p.reason}
-                  <div style={{ marginTop: "6px", fontSize: "12px", color: "#90929b" }}>
-                    Expected Duration: {durationHours} hours | Leave: {leaveDt ? new Date(leaveDt).toLocaleString() : "Immediate"}
+                <div className="ref-metric-val-row">
+                  <span className="ref-metric-value">88.6%</span>
+                  <div className="ref-trend-pill up">
+                    <span>↑ 2.4%</span>
                   </div>
                 </div>
-                <div className="pg-hod-decision-panel" style={{ marginTop: "12px", borderTop: "1px solid var(--border-color)", paddingTop: "12px" }}>
-                  <div className="pg-hod-decision-actions" style={{ justifyContent: "flex-end", width: "100%" }}>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      style={{ color: "#ef4444", background: "rgba(239, 68, 68, 0.05)", border: "1px solid rgba(239, 68, 68, 0.1)" }}
-                      loading={actionLoading[`gp-${p.id}`]}
-                      onClick={() => handleGatePassAction(p.id, "reject")}
-                    >
-                      <X size={14} style={{ marginRight: "4px" }} /> Reject Outpass
-                    </Button>
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      loading={actionLoading[`gp-${p.id}`]}
-                      onClick={() => handleGatePassAction(p.id, "approve")}
-                    >
-                      <Check size={14} style={{ marginRight: "4px" }} /> Approve Outpass
-                    </Button>
+                <span className="ref-trend-subtext">Across all academic sections</span>
+              </div>
+
+              <div className="ref-metric-box flush">
+                <div className="ref-metric-label-row">
+                  <Activity size={16} className="ref-metric-icon" />
+                  <span className="ref-metric-label">Pending Review Queue</span>
+                </div>
+                <div className="ref-metric-val-row">
+                  <span className="ref-metric-value">{totalPending}</span>
+                  <div className="ref-trend-pill up">
+                    <span>Action</span>
                   </div>
+                </div>
+                <span className="ref-trend-subtext">{pendingPasses.length} gate passes • {pendingLeaves.length} leaves</span>
+              </div>
+            </div>
+
+            {/* Contextual Statement */}
+            <div className="ref-context-statement">
+              <p className="ref-statement-heading">
+                {totalPending > 0
+                  ? `${totalPending} authorization requests require your review.`
+                  : "All student leave and gate pass requests are up to date!"}
+              </p>
+              <p className="ref-statement-sub">
+                Role: <strong style={{ color: "var(--brand)" }}>{isWarden ? "Hostel Warden" : "Head of Department"}</strong> • Biometric security sync online.
+              </p>
+            </div>
+
+            {/* Attention Section */}
+            <div className="ref-attention-section">
+              <div className="ref-attention-header">
+                <span className="ref-attention-title">✦ WHAT NEEDS HOD / WARDEN ATTENTION?</span>
+                <span className="ref-live-intel-badge">Live Clearance Queue</span>
+              </div>
+
+              <div className="ref-attention-cards-grid">
+                <div
+                  className="ref-attention-card cursor-pointer"
+                  onClick={() => setActiveTab("gate_passes")}
+                >
+                  <div className="ref-attention-card-top">
+                    <div className="ref-attention-card-left">
+                      <Shield size={15} className="ref-attention-card-icon" />
+                      <span className="ref-attention-card-id">Gate Passes</span>
+                    </div>
+                    <span className="ref-attention-status-pill approved">
+                      {pendingPasses.length} PENDING
+                    </span>
+                  </div>
+                  <p className="ref-attention-card-desc">
+                    Weekend exit requests queued for warden verification.
+                  </p>
+                </div>
+
+                <div
+                  className="ref-attention-card cursor-pointer"
+                  onClick={() => setActiveTab("leaves")}
+                >
+                  <div className="ref-attention-card-top">
+                    <div className="ref-attention-card-left">
+                      <FileText size={15} className="ref-attention-card-icon" />
+                      <span className="ref-attention-card-id">Leaves & ODs</span>
+                    </div>
+                    <span className="ref-attention-status-pill due-soon">
+                      {pendingLeaves.length + pendingOds.length} QUEUED
+                    </span>
+                  </div>
+                  <p className="ref-attention-card-desc">
+                    Academic on-duty applications awaiting department approval.
+                  </p>
                 </div>
               </div>
-              );
-            })
-          ) : (
-            <div className="pg-hod-empty card glass">
-              <Shield size={36} className="text-white/20" />
-              <p className="pg-hod-empty-title">No Pending Gate Passes</p>
-              <p className="pg-hod-empty-subtitle">All student weekend & day outpasses are processed or cleared.</p>
-            </div>
-          )}
-        </div>
-      ) : activeTab === "faculty_monitor" ? (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "1rem" }}>
-          {faculties.length > 0 ? (
-            faculties.map((f) => (
-              <Card key={f.id} style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                  <div>
-                    <h4 style={{ color: "var(--text-primary)", fontWeight: 700, margin: 0 }}>{f.name}</h4>
-                    <p style={{ fontSize: "12px", color: "var(--text-secondary)", margin: "2px 0 0 0" }}>{f.employee_id || "Faculty"} • {f.department || "Dept"}</p>
-                  </div>
-                  <span
-                    style={{
-                      padding: "3px 8px",
-                      borderRadius: "6px",
-                      fontSize: "11px",
-                      fontWeight: 600,
-                      background: f.status === "Available" ? "rgba(16, 185, 129, 0.15)" : f.status === "Teaching" ? "rgba(59, 130, 246, 0.15)" : "rgba(239, 68, 68, 0.15)",
-                      color: f.status === "Available" ? "#10b981" : f.status === "Teaching" ? "#3b82f6" : "#ef4444",
-                      border: `1px solid ${f.status === "Available" ? "rgba(16, 185, 129, 0.3)" : f.status === "Teaching" ? "rgba(59, 130, 246, 0.3)" : "rgba(239, 68, 68, 0.3)"}`
-                    }}
+
+              {/* Department Avatars */}
+              <div className="ref-avatars-action-row">
+                <div className="ref-avatars-list">
+                  {hodPeers.map((peer, i) => (
+                    <div key={i} className="ref-avatar-unit">
+                      <img src={peer.avatar} alt={peer.name} className="ref-user-avatar" />
+                      <span className="ref-user-name">{peer.name}</span>
+                    </div>
+                  ))}
+                  <button
+                    className="ref-view-all-circle-btn"
+                    onClick={() => navigate("/faculty-locator")}
+                    title="View Directory"
                   >
-                    {f.status}
-                  </span>
-                </div>
-                <div style={{ fontSize: "12px", color: "var(--text-secondary)" }}>
-                  Staff Room: <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>{f.staff_room || "Main Staff Room"}</span>
-                </div>
-                {f.status_details?.current_class && f.status_details.current_class !== "N/A" && (
-                  <div style={{ fontSize: "12px", color: "#3b82f6" }}>
-                    Current Class: {f.status_details.current_class} ({f.status_details.classroom || f.status_details.room_number})
-                  </div>
-                )}
-                {f.subjects && f.subjects.length > 0 && (
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginTop: "4px" }}>
-                    {f.subjects.slice(0, 3).map((sub, i) => (
-                      <span key={i} style={{ fontSize: "10px", padding: "2px 6px", background: "var(--bg-surface-hover)", border: "1px solid var(--border-color)", borderRadius: "4px", color: "var(--text-secondary)" }}>
-                        {sub}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </Card>
-            ))
-          ) : (
-            <div className="pg-hod-empty card glass" style={{ gridColumn: "1 / -1" }}>
-              <Users size={36} className="text-white/20" />
-              <p className="pg-hod-empty-title">No Faculty Found</p>
-              <p className="pg-hod-empty-subtitle">No faculty profiles are registered under {user?.department || "this department"}.</p>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="pg-hod-request-list">
-          {historyRequests.length > 0 ? (
-            historyRequests.map((req) => (
-              <div key={`${req.req_type}-${req.id}`} className="pg-hod-card">
-                <div className="pg-hod-card-header">
-                  <div className="pg-hod-card-title-sec">
-                    <div className="pg-hod-card-student-line">
-                      <span className="pg-hod-card-name">{req.student_name}</span>
-                      <span className="pg-hod-roll">({req.student_roll})</span>
-                      <span className="pg-hod-card-type-badge">{req.req_type}</span>
+                    <div className="ref-circle-arrow-box">
+                      <ArrowRight size={14} />
                     </div>
-                    <div className="pg-hod-card-meta">
-                      <span className="flex items-center gap-1">
-                        <Calendar size={12} />
-                        {req.start_date} to {req.end_date}
-                      </span>
-                      <span>•</span>
-                      <span>{req.req_type === "leave" ? req.leave_type : req.event_title}</span>
-                    </div>
-                  </div>
-                  <span className={`status-badge ${req.status.toLowerCase().replace(/\s+/g, "-")}`}>
-                    {req.status}
-                  </span>
-                </div>
-
-                <div className="pg-hod-card-body">
-                  <strong>Reason:</strong> {req.reason}
-                  {req.hod_comment && (
-                    <div style={{ marginTop: "12px", padding: "8px 12px", background: "rgba(255,255,255,0.02)", borderRadius: "4px", fontSize: "12px", borderLeft: "2px solid var(--accent)" }}>
-                      <strong>HOD Comment:</strong> "{req.hod_comment}"
-                    </div>
-                  )}
+                    <span className="ref-view-all-text">View all</span>
+                  </button>
                 </div>
               </div>
-            ))
-          ) : (
-            <div className="pg-hod-empty card glass">
-              <FileText size={36} className="text-white/20" />
-              <p className="pg-hod-empty-title">No history logs</p>
-              <p className="pg-hod-empty-subtitle">Past leaf/OD requests will appear here.</p>
             </div>
+          </div>
+
+          {/* 2. Approval Velocity Bar Chart Card */}
+          <div className="ref-card ref-chart-card">
+            <div className="ref-card-header">
+              <h2 className="ref-card-title">Approval Velocity</h2>
+              <div className="ref-pill-dropdown">
+                <span>{chartTimeframe}</span>
+                <ChevronDown size={14} className="ref-dropdown-caret" />
+              </div>
+            </div>
+
+            <div className="ref-chart-body">
+              <div className="ref-chart-kpi-block">
+                <span className="ref-chart-kpi-value">96.5%</span>
+                <span className="ref-chart-kpi-label">Compliance Rate</span>
+              </div>
+
+              <div className="ref-chart-bars-track">
+                {chartBars.map((bar, i) => (
+                  <div key={i} className="ref-chart-bar-column">
+                    {bar.active && (
+                      <div className="ref-bar-tooltip-bubble">
+                        <span>{bar.tag}</span>
+                        <div className="ref-bar-target-ring" />
+                      </div>
+                    )}
+                    <div
+                      className={`ref-chart-bar-pill ${bar.active ? "highlighted" : ""}`}
+                      style={{ height: `${bar.height}%` }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ============================================================
+            RIGHT COLUMN: DEPARTMENT VENUES & DISPATCHES
+            ============================================================ */}
+        <div className="ref-side-column">
+
+          {/* 3. Campus Activity Card */}
+          <div className="ref-card ref-products-card">
+            <h3 className="ref-products-title">Department Venues</h3>
+
+            <div className="ref-products-list">
+              {displayLocations.map((loc) => {
+                const IconComponent = loc.icon;
+                return (
+                  <div
+                    key={loc.id}
+                    className="ref-product-item"
+                    onClick={() => navigate("/campus-pulse")}
+                  >
+                    <div className={`ref-product-icon-box ${loc.tileClass}`}>
+                      <IconComponent size={16} />
+                    </div>
+                    <div className="ref-product-details">
+                      <span className="ref-product-name">{loc.name}</span>
+                      <span className="ref-product-category">{loc.category}</span>
+                    </div>
+                    <div className="ref-product-right-col">
+                      <span className="ref-product-score">{loc.activityScore}</span>
+                      <span className="ref-status-capsule active">{loc.status}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <button
+              className="ref-all-products-btn"
+              onClick={() => navigate("/campus-pulse")}
+            >
+              Open Campus Pulse 3D
+            </button>
+          </div>
+
+          {/* 4. Campus Dispatches Card */}
+          <div className="ref-card ref-comments-card">
+            <h3 className="ref-comments-title">Clearance Dispatches</h3>
+
+            <div className="ref-comments-list">
+              {displayDispatches.map((disp) => (
+                <div key={disp.id} className="ref-comment-item">
+                  <div className="ref-comment-avatar-col">
+                    <img src={disp.avatar} alt={disp.author} className="ref-comment-avatar" />
+                  </div>
+                  <div className="ref-comment-content">
+                    <div className="ref-comment-meta">
+                      <span className="ref-comment-author">{disp.author}</span>
+                      <span className="ref-comment-context">{disp.context}</span>
+                      <span className="ref-comment-time">{disp.time}</span>
+                    </div>
+                    <p className="ref-comment-text">{disp.message}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* ============================================================
+          INTERACTIVE AUTHORIZATION QUEUE
+          ============================================================ */}
+      <div className="ref-card" style={{ marginTop: "24px" }}>
+        <div style={{ display: "flex", gap: "8px", borderBottom: "1px solid var(--border-color)", paddingBottom: "14px", marginBottom: "20px" }}>
+          <button
+            onClick={() => setActiveTab("gate_passes")}
+            className="ref-pill-dropdown"
+            style={{
+              background: activeTab === "gate_passes" ? "var(--brand, #6366F1)" : "var(--bg-card)",
+              color: activeTab === "gate_passes" ? "#FFFFFF" : "var(--text-secondary)",
+              borderColor: activeTab === "gate_passes" ? "var(--brand, #6366F1)" : "var(--border-color)",
+              fontWeight: 600,
+            }}
+          >
+            <Shield size={14} /> Gate Passes ({pendingPasses.length})
+          </button>
+
+          <button
+            onClick={() => setActiveTab("leaves")}
+            className="ref-pill-dropdown"
+            style={{
+              background: activeTab === "leaves" ? "var(--brand, #6366F1)" : "var(--bg-card)",
+              color: activeTab === "leaves" ? "#FFFFFF" : "var(--text-secondary)",
+              borderColor: activeTab === "leaves" ? "var(--brand, #6366F1)" : "var(--border-color)",
+              fontWeight: 600,
+            }}
+          >
+            <FileText size={14} /> Leave Requests ({pendingLeaves.length})
+          </button>
+
+          <button
+            onClick={() => setActiveTab("ods")}
+            className="ref-pill-dropdown"
+            style={{
+              background: activeTab === "ods" ? "var(--brand, #6366F1)" : "var(--bg-card)",
+              color: activeTab === "ods" ? "#FFFFFF" : "var(--text-secondary)",
+              borderColor: activeTab === "ods" ? "var(--brand, #6366F1)" : "var(--border-color)",
+              fontWeight: 600,
+            }}
+          >
+            <GraduationCap size={14} /> On-Duty (OD) ({pendingOds.length})
+          </button>
+        </div>
+
+        {/* Tab Content */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          {activeTab === "gate_passes" && (
+            pendingPasses.length === 0 ? (
+              <p style={{ color: "var(--text-muted)", fontSize: "13px" }}>No gate passes pending approval.</p>
+            ) : (
+              pendingPasses.map((pass) => (
+                <div
+                  key={pass.id}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "14px 18px",
+                    borderRadius: "12px",
+                    border: "1px solid var(--border-color)",
+                    background: "var(--bg-surface)",
+                    flexWrap: "wrap",
+                    gap: "12px",
+                  }}
+                >
+                  <div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <span style={{ fontWeight: 700, fontSize: "14px", color: "var(--text-primary)" }}>
+                        Pass #{pass.id} - {pass.student_name || "Student"}
+                      </span>
+                      <span className="ref-attention-status-pill approved">{pass.status}</span>
+                    </div>
+                    <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "4px" }}>
+                      Reason: {pass.reason} • Out: {pass.out_time ? new Date(pass.out_time).toLocaleString() : "-"}
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <button
+                      disabled={actionLoading[pass.id]}
+                      onClick={() => handleDecision(pass.id, "gate_pass", "approved")}
+                      style={{
+                        padding: "6px 16px",
+                        borderRadius: "9999px",
+                        border: "none",
+                        background: "var(--success-soft)",
+                        color: "var(--success)",
+                        fontWeight: 700,
+                        fontSize: "12px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      ✓ Approve
+                    </button>
+                    <button
+                      disabled={actionLoading[pass.id]}
+                      onClick={() => handleDecision(pass.id, "gate_pass", "rejected")}
+                      style={{
+                        padding: "6px 16px",
+                        borderRadius: "9999px",
+                        border: "none",
+                        background: "var(--danger-soft, rgba(239, 68, 68, 0.15))",
+                        color: "var(--danger, #ef4444)",
+                        fontWeight: 700,
+                        fontSize: "12px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      ✕ Reject
+                    </button>
+                  </div>
+                </div>
+              ))
+            )
+          )}
+
+          {activeTab === "leaves" && (
+            pendingLeaves.length === 0 ? (
+              <p style={{ color: "var(--text-muted)", fontSize: "13px" }}>No leave requests pending review.</p>
+            ) : (
+              pendingLeaves.map((leave) => (
+                <div
+                  key={leave.id}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "14px 18px",
+                    borderRadius: "12px",
+                    border: "1px solid var(--border-color)",
+                    background: "var(--bg-surface)",
+                    flexWrap: "wrap",
+                    gap: "12px",
+                  }}
+                >
+                  <div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <span style={{ fontWeight: 700, fontSize: "14px", color: "var(--text-primary)" }}>
+                        Leave #{leave.id} - {leave.leave_type || "General Leave"}
+                      </span>
+                      <span className="ref-attention-status-pill due-soon">PENDING</span>
+                    </div>
+                    <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "4px" }}>
+                      {leave.reason} • Dates: {leave.start_date} to {leave.end_date}
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <button
+                      disabled={actionLoading[leave.id]}
+                      onClick={() => handleDecision(leave.id, "leave", "approved")}
+                      style={{
+                        padding: "6px 16px",
+                        borderRadius: "9999px",
+                        border: "none",
+                        background: "var(--success-soft)",
+                        color: "var(--success)",
+                        fontWeight: 700,
+                        fontSize: "12px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      ✓ Approve
+                    </button>
+                    <button
+                      disabled={actionLoading[leave.id]}
+                      onClick={() => handleDecision(leave.id, "leave", "rejected")}
+                      style={{
+                        padding: "6px 16px",
+                        borderRadius: "9999px",
+                        border: "none",
+                        background: "var(--danger-soft, rgba(239, 68, 68, 0.15))",
+                        color: "var(--danger, #ef4444)",
+                        fontWeight: 700,
+                        fontSize: "12px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      ✕ Reject
+                    </button>
+                  </div>
+                </div>
+              ))
+            )
+          )}
+
+          {activeTab === "ods" && (
+            pendingOds.length === 0 ? (
+              <p style={{ color: "var(--text-muted)", fontSize: "13px" }}>No on-duty requests pending review.</p>
+            ) : (
+              pendingOds.map((od) => (
+                <div
+                  key={od.id}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "14px 18px",
+                    borderRadius: "12px",
+                    border: "1px solid var(--border-color)",
+                    background: "var(--bg-surface)",
+                    flexWrap: "wrap",
+                    gap: "12px",
+                  }}
+                >
+                  <div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <span style={{ fontWeight: 700, fontSize: "14px", color: "var(--text-primary)" }}>
+                        OD #{od.id} - {od.event_name || "Academic On-Duty"}
+                      </span>
+                      <span className="ref-attention-status-pill due-soon">PENDING</span>
+                    </div>
+                    <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "4px" }}>
+                      Venue: {od.venue || "Campus Event"} • Date: {od.date}
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <button
+                      disabled={actionLoading[od.id]}
+                      onClick={() => handleDecision(od.id, "od", "approved")}
+                      style={{
+                        padding: "6px 16px",
+                        borderRadius: "9999px",
+                        border: "none",
+                        background: "var(--success-soft)",
+                        color: "var(--success)",
+                        fontWeight: 700,
+                        fontSize: "12px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      ✓ Approve
+                    </button>
+                    <button
+                      disabled={actionLoading[od.id]}
+                      onClick={() => handleDecision(od.id, "od", "rejected")}
+                      style={{
+                        padding: "6px 16px",
+                        borderRadius: "9999px",
+                        border: "none",
+                        background: "var(--danger-soft, rgba(239, 68, 68, 0.15))",
+                        color: "var(--danger, #ef4444)",
+                        fontWeight: 700,
+                        fontSize: "12px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      ✕ Reject
+                    </button>
+                  </div>
+                </div>
+              ))
+            )
           )}
         </div>
-      )}
+      </div>
     </motion.div>
   );
 };
+
+export default HodDashboard;
