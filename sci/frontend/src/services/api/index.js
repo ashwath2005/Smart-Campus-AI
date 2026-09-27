@@ -1,0 +1,13 @@
+export { default as api, apiClient } from './client';
+export { default as ENDPOINTS } from './endpoints';
+export { default as authApi } from './authApi';
+export { default as studentApi } from './studentApi';
+export { default as attendanceApi } from './attendanceApi';
+export { default as timetableApi } from './timetableApi';
+export { default as facultyApi } from './facultyApi';
+export { default as gatePassApi } from './gatePassApi';
+export { default as notificationApi } from './notificationApi';
+export { default as eventsApi } from './eventsApi';
+export { default as forumApi } from './forumApi';
+export { default as placementApi } from './placementApi';
+export { default as aiApi } from './aiApi';

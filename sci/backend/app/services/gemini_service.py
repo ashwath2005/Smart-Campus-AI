@@ -1,5 +1,5 @@
 import warnings
-warnings.filterwarnings("ignore", category=FutureWarning, module="google.generativeai")
+warnings.filterwarnings("ignore", category=FutureWarning)
 import google.generativeai as genai
 import asyncio
 from app.config import GEMINI_API_KEY

@@ -1,0 +1,10 @@
+# Backend ignore
+__pycache__/
+*.pyc
+venv/
+.venv/
+*.log
+.env
+smart_campus.db
+uploads/*
+!uploads/.gitkeep

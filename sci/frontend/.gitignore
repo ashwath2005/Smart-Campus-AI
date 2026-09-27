@@ -1,0 +1,7 @@
+# Frontend ignore
+node_modules/
+dist/
+dist-ssr/
+*.local
+*.log
+.env
