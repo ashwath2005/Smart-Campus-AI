@@ -1,12 +1,11 @@
-/* DataTable Component - Modern Enterprise UI using Design Tokens */
+/* DataTable Component - Black & Logo Red Design System */
 
-/* DataTable Container */
 .data-table-container {
   width: 100%;
   overflow: hidden;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-sm);
+  border: 1px solid #1F1F1F;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 /* DataTable Search Wrapper */
@@ -20,43 +19,42 @@
   width: 100%;
   max-width: 20rem; /* 320px */
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-  background-color: var(--color-bg-muted);
-  color: var(--color-text-primary);
+  border: 1px solid #222222;
+  background-color: #0A0A0A;
+  color: #FFFFFF;
   padding: var(--space-2) var(--space-4);
   font-size: 0.875rem; /* text-sm */
-  transition: var(--transition-normal);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
   font-family: var(--font-sans);
   outline: none;
   box-sizing: border-box;
 }
 
 .data-table-search-input:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
-  background-color: var(--color-bg-surface);
+  border-color: #F21722;
+  box-shadow: 0 0 0 3px rgba(242, 23, 34, 0.15);
+  background-color: #0A0A0A;
 }
 
-/* Dark Mode */
 .dark .data-table-search-input {
-  background-color: #0D0D0D;
-  border-color: #262626;
-  color: #F5F5F5;
+  background-color: #0A0A0A;
+  border-color: #222222;
+  color: #FFFFFF;
 }
 
 .dark .data-table-search-input:focus {
-  border-color: #6366F1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
-  background-color: #0D0D0D;
+  border-color: #F21722;
+  box-shadow: 0 0 0 3px rgba(242, 23, 34, 0.15);
+  background-color: #0A0A0A;
 }
 
 /* DataTable Wrapper */
 .data-table-wrapper {
   overflow-x: auto;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-  background-color: var(--color-bg-card);
-  box-shadow: var(--shadow-sm);
+  border: 1px solid #1F1F1F;
+  background-color: #0D0D0D;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .dark .data-table-wrapper {
@@ -75,27 +73,29 @@
 
 /* Header Row */
 .data-table-header-row {
-  border-bottom: 1px solid var(--color-border);
-  background-color: var(--color-bg-muted);
-  font-weight: var(--font-weight-medium);
+  border-bottom: 1px solid #1F1F1F;
+  background-color: #080808;
+  font-weight: 600;
   user-select: none;
 }
 
-/* Dark Mode */
 .dark .data-table-header-row {
-  background-color: #0A0A0A;
+  background-color: #080808;
   border-bottom: 1px solid #1F1F1F;
 }
 
 /* Table Header Cell */
 .data-table-th {
   padding: var(--space-3) var(--space-5);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-secondary);
+  font-weight: 600;
+  color: #8A8A8A;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
 }
 
 .dark .data-table-th {
-  color: #A3A3A3;
+  color: #8A8A8A;
 }
 
 /* Sortable Header */
@@ -104,13 +104,13 @@
 }
 
 .data-table-th-sortable:hover {
-  color: var(--color-text-primary);
-  background-color: var(--color-bg-card);
+  color: #FFFFFF;
+  background-color: #111111;
 }
 
 .dark .data-table-th-sortable:hover {
-  color: #F5F5F5;
-  background-color: #141414;
+  color: #FFFFFF;
+  background-color: #111111;
 }
 
 /* Table Header Content */
@@ -127,7 +127,8 @@
 
 /* Table Row */
 .data-table-row {
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid #1F1F1F;
+  background-color: #0D0D0D;
   transition: background-color var(--transition-fast) ease;
 }
 
@@ -137,10 +138,9 @@
 }
 
 .data-table-row:hover {
-  background-color: var(--color-bg-muted);
+  background-color: #141414;
 }
 
-/* Dark Mode */
 .dark .data-table-row:hover {
   background-color: #141414;
 }
@@ -153,24 +153,24 @@
 /* Table Data Cell */
 .data-table-td {
   padding: var(--space-3) var(--space-5);
-  color: var(--color-text-primary);
+  color: #F5F5F5;
 }
 
 /* Empty State */
 .data-table-empty {
   padding: var(--space-6) var(--space-4);
   text-align: center;
-  color: var(--color-text-muted);
+  color: #737373;
 }
 
 /* Responsive adjustments */
 @media (max-width: 640px) {
   .data-table-search-input {
-    font-size: 0.75rem; /* text-xs */
+    font-size: 0.75rem;
   }
 
   .data-table {
-    font-size: 0.75rem; /* text-xs */
+    font-size: 0.75rem;
   }
 
   .data-table-th,

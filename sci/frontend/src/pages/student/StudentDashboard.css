@@ -400,13 +400,13 @@
 }
 
 .ref-chart-bar-pill.highlighted {
-  background: var(--brand, #6366F1);
-  box-shadow: 0 var(--spacing-1) var(--spacing-3-5) rgba(99, 102, 241, 0.35);
+  background: var(--brand, #F21722);
+  box-shadow: 0 var(--spacing-1) var(--spacing-3-5) rgba(242, 23, 34, 0.35);
 }
 
 .dark .ref-chart-bar-pill.highlighted {
-  background: var(--brand, #6366F1);
-  box-shadow: 0 0 16px rgba(99, 102, 241, 0.35);
+  background: var(--brand, #F21722);
+  box-shadow: 0 0 16px rgba(242, 23, 34, 0.35);
 }
 
 .ref-bar-tooltip-bubble {
@@ -420,14 +420,14 @@
 }
 
 .ref-bar-tooltip-bubble span {
-  background: var(--text-muted);
+  background: #181818;
   color: #FFFFFF;
   font-size: var(--spacing-2-5); /* 10px */
   font-weight: 700;
   padding: var(--spacing-0-625) var(--spacing-1-75);
   border-radius: var(--radius-sm);
-  box-shadow: 0 var(--spacing-0-5) var(--spacing-1-5) rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--border-subtle);
+  box-shadow: 0 var(--spacing-0-5) var(--spacing-1-5) rgba(0, 0, 0, 0.5);
+  border: 1px solid #2A2A2A;
 }
 
 .dark .ref-bar-tooltip-bubble span {
@@ -440,13 +440,13 @@
   width: var(--spacing-1-5); /* 6px */
   height: var(--spacing-1-5); /* 6px */
   border-radius: 9999px;
-  background: var(--bg-card);
-  border: 2px solid var(--brand, #6366F1);
+  background: #0D0D0D;
+  border: 2px solid var(--brand, #F21722);
 }
 
 .dark .ref-bar-target-ring {
   background: #0D0D0D;
-  border-color: var(--brand, #6366F1);
+  border-color: var(--brand, #F21722);
 }
 
 /* 3. Campus Activity (Popular products) Card */
@@ -505,9 +505,9 @@
 
 /* Subtle icon tiles */
 .tile-indigo {
-  background: #EEF2FF;
-  color: #4F46E5;
-  border: 1px solid #E0E7FF;
+  background: rgba(242, 23, 34, 0.12);
+  color: #FF4D57;
+  border: 1px solid rgba(242, 23, 34, 0.25);
 }
 
 .tile-sky {
@@ -529,16 +529,16 @@
 }
 
 .tile-purple {
-  background: #FAF5FF;
-  color: #7E22CE;
-  border: 1px solid #F3E8FF;
+  background: rgba(242, 23, 34, 0.12);
+  color: #FF4D57;
+  border: 1px solid rgba(242, 23, 34, 0.25);
 }
 
 /* Dark theme icon tiles with controlled glow */
 .dark .tile-indigo {
-  background: rgba(79, 70, 229, 0.16);
-  color: #818CF8;
-  border: 1px solid rgba(129, 140, 248, 0.25);
+  background: rgba(242, 23, 34, 0.15);
+  color: #FF4D57;
+  border: 1px solid rgba(242, 23, 34, 0.3);
 }
 
 .dark .tile-sky {

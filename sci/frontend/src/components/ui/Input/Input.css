@@ -1,4 +1,4 @@
-/* Enhanced Input Component - Modern Enterprise Forms using Design Tokens */
+/* Input Component - Black & Logo Red Design System */
 
 /* Input Container */
 .input-container {
@@ -6,28 +6,28 @@
   margin-bottom: var(--space-5);
 }
 
-/* Input Label - Improved Typography */
+/* Input Label */
 .input-label {
   display: block;
   font-size: 0.75rem; /* text-xs */
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-secondary);
+  font-weight: 600;
+  color: var(--text-secondary, #B3B3B3);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   margin-bottom: var(--space-2);
   font-family: var(--font-sans);
   padding-left: var(--space-0-5);
   line-height: 1.4;
 }
 
-/* Input Wrapper - Enhanced States */
+/* Input Wrapper */
 .input-wrapper {
   position: relative;
   border-radius: var(--radius-lg);
   transition: var(--transition-normal);
 }
 
-/* Input Icon - Better Alignment */
+/* Input Icon */
 .input-icon-left {
   position: absolute;
   top: 0;
@@ -38,55 +38,59 @@
   justify-content: center;
   width: var(--space-9);
   pointer-events: none;
-  color: var(--color-text-muted);
+  color: var(--text-muted, #737373);
   transition: color var(--transition-normal);
 }
 
-/* Input Field - Enhanced Styling */
+/* Input Field */
 .input-field {
   display: block;
   width: 100%;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-  background-color: var(--color-bg-surface);
-  color: var(--color-text-primary);
+  border: 1px solid #222222;
+  background-color: #0A0A0A;
+  color: #FFFFFF;
   font-size: 0.875rem; /* text-sm */
-  transition: var(--transition-normal);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
   font-family: var(--font-sans);
   outline: none;
   box-sizing: border-box;
   padding-top: var(--space-3);
   padding-bottom: var(--space-3);
-  font-weight: var(--font-weight-normal);
+  font-weight: 400;
   letter-spacing: -0.01em;
 }
 
-/* Enhanced Focus States */
+.input-field::placeholder {
+  color: #666666;
+}
+
+/* Focus State: Brand Red border + restrained subtle red glow */
 .input-field:focus {
-  border-color: var(--color-primary) !important;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
-  background-color: var(--color-bg-surface) !important;
+  border-color: #F21722 !important;
+  box-shadow: 0 0 0 3px rgba(242, 23, 34, 0.15) !important;
+  background-color: #0A0A0A !important;
 }
 
 .dark .input-field {
-  background-color: #0D0D0D !important;
-  border-color: #262626 !important;
-  color: #F5F5F5 !important;
+  background-color: #0A0A0A !important;
+  border-color: #222222 !important;
+  color: #FFFFFF !important;
 }
 
 .dark .input-field::placeholder {
-  color: #737373 !important;
+  color: #666666 !important;
 }
 
 .dark .input-field:focus {
-  border-color: #6366F1 !important;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12) !important;
-  background-color: #0D0D0D !important;
+  border-color: #F21722 !important;
+  box-shadow: 0 0 0 3px rgba(242, 23, 34, 0.15) !important;
+  background-color: #0A0A0A !important;
 }
 
 /* Hover State */
 .input-field:hover:not(:focus) {
-  border-color: var(--color-border-muted) !important;
+  border-color: #333333 !important;
 }
 
 .dark .input-field:hover:not(:focus) {
@@ -95,67 +99,37 @@
 
 /* Disabled State */
 .input-field:disabled {
-  background-color: var(--color-bg-muted) !important;
+  background-color: #0D0D0D !important;
+  border-color: #1F1F1F !important;
+  color: #525252 !important;
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-.dark .input-field:disabled {
-  background-color: #0A0A0A !important;
-  border-color: #1F1F1F !important;
-  color: #525252 !important;
-}
-
-/* Enhanced Autofill overrides */
+/* Autofill Overrides */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-background-clip: text;
-  -webkit-text-fill-color: var(--color-text-primary) !important;
+  -webkit-text-fill-color: #FFFFFF !important;
   transition: background-color 5000s ease-in-out 0s;
-  box-shadow: inset 0 0 0 20px rgba(0, 0, 0, 0.02) !important;
+  box-shadow: inset 0 0 0 30px #0A0A0A !important;
 }
 
-.dark input:-webkit-autofill,
-.dark input:-webkit-autofill:hover,
-.dark input:-webkit-autofill:focus,
-.dark input:-webkit-autofill:active {
-  -webkit-text-fill-color: #ffffff !important;
-  box-shadow: inset 0 0 0 20px #07080b !important;
-}
-
-/* Enhanced Error States */
+/* Error States */
 .input-field-error {
-  border-color: var(--color-error) !important;
-  background-color: rgba(239, 68, 68, 0.03) !important;
+  border-color: #F21722 !important;
+  background-color: rgba(242, 23, 34, 0.04) !important;
 }
 
 .input-field-error:focus {
-  border-color: var(--color-error) !important;
-  box-shadow:
-    0 0 0 3px rgba(239, 68, 68, 0.15) !important,
-    0 1px 3px 0 rgba(239, 68, 68, 0.1)    !important;
-  background-color: var(--color-bg-surface) !important;
+  border-color: #F21722 !important;
+  box-shadow: 0 0 0 3px rgba(242, 23, 34, 0.25) !important;
+  background-color: #0A0A0A !important;
 }
 
-.dark .input-field-error {
-  border-color: var(--color-error) !important;
-  background-color: rgba(239, 68, 68, 0.05) !important;
-}
-
-.dark .input-field-error:focus {
-  box-shadow:
-    0 0 0 3px rgba(239, 68, 68, 0.2) !important,
-    0 1px 3px 0 rgba(239, 68, 68, 0.1)    !important;
-}
-
-/* Error States - Enhanced Feedback */
-.input-field-error:hover:not(:focus) {
-  border-color: var(--color-error) !important;
-}
-
-/* Enhanced Password Toggle */
+/* Password Toggle */
 .input-password-toggle {
   position: absolute;
   top: 0;
@@ -165,65 +139,60 @@ input:-webkit-autofill:active {
   align-items: center;
   justify-content: center;
   width: var(--space-9);
-  color: var(--color-text-muted);
+  color: var(--text-muted, #737373);
   background: transparent;
   border: none;
   cursor: pointer;
   outline: none;
-  transition: var(--transition-normal);
+  transition: color var(--transition-fast);
   padding: 0;
   margin: 0;
 }
 
 .input-password-toggle:hover {
-  color: var(--color-text-primary) !important;
-  background-color: var(--color-bg-muted) !important;
+  color: #FFFFFF !important;
+  background-color: rgba(255, 255, 255, 0.05) !important;
   border-radius: 0 var(--radius-lg) var(--radius-lg) 0 !important;
 }
 
-.input-password-toggle:active {
-  background-color: var(--color-border) !important;
-}
-
-/* Enhanced Helper Text */
+/* Helper Text */
 .input-helper-text {
   margin-top: var(--space-1-5);
-  font-size: 0.75rem; /* text-xs */
-  color: var(--color-text-muted);
-  font-weight: var(--font-weight-normal);
+  font-size: 0.75rem;
+  color: var(--text-muted, #737373);
   line-height: 1.4;
 }
 
-/* Enhanced Error Text */
+/* Error Text */
 .input-error-text {
   margin-top: var(--space-1-5);
-  font-size: 0.75rem; /* text-xs */
-  color: var(--color-error);
-  font-weight: var(--font-weight-medium);
+  font-size: 0.75rem;
+  color: #F21722;
+  font-weight: 500;
   line-height: 1.4;
   display: flex;
   align-items: center;
   gap: var(--space-1-5);
 }
 
-/* Input with Icon - Enhanced Spacing */
+/* Input with Icon Spacing */
 .input-field-padding-left-icon {
-  padding-left: var(--space-11) !important;
+  padding-left: 42px !important;
 }
 
 .input-field-padding-left-normal {
-  padding-left: var(--space-4) !important;
+  padding-left: 14px !important;
 }
 
 .input-field-padding-right-password {
-  padding-right: var(--space-11) !important;
+  padding-right: 42px !important;
 }
 
 .input-field-padding-right-normal {
-  padding-right: var(--space-4) !important;
+  padding-right: 14px !important;
 }
 
-/* Input Groups / Compound Fields */
+/* Input Groups */
 .input-group {
   display: grid;
   gap: var(--space-3);
@@ -237,52 +206,5 @@ input:-webkit-autofill:active {
 
   .input-group-3 {
     grid-template-columns: 1fr 1fr 1fr;
-  }
-}
-
-/* Loading State */
-.input-field.loading {
-  position: relative;
-}
-
-.input-field.loading::after {
-  content: '';
-  position: absolute;
-  right: var(--space-4);
-  top: 50%;
-  width: var(--space-4);
-  height: var(--space-4);
-  margin-top: calc(-1 * var(--space-2));
-  border: 2px solid var(--color-border);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
-  animation: spin var(--transition-normal) linear infinite;
-  pointer-events: none;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* Dark Mode Enhancements - handled automatically by design tokens */
-.dark .input-field {
-  /* Colors are handled by design tokens */
-}
-
-.dark .input-field:hover:not(:focus) {
-  border-color: var(--color-border-muted) !important;
-}
-
-/* Focus Ring Animation */
-.input-field-focused {
-  animation: focus-ring var(--transition-fast) ease-out;
-}
-
-@keyframes focus-ring {
-  from {
-    box-shadow: 0 0 0 0 rgba(242, 23, 34, 0);
-  }
-  to {
-    box-shadow: 0 0 0 3px var(--color-primary-200);
   }
 }

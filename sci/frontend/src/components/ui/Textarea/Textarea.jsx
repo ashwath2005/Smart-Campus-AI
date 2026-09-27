@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Textarea.css';
 
 export const Textarea = React.forwardRef(

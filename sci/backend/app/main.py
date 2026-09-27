@@ -1,6 +1,7 @@
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 import os
+from typing import Optional
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -51,9 +52,13 @@ app.mount("/uploads", StaticFiles(directory=uploads_dir), name="uploads")
 @app.websocket("/ws/notifications")
 async def websocket_notifications(
     websocket: WebSocket,
-    token: str = Query(...),
+    token: Optional[str] = Query(None),
 ):
     await websocket.accept()
+    if not token:
+        await websocket.close(code=4001, reason="Authentication token missing")
+        return
+
     try:
         payload = decode_token(token)
         user_id = payload.get("user_id") or payload.get("id")
@@ -61,17 +66,21 @@ async def websocket_notifications(
             await websocket.close(code=4001, reason="Invalid token: user identity missing")
             return
 
-        async with async_session() as db:
-            result = await db.execute(select(User).where(User.id == user_id))
-            user = result.scalar_one_or_none()
-            if not user:
-                await websocket.close(code=4002, reason="User not found")
-                return
+        role = payload.get("role")
+        department = None
+        semester = None
 
-            user_id = user.id
-            role = user.role
-            department = user.department
-            semester = user.semester
+        try:
+            async with async_session() as db:
+                result = await db.execute(select(User).where(User.id == user_id))
+                user = result.scalar_one_or_none()
+                if user:
+                    user_id = user.id
+                    role = user.role
+                    department = user.department
+                    semester = user.semester
+        except Exception as db_err:
+            print(f"WS DB lookup note: {db_err}")
 
         await ws_manager.connect(websocket, user_id, role, department, semester)
 

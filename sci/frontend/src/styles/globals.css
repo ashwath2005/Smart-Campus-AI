@@ -1,15 +1,15 @@
 /* ═════════════════════════════════════════════════════════════════════════════════
    GLOBALS.CSS
-   Clean resets, scrollbars, and base surfaces using design tokens.
+   Clean resets, scrollbars, and base surfaces using Black & Red design system.
    ════════════════════════════════════════════════════════════════════════════════ */
 
 html {
   margin: 0;
   padding: 0;
-  background-color: var(--bg-canvas);
-  color: var(--text-primary);
+  background-color: var(--bg-canvas, #050505);
+  color: var(--text-primary, #FFFFFF);
   scroll-behavior: smooth;
-  font-size: 16px; /* Base font size */
+  font-size: 16px;
 }
 
 body {
@@ -17,8 +17,8 @@ body {
   padding: 0;
   width: 100%;
   min-height: 100vh;
-  background-color: var(--bg-canvas);
-  color: var(--text-primary);
+  background-color: var(--bg-canvas, #050505);
+  color: var(--text-primary, #FFFFFF);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-family: var(--font-sans);
@@ -27,12 +27,18 @@ body {
 #root {
   width: 100%;
   min-height: 100vh;
-  background-color: var(--bg-canvas);
+  background-color: var(--bg-canvas, #050505);
 }
 
-/* Neutral Clean Background (no blueprint grids or noise) */
+/* Subtle Selection */
+::selection {
+  background-color: rgba(242, 23, 34, 0.35);
+  color: #FFFFFF;
+}
+
+/* Neutral Clean Background */
 .digital-grid-bg {
-  background-color: var(--bg-canvas);
+  background-color: var(--bg-canvas, #050505);
 }
 
 /* Subtle Scrollbars */
@@ -46,44 +52,30 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.15);
-  border-radius: var(--radius-sm);
-}
-
-.dark ::-webkit-scrollbar-thumb {
-  background: #262626;
+  background: #1F1F1F;
   border-radius: var(--radius-sm);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.25);
+  background: #2A2A2A;
 }
-
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: #333333;
-}
-
 
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+  scrollbar-color: #262626 transparent;
 }
 
-.light .custom-scrollbar {
-  scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
-}
-
-/* Clean Institutional Toast */
+/* Institutional Toast */
 .custom-toast-container {
   max-width: 420px;
   width: 100%;
-  background-color: var(--color-bg-card);
-  box-shadow: var(--shadow-md);
+  background-color: var(--color-bg-card, #0D0D0D);
+  box-shadow: var(--shadow-lg);
   border-radius: var(--radius-lg);
   pointer-events: auto;
   display: flex;
   box-sizing: border-box;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border, #1F1F1F);
   padding: var(--space-4);
   gap: var(--space-3);
 }
@@ -110,17 +102,17 @@ body {
 }
 
 .custom-toast-title {
-  font-size: 0.875rem; /* text-sm */
+  font-size: 0.875rem;
   font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
+  color: var(--color-text-primary, #FFFFFF);
   letter-spacing: -0.01em;
   margin: 0;
 }
 
 .custom-toast-message {
   margin-top: var(--space-0-5);
-  font-size: 0.75rem; /* text-xs */
-  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #B3B3B3);
   line-height: 1.5;
   margin-bottom: 0;
 }
@@ -134,7 +126,7 @@ body {
 .custom-toast-close-btn {
   border-radius: var(--radius-sm);
   padding: var(--space-1);
-  color: var(--color-text-muted);
+  color: var(--color-text-muted, #737373);
   background: transparent;
   border: none;
   cursor: pointer;
@@ -142,17 +134,18 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all var(--transition-fast);
 }
 
 .custom-toast-close-btn:hover {
-  color: var(--color-text-primary);
-  background-color: var(--color-bg-muted);
+  color: var(--color-text-primary, #FFFFFF);
+  background-color: var(--color-bg-muted, #111111);
 }
 
 /* Focus Ring Utility */
 .focus-ring {
   --ring-offset-width: 2px;
-  --ring-color: var(--color-primary);
+  --ring-color: var(--color-primary, #F21722);
   box-shadow: var(--ring-inset) 0 0 0 calc(2px + var(--ring-offset-width)) var(--ring-color);
 }
 

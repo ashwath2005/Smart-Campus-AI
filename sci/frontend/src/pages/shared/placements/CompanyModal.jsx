@@ -1,14 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Input, Button } from "../../../components/ui";
 import toast from "react-hot-toast";
 
-export const CompanyModal = ({ isOpen, onClose, onSave }) => {
+export const CompanyModal = ({ isOpen, onClose, onSave, companyToEdit = null }) => {
   const [name, setName] = useState("");
   const [industry, setIndustry] = useState("");
   const [website, setWebsite] = useState("");
   const [description, setDescription] = useState("");
   const [logoUrl, setLogoUrl] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (companyToEdit) {
+      setName(companyToEdit.name || "");
+      setIndustry(companyToEdit.industry || "");
+      setWebsite(companyToEdit.website || "");
+      setDescription(companyToEdit.description || "");
+      setLogoUrl(companyToEdit.logo || companyToEdit.logo_url || "");
+    } else {
+      setName("");
+      setIndustry("");
+      setWebsite("");
+      setDescription("");
+      setLogoUrl("");
+    }
+  }, [companyToEdit, isOpen]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,18 +35,16 @@ export const CompanyModal = ({ isOpen, onClose, onSave }) => {
 
     setLoading(true);
     try {
-      await onSave({
-        name,
-        industry,
-        website,
-        description,
-        logo_url: logoUrl || "https://via.placeholder.com/150"
-      });
-      setName("");
-      setIndustry("");
-      setWebsite("");
-      setDescription("");
-      setLogoUrl("");
+      await onSave(
+        {
+          name,
+          industry,
+          website,
+          description,
+          logo_url: logoUrl || "https://via.placeholder.com/150",
+        },
+        companyToEdit?.id
+      );
       onClose();
     } catch {
       // Error handled by caller
@@ -40,7 +54,11 @@ export const CompanyModal = ({ isOpen, onClose, onSave }) => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Add Recruiting Company Profile">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={companyToEdit ? "Edit Company Profile" : "Add Recruiting Company Profile"}
+    >
       <form onSubmit={handleSubmit} className="p-space-y-4">
         <Input
           label="Company Name *"
@@ -88,7 +106,7 @@ export const CompanyModal = ({ isOpen, onClose, onSave }) => {
             Cancel
           </Button>
           <Button type="submit" variant="primary" loading={loading}>
-            Save Company Profile
+            {companyToEdit ? "Update Company" : "Save Company Profile"}
           </Button>
         </div>
       </form>

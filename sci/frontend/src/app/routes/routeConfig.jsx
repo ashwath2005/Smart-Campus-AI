@@ -24,6 +24,10 @@ export const GuardianGatePass = lazy(() => import('../../pages/guardian/Guardian
 export const GatePassAdmin = lazy(() => import('../../pages/admin/GatePassAdmin').then(m => ({ default: m.GatePassAdmin })));
 export const HodDashboard = lazy(() => import('../../pages/admin/HodDashboard').then(m => ({ default: m.HodDashboard })));
 
+export const WardenDashboard = lazy(() => import('../../pages/warden/WardenDashboard').then(m => ({ default: m.WardenDashboard })));
+export const WardenLeaves = lazy(() => import('../../pages/warden/WardenLeaves').then(m => ({ default: m.WardenLeaves })));
+export const WardenProfile = lazy(() => import('../../pages/warden/WardenProfile').then(m => ({ default: m.WardenProfile })));
+
 export const FacultyDashboard = lazy(() => import('../../pages/faculty/FacultyDashboard').then(m => ({ default: m.FacultyDashboard })));
 export const FacultyLocator = lazy(() => import('../../pages/faculty/FacultyLocator').then(m => ({ default: m.FacultyLocator })));
 
@@ -46,11 +50,13 @@ export const ForumPost = lazy(() => import('../../pages/shared/ForumPost').then(
 export const LandingPage = lazy(() => import('../../pages/shared/LandingPage').then(m => ({ default: m.LandingPage })));
 export const CampusPulse = lazy(() => import('../../features/campusPulse/CampusPulse'));
 
+import { useAuth } from '../../context/AuthContext';
+
 export const PageLoader = () => (
   <div className="flex min-h-[60vh] w-full items-center justify-center p-8">
     <div className="flex flex-col items-center gap-3">
-      <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-700 border-t-sky-500" />
-      <span className="text-xs font-semibold tracking-wider text-slate-400 uppercase">
+      <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#1F1F1F] border-t-[#F21722]" />
+      <span className="text-xs font-semibold tracking-wider text-[#8A8A8A] uppercase font-mono">
         Loading Campus Operations...
       </span>
     </div>
@@ -59,15 +65,9 @@ export const PageLoader = () => (
 
 // Role redirection helper
 export const RoleHomeRedirect = () => {
-  const stored = localStorage.getItem('campus_user');
-  if (!stored) return <Navigate to={ROUTES.LOGIN} replace />;
-  try {
-    const parsed = JSON.parse(stored);
-    const role = parsed.role;
-    const dest = ROLE_DEFAULT_REDIRECTS[role] || ROUTES.LOGIN;
-    return <Navigate to={dest} replace />;
-  } catch {
-    // fallback
-  }
-  return <Navigate to={ROUTES.LOGIN} replace />;
+  const { user, isLoading } = useAuth();
+  if (isLoading) return <PageLoader />;
+  if (!user) return <Navigate to={ROUTES.LOGIN} replace />;
+  const dest = ROLE_DEFAULT_REDIRECTS[user.role] || ROUTES.STUDENT_DASHBOARD;
+  return <Navigate to={dest} replace />;
 };

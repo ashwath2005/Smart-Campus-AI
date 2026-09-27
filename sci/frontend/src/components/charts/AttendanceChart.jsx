@@ -27,18 +27,15 @@ const CustomTooltip = ({ active, payload }) => {
 };
 
 export const AttendanceChart = ({ data }) => {
-  // Demo Fallback Data
-  const fallbackData = [
-    { date: '05/10', percentage: 72 },
-    { date: '05/15', percentage: 75 },
-    { date: '05/20', percentage: 74 },
-    { date: '05/25', percentage: 78 },
-    { date: '06/01', percentage: 82 },
-    { date: '06/05', percentage: 80 },
-    { date: '06/10', percentage: 83 },
-  ];
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    return (
+      <div className="attendance-chart-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>
+        No attendance trend data available.
+      </div>
+    );
+  }
 
-  const chartData = data || fallbackData;
+  const chartData = data;
 
   return (
     <div className="attendance-chart-container">

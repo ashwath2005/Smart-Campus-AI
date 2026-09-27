@@ -1,0 +1,268 @@
+/* Warden Dashboard - Black & Red Premium Theme */
+
+.warden-dashboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6, 24px);
+  padding: var(--space-6, 24px);
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.wd-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.wd-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wd-title {
+  font-size: var(--text-2xl, 1.5rem);
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.wd-subtitle {
+  font-size: var(--text-sm, 0.875rem);
+  color: #8A8A8A;
+  margin: 0;
+}
+
+/* Call to Action Banner */
+.wd-hero-banner {
+  background: linear-gradient(135deg, #141414 0%, #0A0A0A 100%);
+  border: 1px solid rgba(242, 23, 34, 0.25);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.wd-hero-banner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: #F21722;
+}
+
+.wd-hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 700px;
+}
+
+.wd-hero-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.wd-hero-desc {
+  font-size: 0.875rem;
+  color: #A3A3A3;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Stat Cards */
+.wd-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .wd-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.wd-stat-card {
+  background: #0D0D0D;
+  border: 1px solid #1F1F1F;
+  border-radius: 10px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color 0.15s;
+}
+
+.wd-stat-card:hover {
+  border-color: #2E2E2E;
+}
+
+.wd-stat-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wd-stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #8A8A8A;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.wd-stat-num {
+  font-size: 28px;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1;
+}
+
+.wd-stat-sub {
+  font-size: 11px;
+  color: #666666;
+}
+
+/* Main Grid */
+.wd-main-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 1024px) {
+  .wd-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.wd-card {
+  background: #0D0D0D;
+  border: 1px solid #1F1F1F;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.wd-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.wd-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Recent Leaves Mini-Table */
+.wd-recent-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.wd-recent-table th {
+  text-align: left;
+  color: #777777;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 8px 12px;
+  border-bottom: 1px solid #1A1A1A;
+}
+
+.wd-recent-table td {
+  padding: 12px;
+  border-bottom: 1px solid #141414;
+  color: #CCCCCC;
+}
+
+.wd-recent-table tr:last-child td {
+  border-bottom: none;
+}
+
+.wd-badge-sm {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.wd-badge-sm.pending {
+  background: rgba(245, 158, 11, 0.15);
+  color: #FBBF24;
+}
+
+.wd-badge-sm.approved {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ADE80;
+}
+
+.wd-badge-sm.rejected {
+  background: rgba(239, 68, 68, 0.15);
+  color: #F87171;
+}
+
+/* Quick Action Shortcuts */
+.wd-shortcuts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wd-shortcut-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: #121212;
+  border: 1px solid #1C1C1C;
+  border-radius: 8px;
+  color: #FFFFFF;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.wd-shortcut-item:hover {
+  background: #171717;
+  border-color: #2A2A2A;
+}
+
+.wd-shortcut-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wd-shortcut-label {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.wd-shortcut-desc {
+  font-size: 11px;
+  color: #777777;
+}

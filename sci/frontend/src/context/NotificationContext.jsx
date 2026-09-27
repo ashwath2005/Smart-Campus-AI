@@ -12,6 +12,7 @@ export const NotificationProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const wsRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
+  const reconnectAttemptsRef = useRef(0);
 
   // Fetch count
   const fetchUnreadCount = useCallback(async () => {
@@ -91,37 +92,67 @@ export const NotificationProvider = ({ children }) => {
 
   // Fetch initial notifications and count on mount/login
   useEffect(() => {
-    if (token) {
+    const isAuthPath = typeof window !== 'undefined' && 
+      /^\/(login|register|forgot-password|reset-password)(\/|$)/.test(window.location.pathname);
+
+    if (token && user && !isAuthPath) {
       fetchNotifications();
       fetchUnreadCount();
     } else {
       setNotifications([]);
       setUnreadCount(0);
     }
-  }, [token, fetchNotifications, fetchUnreadCount]);
+  }, [token, user, fetchNotifications, fetchUnreadCount]);
 
   // WebSocket connection management
   useEffect(() => {
-    if (!token) {
+    const isAuthPath = typeof window !== 'undefined' && 
+      /^\/(login|register|forgot-password|reset-password)(\/|$)/.test(window.location.pathname);
+
+    if (!token || !user || isAuthPath) {
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+        reconnectTimeoutRef.current = null;
+      }
       if (wsRef.current) {
+        wsRef.current.onclose = null;
+        wsRef.current.onerror = null;
         wsRef.current.close();
+        wsRef.current = null;
       }
       return;
     }
 
+    reconnectAttemptsRef.current = 0;
+
     const connectWebSocket = () => {
-      // Get base URL for WS from API base url
+      // If already connected or connecting, skip
+      if (wsRef.current && (wsRef.current.readyState === WebSocket.OPEN || wsRef.current.readyState === WebSocket.CONNECTING)) {
+        return;
+      }
+
+      if (reconnectAttemptsRef.current >= 4) {
+        console.warn('Real-time notification service currently unreachable. Will retry on next user session.');
+        return;
+      }
+
       const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
       const wsProtocol = apiBaseUrl.startsWith('https') ? 'wss' : 'ws';
       const wsHost = apiBaseUrl.replace(/^https?:\/\//, '').split('/')[0];
       const wsUrl = `${wsProtocol}://${wsHost}/ws/notifications?token=${token}`;
 
-      console.log('Connecting to WebSocket:', wsUrl);
-      const ws = new WebSocket(wsUrl);
+      let ws;
+      try {
+        ws = new WebSocket(wsUrl);
+      } catch (err) {
+        console.warn('Unable to initiate WebSocket connection:', err.message);
+        return;
+      }
       wsRef.current = ws;
 
       ws.onopen = () => {
-        console.log('WebSocket connection established');
+        reconnectAttemptsRef.current = 0;
+        console.log('Notification WebSocket connection established');
       };
 
       ws.onmessage = (event) => {
@@ -191,38 +222,40 @@ export const NotificationProvider = ({ children }) => {
       };
 
       ws.onclose = (e) => {
-        console.log('WebSocket closed:', e.code, e.reason);
-        // Do not reconnect on auth errors (codes 4000-4003 or policy violation 1008)
-        if (e.code >= 4000 && e.code <= 4003 || e.code === 1008) {
-          console.warn('WebSocket authentication failed or unauthorized. Halting reconnect.');
+        // Do not reconnect on intentional close (1000) or auth rejection (4000-4003, 1008)
+        if (e.code === 1000 || (e.code >= 4000 && e.code <= 4003) || e.code === 1008) {
           return;
         }
-        // Only reconnect if token is still active (user hasn't logged out)
-        if (token) {
+
+        reconnectAttemptsRef.current += 1;
+        if (reconnectAttemptsRef.current <= 3 && token && user) {
+          const delay = Math.min(15000, 3000 * reconnectAttemptsRef.current);
           reconnectTimeoutRef.current = setTimeout(() => {
-            console.log('Reconnecting WebSocket...');
             connectWebSocket();
-          }, 5000);
+          }, delay);
         }
       };
 
-      ws.onerror = (err) => {
-        console.error('WebSocket encountered error:', err);
-        ws.close();
+      ws.onerror = () => {
+        // Suppress noisy error logs; onclose handles backoff
       };
     };
 
     connectWebSocket();
 
     return () => {
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
       if (reconnectTimeoutRef.current) {
         clearTimeout(reconnectTimeoutRef.current);
+        reconnectTimeoutRef.current = null;
+      }
+      if (wsRef.current) {
+        wsRef.current.onclose = null;
+        wsRef.current.onerror = null;
+        wsRef.current.close();
+        wsRef.current = null;
       }
     };
-  }, [token, addNotification]);
+  }, [token, user, addNotification]);
 
   return (
     <NotificationContext.Provider

@@ -127,16 +127,30 @@ export const FacultyDashboard = () => {
   const handleMarkBulk = async () => {
     setBulkLoading(true);
     try {
-      const records = Object.entries(bulkAttendance).map(([studentId, status]) => ({
-        student_id: parseInt(studentId, 10),
+      // Ensure all students in roster have an entry even if not toggled
+      const records = (studentsRoster || []).map((student) => ({
+        student_id: student.id,
         subject: attSubject,
         date: attDate,
-        status,
+        status: bulkAttendance[student.id] || "present",
       }));
-      await api.post("/attendance/bulk", { records });
-      toast.success(`Attendance logged for ${records.length} students!`);
-    } catch {
-      toast.error("Failed to submit class attendance records.");
+
+      if (records.length === 0) {
+        toast.error("No students available in roster to mark attendance");
+        return;
+      }
+
+      const payload = {
+        subject: attSubject,
+        date: attDate,
+        records,
+      };
+
+      const res = await api.post("/attendance/bulk", payload);
+      toast.success(res.data?.message || `Attendance logged for ${records.length} students!`);
+    } catch (err) {
+      const msg = err.response?.data?.detail || "Failed to submit class attendance records.";
+      toast.error(msg);
     } finally {
       setBulkLoading(false);
     }
@@ -167,99 +181,49 @@ export const FacultyDashboard = () => {
     }
   };
 
-  const attendanceAvg = analytics?.averageAttendance ?? 86.4;
-  const classesToday = analytics?.classesToday ?? 3;
-  const totalStudentsEnrolled = analytics?.totalStudents ?? 142;
+  const attendanceAvg = analytics?.averageAttendance ?? 0;
+  const classesToday = analytics?.classesToday ?? 0;
+  const totalStudentsEnrolled = analytics?.totalStudents ?? 0;
 
-  // 9 Velocity Bars matching reference rhythm
+  // Dynamic velocity bars based on actual attendance percentage
   const chartBars = [
-    { label: "1", height: 50, active: false },
-    { label: "2", height: 62, active: false },
-    { label: "3", height: 44, active: false },
-    { label: "4", height: 75, active: false },
-    { label: "5", height: 48, active: false },
-    { label: "6", height: 90, active: true, tag: "94%" },
-    { label: "7", height: 68, active: false },
-    { label: "8", height: 55, active: false },
-    { label: "9", height: 82, active: false },
+    { label: "1", height: Math.max(12, Math.round(attendanceAvg * 0.6)), active: false },
+    { label: "2", height: Math.max(15, Math.round(attendanceAvg * 0.75)), active: false },
+    { label: "3", height: Math.max(12, Math.round(attendanceAvg * 0.55)), active: false },
+    { label: "4", height: Math.max(20, Math.round(attendanceAvg * 0.8)), active: false },
+    { label: "5", height: Math.max(15, Math.round(attendanceAvg * 0.7)), active: false },
+    { label: "6", height: Math.max(25, Math.min(100, Math.round(attendanceAvg))), active: attendanceAvg > 0, tag: `${attendanceAvg}%` },
+    { label: "7", height: Math.max(18, Math.round(attendanceAvg * 0.75)), active: false },
+    { label: "8", height: Math.max(14, Math.round(attendanceAvg * 0.65)), active: false },
+    { label: "9", height: Math.max(20, Math.round(attendanceAvg * 0.85)), active: false },
   ];
 
-  // 5 Campus Activity Facilities matching reference
-  const displayLocations = [
-    {
-      id: "block-a",
-      name: "Lecture Hall A-204",
-      category: "Data Structures & Algos",
-      activityScore: "92.0%",
-      status: "Active",
-      icon: Building,
-      tileClass: "tile-indigo",
-    },
-    {
-      id: "lab-block",
-      name: "Computing Systems Lab 2",
-      category: "Systems & Network Lab",
-      activityScore: "88.5%",
-      status: "Active",
-      icon: Cpu,
-      tileClass: "tile-sky",
-    },
-    {
-      id: "ai-lab",
-      name: "AI & Robotics PG Suite",
-      category: "Cognitive Research",
-      activityScore: "95.0%",
-      status: "Active",
-      icon: Sparkles,
-      tileClass: "tile-emerald",
-    },
-    {
-      id: "block-c",
-      name: "Seminar Hall C-1",
-      category: "Department Faculty Room",
-      activityScore: "74.0%",
-      status: "Normal",
-      icon: GraduationCap,
-      tileClass: "tile-amber",
-    },
-    {
-      id: "campus-3d",
-      name: "Campus Digital Twin 3D",
-      category: "Spatial Telemetry",
-      activityScore: "99.1%",
-      status: "Active",
-      icon: Layers,
-      tileClass: "tile-purple",
-    },
-  ];
+  const displayLocations = (analytics?.venues || []).map((v, i) => ({
+    id: v.id || `loc-${i}`,
+    name: v.name,
+    category: v.category || "Classroom Venue",
+    activityScore: v.capacity ? `${v.capacity} capacity` : "Active",
+    status: v.status || "Active",
+    icon: Building,
+    tileClass: i % 2 === 0 ? "tile-indigo" : "tile-emerald",
+  }));
 
-  // Dispatches
-  const displayDispatches = [
-    {
-      id: "disp-1",
-      author: "HOD Office",
-      context: "on Curriculum Sync",
-      time: "09:15 AM",
-      message: "Internal CAT-1 marks submission window opens this Friday.",
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80",
-    },
-    {
-      id: "disp-2",
-      author: "Priya P.",
-      context: "on Data Structures",
-      time: "08:50 AM",
-      message: "Assignment #3 submission uploaded for verification.",
-      avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&auto=format&fit=crop&q=80",
-    },
-  ];
+  const displayDispatches = (analytics?.dispatches || []).map((d) => ({
+    id: d.id,
+    author: d.author,
+    context: d.context,
+    time: d.time,
+    message: d.message,
+    initial: (d.author || "A").charAt(0).toUpperCase(),
+  }));
 
-  const facultyPeers = [
-    { name: "Dr. Sunita", role: "HOD", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80" },
-    { name: "Dr. Amit", role: "Faculty", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80" },
-    { name: "Dr. Sneha", role: "Faculty", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80" },
-    { name: "Rahul S.", role: "Student CR", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80" },
-    { name: "Priya P.", role: "Student CR", avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&auto=format&fit=crop&q=80" },
-  ];
+  const facultyPeers = (analytics?.peers || []).map((p) => ({
+    id: p.id,
+    name: p.name,
+    role: p.role,
+    department: p.department,
+    initial: (p.name || "U").charAt(0).toUpperCase(),
+  }));
 
   return (
     <motion.div
@@ -296,7 +260,7 @@ export const FacultyDashboard = () => {
                 <div className="ref-metric-val-row">
                   <span className="ref-metric-value">{attendanceAvg}%</span>
                   <div className="ref-trend-pill up">
-                    <span>↑ 3.8%</span>
+                    <span>Live</span>
                   </div>
                 </div>
                 <span className="ref-trend-subtext">Across {totalStudentsEnrolled} registered students</span>
@@ -313,7 +277,7 @@ export const FacultyDashboard = () => {
                     <span>Active</span>
                   </div>
                 </div>
-                <span className="ref-trend-subtext">Next session at 10:30 AM in A-204</span>
+                <span className="ref-trend-subtext">{classesToday > 0 ? "Daily session schedule synchronized" : "No sessions scheduled today"}</span>
               </div>
             </div>
 
@@ -363,7 +327,7 @@ export const FacultyDashboard = () => {
                     <span className="ref-attention-status-pill due-soon">ALRA / KDPA</span>
                   </div>
                   <p className="ref-attention-card-desc">
-                    AI identified 2 students requiring retention reinforcement.
+                    ALRA / KDPA cognitive learning telemetry operational.
                   </p>
                 </div>
               </div>
@@ -371,12 +335,30 @@ export const FacultyDashboard = () => {
               {/* Peers / Students Avatars */}
               <div className="ref-avatars-action-row">
                 <div className="ref-avatars-list">
-                  {facultyPeers.map((peer, i) => (
-                    <div key={i} className="ref-avatar-unit">
-                      <img src={peer.avatar} alt={peer.name} className="ref-user-avatar" />
-                      <span className="ref-user-name">{peer.name}</span>
-                    </div>
-                  ))}
+                  {facultyPeers.length > 0 ? (
+                    facultyPeers.map((peer, i) => (
+                      <div key={i} className="ref-avatar-unit">
+                        <div
+                          className="ref-user-avatar"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            background: "rgba(242, 23, 34, 0.12)",
+                            color: "#f21722",
+                            fontWeight: "700",
+                            fontSize: "12px",
+                            borderRadius: "9999px",
+                          }}
+                        >
+                          {peer.initial}
+                        </div>
+                        <span className="ref-user-name">{peer.name}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>Faculty directory connected</span>
+                  )}
                   <button
                     className="ref-view-all-circle-btn"
                     onClick={() => navigate("/faculty-locator")}
@@ -404,7 +386,9 @@ export const FacultyDashboard = () => {
 
             <div className="ref-chart-body">
               <div className="ref-chart-kpi-block">
-                <span className="ref-chart-kpi-value">94%</span>
+                <span className="ref-chart-kpi-value">
+                  {attendanceAvg > 0 ? `${attendanceAvg}%` : "0%"}
+                </span>
                 <span className="ref-chart-kpi-label">Class Attendance</span>
               </div>
 
@@ -438,28 +422,34 @@ export const FacultyDashboard = () => {
             <h3 className="ref-products-title">Academic Venues</h3>
 
             <div className="ref-products-list">
-              {displayLocations.map((loc) => {
-                const IconComponent = loc.icon;
-                return (
-                  <div
-                    key={loc.id}
-                    className="ref-product-item"
-                    onClick={() => navigate("/timetable")}
-                  >
-                    <div className={`ref-product-icon-box ${loc.tileClass}`}>
-                      <IconComponent size={16} />
+              {displayLocations.length > 0 ? (
+                displayLocations.map((loc) => {
+                  const IconComponent = loc.icon;
+                  return (
+                    <div
+                      key={loc.id}
+                      className="ref-product-item"
+                      onClick={() => navigate("/timetable")}
+                    >
+                      <div className={`ref-product-icon-box ${loc.tileClass}`}>
+                        <IconComponent size={16} />
+                      </div>
+                      <div className="ref-product-details">
+                        <span className="ref-product-name">{loc.name}</span>
+                        <span className="ref-product-category">{loc.category}</span>
+                      </div>
+                      <div className="ref-product-right-col">
+                        <span className="ref-product-score">{loc.activityScore}</span>
+                        <span className="ref-status-capsule active">{loc.status}</span>
+                      </div>
                     </div>
-                    <div className="ref-product-details">
-                      <span className="ref-product-name">{loc.name}</span>
-                      <span className="ref-product-category">{loc.category}</span>
-                    </div>
-                    <div className="ref-product-right-col">
-                      <span className="ref-product-score">{loc.activityScore}</span>
-                      <span className="ref-status-capsule active">{loc.status}</span>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              ) : (
+                <div style={{ padding: "1.5rem 1rem", textAlign: "center", color: "var(--text-muted)", fontSize: "12px" }}>
+                  No assigned academic venues active.
+                </div>
+              )}
             </div>
 
             <button
@@ -475,21 +465,43 @@ export const FacultyDashboard = () => {
             <h3 className="ref-comments-title">Department Dispatches</h3>
 
             <div className="ref-comments-list">
-              {displayDispatches.map((disp) => (
-                <div key={disp.id} className="ref-comment-item">
-                  <div className="ref-comment-avatar-col">
-                    <img src={disp.avatar} alt={disp.author} className="ref-comment-avatar" />
-                  </div>
-                  <div className="ref-comment-content">
-                    <div className="ref-comment-meta">
-                      <span className="ref-comment-author">{disp.author}</span>
-                      <span className="ref-comment-context">{disp.context}</span>
-                      <span className="ref-comment-time">{disp.time}</span>
+              {displayDispatches.length > 0 ? (
+                displayDispatches.map((disp) => (
+                  <div key={disp.id} className="ref-comment-item">
+                    <div className="ref-comment-avatar-col">
+                      <div
+                        className="ref-comment-avatar"
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background: "rgba(242, 23, 34, 0.12)",
+                          color: "#f21722",
+                          fontWeight: "700",
+                          fontSize: "12px",
+                          borderRadius: "9999px",
+                          width: "36px",
+                          height: "36px",
+                        }}
+                      >
+                        {disp.initial}
+                      </div>
                     </div>
-                    <p className="ref-comment-text">{disp.message}</p>
+                    <div className="ref-comment-content">
+                      <div className="ref-comment-meta">
+                        <span className="ref-comment-author">{disp.author}</span>
+                        <span className="ref-comment-context">{disp.context}</span>
+                        <span className="ref-comment-time">{disp.time}</span>
+                      </div>
+                      <p className="ref-comment-text">{disp.message}</p>
+                    </div>
                   </div>
+                ))
+              ) : (
+                <div style={{ padding: "1.5rem 1rem", textAlign: "center", color: "var(--text-muted)", fontSize: "12px" }}>
+                  No active department dispatches at this time.
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>
@@ -507,9 +519,9 @@ export const FacultyDashboard = () => {
               onClick={() => setActiveTab("roster")}
               className="ref-pill-dropdown"
               style={{
-                background: activeTab === "roster" ? "var(--brand, #6366F1)" : "var(--bg-card)",
+                background: activeTab === "roster" ? "var(--brand, #F21722)" : "var(--bg-card)",
                 color: activeTab === "roster" ? "#FFFFFF" : "var(--text-secondary)",
-                borderColor: activeTab === "roster" ? "var(--brand, #6366F1)" : "var(--border-color)",
+                borderColor: activeTab === "roster" ? "var(--brand, #F21722)" : "var(--border-color)",
                 fontWeight: 600,
               }}
             >
@@ -520,9 +532,9 @@ export const FacultyDashboard = () => {
               onClick={() => setActiveTab("ai_analytics")}
               className="ref-pill-dropdown"
               style={{
-                background: activeTab === "ai_analytics" ? "var(--brand, #6366F1)" : "var(--bg-card)",
+                background: activeTab === "ai_analytics" ? "var(--brand, #F21722)" : "var(--bg-card)",
                 color: activeTab === "ai_analytics" ? "#FFFFFF" : "var(--text-secondary)",
-                borderColor: activeTab === "ai_analytics" ? "var(--brand, #6366F1)" : "var(--border-color)",
+                borderColor: activeTab === "ai_analytics" ? "var(--brand, #F21722)" : "var(--border-color)",
                 fontWeight: 600,
               }}
             >
@@ -533,9 +545,9 @@ export const FacultyDashboard = () => {
               onClick={() => setActiveTab("create_assignment")}
               className="ref-pill-dropdown"
               style={{
-                background: activeTab === "create_assignment" ? "var(--brand, #6366F1)" : "var(--bg-card)",
+                background: activeTab === "create_assignment" ? "var(--brand, #F21722)" : "var(--bg-card)",
                 color: activeTab === "create_assignment" ? "#FFFFFF" : "var(--text-secondary)",
-                borderColor: activeTab === "create_assignment" ? "var(--brand, #6366F1)" : "var(--border-color)",
+                borderColor: activeTab === "create_assignment" ? "var(--brand, #F21722)" : "var(--border-color)",
                 fontWeight: 600,
               }}
             >

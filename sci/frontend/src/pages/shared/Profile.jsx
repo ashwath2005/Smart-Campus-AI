@@ -1,5 +1,6 @@
 import "./Profile.css";
 import React, { useState } from "react";
+import { Navigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { Card, Button, Input, Avatar } from "../../components/ui";
 import { useTheme } from "../../context/ThemeContext";
@@ -8,6 +9,9 @@ import { motion } from "framer-motion";
 
 export const Profile = () => {
   const { user, updateProfile } = useAuth();
+  if (user?.role === 'warden') {
+    return <Navigate to="/warden/profile" replace />;
+  }
   const { resolvedTheme, setTheme } = useTheme();
   const [name, setName] = useState(user?.name || "");
   const [department, setDepartment] = useState(user?.department || "");

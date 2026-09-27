@@ -21,6 +21,9 @@ export const ROUTES = {
   GATE_PASS: '/gate-pass',
   WORKFLOWS: '/workflows',
   STUDENT_WORKFLOWS: '/student/workflows',
+  LEAVE: '/leave',
+  LEAVES: '/leaves',
+  MY_STATUS: '/my-status',
   ACADEMIC_PREDICTOR: '/academic-predictor',
 
   // Faculty
@@ -34,6 +37,12 @@ export const ROUTES = {
   ADMIN_TIMETABLE_GENERATOR: '/admin/timetable-generator',
   GATE_PASS_ADMIN: '/gate-pass-admin',
   HOD_DASHBOARD: '/hod',
+
+  // Warden
+  WARDEN_DASHBOARD: '/warden/dashboard',
+  WARDEN_ALIAS: '/warden',
+  WARDEN_LEAVES: '/warden/leaves',
+  WARDEN_PROFILE: '/warden/profile',
 
   // Security & Guardian
   GATE_SECURITY: '/gate-security',

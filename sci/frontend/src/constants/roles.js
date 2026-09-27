@@ -25,7 +25,7 @@ export const ROLE_DEFAULT_REDIRECTS = {
   [ROLES.STUDENT]: '/dashboard',
   [ROLES.FACULTY]: '/faculty',
   [ROLES.HOD]: '/hod',
-  [ROLES.WARDEN]: '/hod',
+  [ROLES.WARDEN]: '/warden/dashboard',
   [ROLES.SECURITY]: '/gate-security',
   [ROLES.GUARDIAN]: '/guardian-gate-pass',
   [ROLES.ADMIN]: '/admin',

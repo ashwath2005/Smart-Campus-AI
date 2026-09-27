@@ -220,8 +220,12 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         "role": current_user["role"],
         "department": current_user["department"],
         "roll_number": current_user["roll_number"],
+        "employee_id": current_user.get("employee_id"),
+        "staff_room": current_user.get("staff_room"),
+        "phone_number": current_user.get("phone_number"),
         "semester": current_user.get("semester"),
         "section": current_user.get("section"),
+        "created_at": current_user.get("created_at"),
     }
 
 

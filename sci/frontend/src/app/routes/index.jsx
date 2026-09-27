@@ -26,6 +26,9 @@ import {
   GuardianGatePass,
   GatePassAdmin,
   HodDashboard,
+  WardenDashboard,
+  WardenLeaves,
+  WardenProfile,
   FacultyDashboard,
   FacultyLocator,
   AdminDashboard,
@@ -172,6 +175,36 @@ export const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path={ROUTES.LEAVE}
+          element={
+            <ProtectedRoute allowedRoles={[ROLES.STUDENT, ROLES.FACULTY, ROLES.ADMIN]}>
+              <Layout>
+                <StudentWorkflows />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={ROUTES.LEAVES}
+          element={
+            <ProtectedRoute allowedRoles={[ROLES.STUDENT, ROLES.FACULTY, ROLES.ADMIN]}>
+              <Layout>
+                <StudentWorkflows />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={ROUTES.MY_STATUS}
+          element={
+            <ProtectedRoute allowedRoles={[ROLES.STUDENT, ROLES.FACULTY, ROLES.ADMIN]}>
+              <Layout>
+                <StudentWorkflows />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
 
         {/* Security & Guardian Routes */}
         <Route
@@ -299,7 +332,7 @@ export const AppRoutes = () => {
         <Route
           path={ROUTES.PROFILE}
           element={
-            <ProtectedRoute allowedRoles={[ROLES.STUDENT, ROLES.FACULTY, ROLES.ADMIN]}>
+            <ProtectedRoute allowedRoles={[ROLES.STUDENT, ROLES.FACULTY, ROLES.ADMIN, ROLES.WARDEN]}>
               <Layout>
                 <Profile />
               </Layout>
@@ -329,13 +362,49 @@ export const AppRoutes = () => {
           }
         />
 
-        {/* HOD & Warden Routes */}
+        {/* HOD Routes */}
         <Route
           path={ROUTES.HOD_DASHBOARD}
           element={
-            <ProtectedRoute allowedRoles={[ROLES.HOD, ROLES.WARDEN]}>
+            <ProtectedRoute allowedRoles={[ROLES.HOD]}>
               <Layout>
                 <HodDashboard />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Warden Dedicated Routes */}
+        <Route
+          path={ROUTES.WARDEN_DASHBOARD}
+          element={
+            <ProtectedRoute allowedRoles={[ROLES.WARDEN, ROLES.ADMIN]}>
+              <Layout>
+                <WardenDashboard />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={ROUTES.WARDEN_ALIAS}
+          element={<Navigate to={ROUTES.WARDEN_DASHBOARD} replace />}
+        />
+        <Route
+          path={ROUTES.WARDEN_LEAVES}
+          element={
+            <ProtectedRoute allowedRoles={[ROLES.WARDEN, ROLES.ADMIN]}>
+              <Layout>
+                <WardenLeaves />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={ROUTES.WARDEN_PROFILE}
+          element={
+            <ProtectedRoute allowedRoles={[ROLES.WARDEN, ROLES.ADMIN]}>
+              <Layout>
+                <WardenProfile />
               </Layout>
             </ProtectedRoute>
           }

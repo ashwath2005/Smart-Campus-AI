@@ -30,7 +30,7 @@ export const SKCET_BUILDINGS = [
     position: [7.5, 0, -1.9],
     dimensions: [11, 5, 9],
     archetype: "admin",
-    color: "#6366F1",
+    color: "#F21722",
     floors: 3,
     description: "Principal's Office, Governing Council Hall, Controller of Examinations, Dean of Academics, and Institutional Registry."
   },
@@ -198,7 +198,7 @@ export const SKCET_BUILDINGS = [
     position: [-18.1, 0, 4.8],
     dimensions: [12, 0.4, 12],
     archetype: "plaza",
-    color: "#6366F1",
+    color: "#F21722",
     floors: 1,
     description: "Central paved gathering forum with amphitheatre stone steps, shaded tree canopies, open-air staging, and club exhibits."
   },

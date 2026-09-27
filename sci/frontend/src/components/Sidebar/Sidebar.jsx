@@ -52,6 +52,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
     { label: 'Timetable', path: '/timetable', icon: Calendar },
     { label: 'Assignments', path: '/assignments', icon: BookOpen },
     { label: 'Gate Pass', path: '/gate-pass', icon: QrCode },
+    { label: 'Leave & Workflows', path: '/workflows', icon: FileSpreadsheet },
     { label: 'Campus Pulse 3D', path: '/campus-pulse', icon: Activity },
     { label: 'SGPA Predictor', path: '/sgpa-predictor', icon: TrendingUp },
     { label: 'Study Materials', path: '/study-materials', icon: FileText },
@@ -93,8 +94,10 @@ export const Sidebar = ({ isOpen, onClose }) => {
   ];
 
   const wardenLinks = [
-    { label: 'Warden Governance', path: '/hod', icon: LayoutDashboard },
+    { label: 'Warden Dashboard', path: '/warden/dashboard', icon: LayoutDashboard },
+    { label: 'Leave Requests', path: '/warden/leaves', icon: FileText },
     { label: 'Gate Pass Console', path: '/gate-pass-admin', icon: QrCode },
+    { label: 'Warden Profile', path: '/warden/profile', icon: User },
     { label: 'Campus Pulse 3D', path: '/campus-pulse', icon: Activity },
     { label: 'Peer Forum', path: '/forum', icon: MessageSquare },
   ];

@@ -29,17 +29,21 @@ export const AdminDashboard = () => {
   const [events, setEvents] = useState([]);
   const [recentNotifs, setRecentNotifs] = useState([]);
   const [pulseData, setPulseData] = useState(null);
+  const [locations, setLocations] = useState([]);
+  const [faculties, setFaculties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [overviewTimeframe, setOverviewTimeframe] = useState("This semester");
   const [chartTimeframe, setChartTimeframe] = useState("Last 7 days");
 
   const fetchAdminData = async () => {
     try {
-      const [analyticsRes, eventsRes, notifsRes, pulseRes] = await Promise.allSettled([
+      const [analyticsRes, eventsRes, notifsRes, pulseRes, locsRes, facsRes] = await Promise.allSettled([
         api.get("/admin/analytics"),
         api.get("/events/"),
         api.get("/notifications/"),
         api.get("/campus-pulse/current"),
+        api.get("/campus-pulse/locations"),
+        api.get("/faculty-locator/admin/faculties"),
       ]);
 
       if (analyticsRes.status === "fulfilled") setAnalytics(analyticsRes.value.data);
@@ -50,6 +54,12 @@ export const AdminDashboard = () => {
         setRecentNotifs(notifsRes.value.data.slice(0, 4));
       }
       if (pulseRes.status === "fulfilled") setPulseData(pulseRes.value.data);
+      if (locsRes.status === "fulfilled" && Array.isArray(locsRes.value.data)) {
+        setLocations(locsRes.value.data);
+      }
+      if (facsRes.status === "fulfilled" && Array.isArray(facsRes.value.data)) {
+        setFaculties(facsRes.value.data);
+      }
     } catch {
       toast.error("Failed to load administrator console metrics");
     } finally {
@@ -61,113 +71,50 @@ export const AdminDashboard = () => {
     fetchAdminData();
   }, []);
 
-  const totalStudents = analytics?.total_students ?? 1280;
-  const totalFaculty = analytics?.total_faculty ?? 84;
-  const totalDepts = analytics?.total_departments ?? 6;
-  const totalPlacements = analytics?.total_placed_students ?? 342;
-  const pulseScore = pulseData?.activityScore ?? 94.8;
+  const totalStudents = analytics?.total_students ?? 0;
+  const totalFaculty = analytics?.total_faculty ?? 0;
+  const totalDepts = analytics?.total_departments ?? 0;
+  const totalPlacements = analytics?.total_placed_students ?? 0;
+  const pulseScore = pulseData?.activityScore ?? (totalStudents > 0 ? 95 : 0);
 
-  // 9 Velocity Bars matching reference rhythm
+  // Velocity Bars based on pulseScore
   const chartBars = [
-    { label: "1", height: 45, active: false },
-    { label: "2", height: 58, active: false },
-    { label: "3", height: 38, active: false },
-    { label: "4", height: 72, active: false },
-    { label: "5", height: 42, active: false },
-    { label: "6", height: 92, active: true, tag: "98.7%" },
-    { label: "7", height: 64, active: false },
-    { label: "8", height: 50, active: false },
-    { label: "9", height: 78, active: false },
+    { label: "1", height: Math.max(15, Math.round(pulseScore * 0.45)), active: false },
+    { label: "2", height: Math.max(18, Math.round(pulseScore * 0.58)), active: false },
+    { label: "3", height: Math.max(12, Math.round(pulseScore * 0.38)), active: false },
+    { label: "4", height: Math.max(22, Math.round(pulseScore * 0.72)), active: false },
+    { label: "5", height: Math.max(16, Math.round(pulseScore * 0.42)), active: false },
+    { label: "6", height: Math.max(25, Math.min(100, Math.round(pulseScore))), active: pulseScore > 0, tag: `${Math.round(pulseScore)}%` },
+    { label: "7", height: Math.max(20, Math.round(pulseScore * 0.64)), active: false },
+    { label: "8", height: Math.max(18, Math.round(pulseScore * 0.5)), active: false },
+    { label: "9", height: Math.max(24, Math.round(pulseScore * 0.78)), active: false },
   ];
 
-  // 5 Campus Activity Facilities matching reference
-  const displayLocations = [
-    {
-      id: "block-a",
-      name: "Block A (Main Academic)",
-      category: "Lecture Halls & Depts",
-      activityScore: "88.0%",
-      status: "Active",
-      icon: Building,
-      tileClass: "tile-indigo",
-    },
-    {
-      id: "block-b",
-      name: "Block B (Placements & IT)",
-      category: "Career & Computing Hub",
-      activityScore: "94.5%",
-      status: "Active",
-      icon: Cpu,
-      tileClass: "tile-sky",
-    },
-    {
-      id: "core-hub",
-      name: "Core Infrastructure Hub",
-      category: "Server & DB Clusters",
-      activityScore: "99.2%",
-      status: "Active",
-      icon: Database,
-      tileClass: "tile-purple",
-    },
-    {
-      id: "lab-complex",
-      name: "Innovation & Robotics Labs",
-      category: "Advanced PG Center",
-      activityScore: "82.0%",
-      status: "Active",
-      icon: Sparkles,
-      tileClass: "tile-emerald",
-    },
-    {
-      id: "campus-3d",
-      name: "Campus Digital Twin 3D",
-      category: "Realtime Spatial Pulse",
-      activityScore: "99.1%",
-      status: "Active",
-      icon: Layers,
-      tileClass: "tile-amber",
-    },
-  ];
+  const displayLocations = (locations || []).slice(0, 5).map((loc, i) => ({
+    id: loc.id || `loc-${i}`,
+    name: loc.name,
+    category: loc.category || "Campus Facility",
+    activityScore: typeof loc.activityScore === "number" ? `${loc.activityScore}%` : (loc.activityScore || "Active"),
+    status: loc.status || "Active",
+    icon: Building,
+    tileClass: ["tile-indigo", "tile-sky", "tile-purple", "tile-emerald", "tile-amber"][i % 5],
+  }));
 
-  // Dispatches
-  const displayDispatches = recentNotifs.length > 0
-    ? recentNotifs.slice(0, 2).map((n, i) => ({
-        id: `disp-${i}`,
-        author: n.sender || "System Admin",
-        context: "on Campus Operations",
-        time: n.created_at ? new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Just now",
-        message: n.message || n.title || "Operational dispatch recorded.",
-        avatar: i === 0
-          ? "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80"
-          : "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80",
-      }))
-    : [
-        {
-          id: "disp-1",
-          author: "Dr. Amit",
-          context: "on Academic Timetable",
-          time: "09:30 AM",
-          message: "CSP Timetable Solver generated schedules with 0 clashes across all departments.",
-          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80",
-        },
-        {
-          id: "disp-2",
-          author: "Security Control",
-          context: "on Gate Access",
-          time: "08:45 AM",
-          message: "Morning gate pass verification completed with 100% digital QR compliance.",
-          avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80",
-        },
-      ];
+  const displayDispatches = recentNotifs.slice(0, 4).map((n, i) => ({
+    id: n.id || `disp-${i}`,
+    author: n.sender || "System Admin",
+    context: n.type ? `on ${n.type}` : "on Campus Operations",
+    time: n.created_at ? new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently",
+    message: n.message || n.title || "Operational notification recorded.",
+    initial: (n.sender || "A").charAt(0).toUpperCase(),
+  }));
 
-  // Peer Administrators / Department Heads
-  const adminPeers = [
-    { name: "Dr. Sunita", role: "HOD", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80" },
-    { name: "Dr. Amit", role: "Faculty", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80" },
-    { name: "Dr. Sneha", role: "Faculty", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80" },
-    { name: "Priya P.", role: "Student", avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&auto=format&fit=crop&q=80" },
-    { name: "Rahul S.", role: "Student", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80" },
-  ];
+  const adminPeers = (faculties || []).slice(0, 5).map((f) => ({
+    id: f.id,
+    name: f.name,
+    role: f.role || "Faculty",
+    initial: (f.name || "F").charAt(0).toUpperCase(),
+  }));
 
   return (
     <motion.div
@@ -204,7 +151,7 @@ export const AdminDashboard = () => {
                 <div className="ref-metric-val-row">
                   <span className="ref-metric-value">{totalStudents + totalFaculty}</span>
                   <div className="ref-trend-pill up">
-                    <span>↑ 4.8%</span>
+                    <span>Live</span>
                   </div>
                 </div>
                 <span className="ref-trend-subtext">{totalStudents} Students • {totalFaculty} Faculty</span>
@@ -218,7 +165,7 @@ export const AdminDashboard = () => {
                 <div className="ref-metric-val-row">
                   <span className="ref-metric-value">{Math.round(pulseScore)}%</span>
                   <div className="ref-trend-pill up">
-                    <span>↑ 12.4%</span>
+                    <span>Active</span>
                   </div>
                 </div>
                 <span className="ref-trend-subtext">{totalDepts} academic departments operational</span>
@@ -279,12 +226,30 @@ export const AdminDashboard = () => {
               {/* Administrative Peers / Heads */}
               <div className="ref-avatars-action-row">
                 <div className="ref-avatars-list">
-                  {adminPeers.map((peer, i) => (
-                    <div key={i} className="ref-avatar-unit">
-                      <img src={peer.avatar} alt={peer.name} className="ref-user-avatar" />
-                      <span className="ref-user-name">{peer.name}</span>
-                    </div>
-                  ))}
+                  {adminPeers.length > 0 ? (
+                    adminPeers.map((peer, i) => (
+                      <div key={i} className="ref-avatar-unit">
+                        <div
+                          className="ref-user-avatar"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            background: "rgba(242, 23, 34, 0.12)",
+                            color: "#f21722",
+                            fontWeight: "700",
+                            fontSize: "12px",
+                            borderRadius: "9999px",
+                          }}
+                        >
+                          {peer.initial}
+                        </div>
+                        <span className="ref-user-name">{peer.name}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>Faculty roster synced</span>
+                  )}
                   <button
                     className="ref-view-all-circle-btn"
                     onClick={() => navigate("/faculty-locator")}
@@ -346,28 +311,34 @@ export const AdminDashboard = () => {
             <h3 className="ref-products-title">Campus Activity</h3>
 
             <div className="ref-products-list">
-              {displayLocations.map((loc) => {
-                const IconComponent = loc.icon;
-                return (
-                  <div
-                    key={loc.id}
-                    className="ref-product-item"
-                    onClick={() => navigate("/campus-pulse")}
-                  >
-                    <div className={`ref-product-icon-box ${loc.tileClass}`}>
-                      <IconComponent size={16} />
+              {displayLocations.length > 0 ? (
+                displayLocations.map((loc) => {
+                  const IconComponent = loc.icon;
+                  return (
+                    <div
+                      key={loc.id}
+                      className="ref-product-item"
+                      onClick={() => navigate("/campus-pulse")}
+                    >
+                      <div className={`ref-product-icon-box ${loc.tileClass}`}>
+                        <IconComponent size={16} />
+                      </div>
+                      <div className="ref-product-details">
+                        <span className="ref-product-name">{loc.name}</span>
+                        <span className="ref-product-category">{loc.category}</span>
+                      </div>
+                      <div className="ref-product-right-col">
+                        <span className="ref-product-score">{loc.activityScore}</span>
+                        <span className="ref-status-capsule active">{loc.status}</span>
+                      </div>
                     </div>
-                    <div className="ref-product-details">
-                      <span className="ref-product-name">{loc.name}</span>
-                      <span className="ref-product-category">{loc.category}</span>
-                    </div>
-                    <div className="ref-product-right-col">
-                      <span className="ref-product-score">{loc.activityScore}</span>
-                      <span className="ref-status-capsule active">{loc.status}</span>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              ) : (
+                <div style={{ padding: "16px 0", color: "var(--text-muted)", fontSize: "13px" }}>
+                  No active campus locations registered.
+                </div>
+              )}
             </div>
 
             <button
@@ -383,21 +354,41 @@ export const AdminDashboard = () => {
             <h3 className="ref-comments-title">Campus Dispatches</h3>
 
             <div className="ref-comments-list">
-              {displayDispatches.map((disp) => (
-                <div key={disp.id} className="ref-comment-item">
-                  <div className="ref-comment-avatar-col">
-                    <img src={disp.avatar} alt={disp.author} className="ref-comment-avatar" />
-                  </div>
-                  <div className="ref-comment-content">
-                    <div className="ref-comment-meta">
-                      <span className="ref-comment-author">{disp.author}</span>
-                      <span className="ref-comment-context">{disp.context}</span>
-                      <span className="ref-comment-time">{disp.time}</span>
+              {displayDispatches.length > 0 ? (
+                displayDispatches.map((disp) => (
+                  <div key={disp.id} className="ref-comment-item">
+                    <div className="ref-comment-avatar-col">
+                      <div
+                        className="ref-comment-avatar"
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background: "rgba(242, 23, 34, 0.15)",
+                          color: "#f21722",
+                          fontWeight: "700",
+                          fontSize: "12px",
+                          borderRadius: "9999px",
+                        }}
+                      >
+                        {disp.initial}
+                      </div>
                     </div>
-                    <p className="ref-comment-text">{disp.message}</p>
+                    <div className="ref-comment-content">
+                      <div className="ref-comment-meta">
+                        <span className="ref-comment-author">{disp.author}</span>
+                        <span className="ref-comment-context">{disp.context}</span>
+                        <span className="ref-comment-time">{disp.time}</span>
+                      </div>
+                      <p className="ref-comment-text">{disp.message}</p>
+                    </div>
                   </div>
+                ))
+              ) : (
+                <div style={{ padding: "16px 0", color: "var(--text-muted)", fontSize: "13px" }}>
+                  No campus dispatches at this time.
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>

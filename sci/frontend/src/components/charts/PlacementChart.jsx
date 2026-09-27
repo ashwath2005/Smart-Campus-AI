@@ -22,14 +22,15 @@ const CustomTooltip = ({ active, payload }) => {
 };
 
 export const PlacementChart = ({ data }) => {
-  const fallbackData = [
-    { department: 'CSE', placed: 45, total: 60 },
-    { department: 'ECE', placed: 30, total: 50 },
-    { department: 'ME', placed: 20, total: 40 },
-    { department: 'IT', placed: 35, total: 45 },
-  ];
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    return (
+      <div className="placement-chart-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>
+        No placement drive statistics available.
+      </div>
+    );
+  }
 
-  const chartData = data || fallbackData;
+  const chartData = data;
 
   return (
     <div className="placement-chart-container">

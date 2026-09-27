@@ -24,6 +24,8 @@ import "./GuardianGatePass.css";
 export function GuardianGatePass() {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
+  const [locations, setLocations] = useState([]);
+  const [recentNotifs, setRecentNotifs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [remarksInput, setRemarksInput] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -32,10 +34,16 @@ export function GuardianGatePass() {
 
   const fetchWardData = async () => {
     try {
-      const res = await api.get("/guardian/ward-overview");
-      setData(res.data);
+      const [wardRes, locsRes, notifsRes] = await Promise.allSettled([
+        api.get("/guardian/ward-overview"),
+        api.get("/campus-pulse/locations"),
+        api.get("/notifications/"),
+      ]);
+      if (wardRes.status === "fulfilled") setData(wardRes.value.data);
+      if (locsRes.status === "fulfilled" && Array.isArray(locsRes.value.data)) setLocations(locsRes.value.data);
+      if (notifsRes.status === "fulfilled" && Array.isArray(notifsRes.value.data)) setRecentNotifs(notifsRes.value.data.slice(0, 4));
     } catch {
-      // robust fallback
+      // ignore
     } finally {
       setLoading(false);
     }
@@ -62,98 +70,46 @@ export function GuardianGatePass() {
     }
   };
 
-  const wardName = data?.ward?.name || "Rahul Sharma";
-  const wardRoll = data?.ward?.register_number || "23CS108";
-  const wardAttendance = data?.attendance?.percentage ?? 85.4;
+  const wardName = data?.ward?.name || "Student";
+  const wardRoll = data?.ward?.register_number || "";
+  const wardAttendance = data?.attendance?.percentage ?? 0;
   const activePass = data?.active_pass;
 
-  // 9 Velocity Bars matching reference rhythm
+  // 9 Velocity Bars dynamic
   const chartBars = [
-    { label: "1", height: 44, active: false },
-    { label: "2", height: 56, active: false },
-    { label: "3", height: 38, active: false },
-    { label: "4", height: 68, active: false },
-    { label: "5", height: 46, active: false },
-    { label: "6", height: 92, active: true, tag: "95%" },
-    { label: "7", height: 62, active: false },
-    { label: "8", height: 50, active: false },
-    { label: "9", height: 76, active: false },
+    { label: "1", height: Math.max(15, Math.round(wardAttendance * 0.44)), active: false },
+    { label: "2", height: Math.max(18, Math.round(wardAttendance * 0.56)), active: false },
+    { label: "3", height: Math.max(12, Math.round(wardAttendance * 0.38)), active: false },
+    { label: "4", height: Math.max(22, Math.round(wardAttendance * 0.68)), active: false },
+    { label: "5", height: Math.max(16, Math.round(wardAttendance * 0.46)), active: false },
+    { label: "6", height: Math.max(25, Math.min(100, Math.round(wardAttendance))), active: wardAttendance > 0, tag: `${wardAttendance}%` },
+    { label: "7", height: Math.max(20, Math.round(wardAttendance * 0.62)), active: false },
+    { label: "8", height: Math.max(16, Math.round(wardAttendance * 0.5)), active: false },
+    { label: "9", height: Math.max(22, Math.round(wardAttendance * 0.76)), active: false },
   ];
 
-  // 5 Campus Activity Facilities matching reference
-  const displayLocations = [
-    {
-      id: "hostel-residence",
-      name: "Hostel Block A (Resident)",
-      category: "Room 304 • Verified In",
-      activityScore: "100%",
-      status: "Active",
-      icon: Building,
-      tileClass: "tile-indigo",
-    },
-    {
-      id: "health-center",
-      name: "Campus Health Center",
-      category: "24/7 Medical Care",
-      activityScore: "99.0%",
-      status: "Active",
-      icon: HeartPulse,
-      tileClass: "tile-emerald",
-    },
-    {
-      id: "academic-block",
-      name: "Academic Block A",
-      category: "Computer Science Dept",
-      activityScore: "92.0%",
-      status: "Active",
-      icon: GraduationCap,
-      tileClass: "tile-sky",
-    },
-    {
-      id: "security-gate",
-      name: "Main Campus Checkpoint",
-      category: "QR Pass Gate Access",
-      activityScore: "98.4%",
-      status: "Active",
-      icon: ShieldCheck,
-      tileClass: "tile-amber",
-    },
-    {
-      id: "campus-3d",
-      name: "Campus Digital Twin 3D",
-      category: "Spatial Telemetry",
-      activityScore: "99.1%",
-      status: "Active",
-      icon: Layers,
-      tileClass: "tile-purple",
-    },
-  ];
+  const displayLocations = (locations || []).slice(0, 5).map((loc, i) => ({
+    id: loc.id || `loc-${i}`,
+    name: loc.name,
+    category: loc.category || "Campus Safety Node",
+    activityScore: typeof loc.activityScore === "number" ? `${loc.activityScore}%` : (loc.activityScore || "Active"),
+    status: loc.status || "Active",
+    icon: Building,
+    tileClass: ["tile-indigo", "tile-emerald", "tile-sky", "tile-amber", "tile-purple"][i % 5],
+  }));
 
-  // Dispatches
-  const displayDispatches = [
-    {
-      id: "disp-1",
-      author: "Hostel Warden",
-      context: "on Evening Attendance",
-      time: "09:00 PM",
-      message: `${wardName} checked in on schedule. Curfew compliance verified.`,
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80",
-    },
-    {
-      id: "disp-2",
-      author: "Faculty Advisor",
-      context: "on Academic Performance",
-      time: "11:30 AM",
-      message: "Semester attendance is in good standing (above 85% requirement).",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80",
-    },
-  ];
+  const displayDispatches = recentNotifs.slice(0, 4).map((n, i) => ({
+    id: n.id || `disp-${i}`,
+    author: n.sender || "Campus Admin",
+    context: n.type ? `on ${n.type}` : "on Attendance & Safety",
+    time: n.created_at ? new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently",
+    message: n.message || n.title || "Campus update recorded.",
+    initial: (n.sender || "C").charAt(0).toUpperCase(),
+  }));
 
   const guardianPeers = [
-    { name: wardName, role: "Ward (Student)", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80" },
-    { name: "Hostel Warden", role: "Warden", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80" },
-    { name: "Dr. Sneha", role: "Advisor", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80" },
-    { name: "Dr. Sunita", role: "HOD", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80" },
+    { name: wardName, role: "Ward (Student)", initial: (wardName || "W").charAt(0).toUpperCase() },
+    ...(data?.ward?.hostel_name ? [{ name: "Hostel Warden", role: data.ward.hostel_name, initial: "W" }] : []),
   ];
 
   return (
@@ -263,7 +219,21 @@ export function GuardianGatePass() {
                 <div className="ref-avatars-list">
                   {guardianPeers.map((peer, i) => (
                     <div key={i} className="ref-avatar-unit">
-                      <img src={peer.avatar} alt={peer.name} className="ref-user-avatar" />
+                      <div
+                        className="ref-user-avatar"
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background: "rgba(242, 23, 34, 0.12)",
+                          color: "#f21722",
+                          fontWeight: "700",
+                          fontSize: "12px",
+                          borderRadius: "9999px",
+                        }}
+                      >
+                        {peer.initial}
+                      </div>
                       <span className="ref-user-name">{peer.name}</span>
                     </div>
                   ))}
@@ -328,28 +298,34 @@ export function GuardianGatePass() {
             <h3 className="ref-products-title">Campus Safety Nodes</h3>
 
             <div className="ref-products-list">
-              {displayLocations.map((loc) => {
-                const IconComponent = loc.icon;
-                return (
-                  <div
-                    key={loc.id}
-                    className="ref-product-item"
-                    onClick={() => navigate("/campus-pulse")}
-                  >
-                    <div className={`ref-product-icon-box ${loc.tileClass}`}>
-                      <IconComponent size={16} />
+              {displayLocations.length > 0 ? (
+                displayLocations.map((loc) => {
+                  const IconComponent = loc.icon;
+                  return (
+                    <div
+                      key={loc.id}
+                      className="ref-product-item"
+                      onClick={() => navigate("/campus-pulse")}
+                    >
+                      <div className={`ref-product-icon-box ${loc.tileClass}`}>
+                        <IconComponent size={16} />
+                      </div>
+                      <div className="ref-product-details">
+                        <span className="ref-product-name">{loc.name}</span>
+                        <span className="ref-product-category">{loc.category}</span>
+                      </div>
+                      <div className="ref-product-right-col">
+                        <span className="ref-product-score">{loc.activityScore}</span>
+                        <span className="ref-status-capsule active">{loc.status}</span>
+                      </div>
                     </div>
-                    <div className="ref-product-details">
-                      <span className="ref-product-name">{loc.name}</span>
-                      <span className="ref-product-category">{loc.category}</span>
-                    </div>
-                    <div className="ref-product-right-col">
-                      <span className="ref-product-score">{loc.activityScore}</span>
-                      <span className="ref-status-capsule active">{loc.status}</span>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              ) : (
+                <div style={{ padding: "16px 0", color: "var(--text-muted)", fontSize: "13px" }}>
+                  No campus safety nodes registered.
+                </div>
+              )}
             </div>
 
             <button
@@ -365,21 +341,41 @@ export function GuardianGatePass() {
             <h3 className="ref-comments-title">Hostel & Warden Dispatches</h3>
 
             <div className="ref-comments-list">
-              {displayDispatches.map((disp) => (
-                <div key={disp.id} className="ref-comment-item">
-                  <div className="ref-comment-avatar-col">
-                    <img src={disp.avatar} alt={disp.author} className="ref-comment-avatar" />
-                  </div>
-                  <div className="ref-comment-content">
-                    <div className="ref-comment-meta">
-                      <span className="ref-comment-author">{disp.author}</span>
-                      <span className="ref-comment-context">{disp.context}</span>
-                      <span className="ref-comment-time">{disp.time}</span>
+              {displayDispatches.length > 0 ? (
+                displayDispatches.map((disp) => (
+                  <div key={disp.id} className="ref-comment-item">
+                    <div className="ref-comment-avatar-col">
+                      <div
+                        className="ref-comment-avatar"
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background: "rgba(242, 23, 34, 0.15)",
+                          color: "#f21722",
+                          fontWeight: "700",
+                          fontSize: "12px",
+                          borderRadius: "9999px",
+                        }}
+                      >
+                        {disp.initial}
+                      </div>
                     </div>
-                    <p className="ref-comment-text">{disp.message}</p>
+                    <div className="ref-comment-content">
+                      <div className="ref-comment-meta">
+                        <span className="ref-comment-author">{disp.author}</span>
+                        <span className="ref-comment-context">{disp.context}</span>
+                        <span className="ref-comment-time">{disp.time}</span>
+                      </div>
+                      <p className="ref-comment-text">{disp.message}</p>
+                    </div>
                   </div>
+                ))
+              ) : (
+                <div style={{ padding: "16px 0", color: "var(--text-muted)", fontSize: "13px" }}>
+                  No hostel or warden dispatches at this time.
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>

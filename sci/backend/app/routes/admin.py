@@ -120,12 +120,20 @@ async def get_analytics(
         await db.execute(select(func.count(Placement.id)))
     ).scalar() or 0
 
+    from app.models.placement import PlacementApplication
+    placed_count = (
+        await db.execute(
+            select(func.count(PlacementApplication.id)).where(PlacementApplication.status == "selected")
+        )
+    ).scalar() or 0
+
     return {
         "total_students": student_count,
         "total_faculty": faculty_count,
         "total_departments": dept_count,
         "total_events": event_count,
         "total_placements": placement_count,
+        "total_placed_students": placed_count,
         "ai_cache": ai_cache.get_stats(),
     }
 
@@ -140,6 +148,7 @@ async def get_dashboard_command_stats(
     from app.models.department import Subject
     from app.models.academic import Classroom
     from datetime import date
+    from sqlalchemy import or_
 
     total_students = (await db.execute(select(func.count(User.id)).where(User.role == "student"))).scalar() or 0
     total_faculty = (await db.execute(select(func.count(User.id)).where(User.role == "faculty"))).scalar() or 0
@@ -154,6 +163,23 @@ async def get_dashboard_command_stats(
     placed_count = (await db.execute(select(func.count(PlacementApplication.id)).where(PlacementApplication.status == "selected"))).scalar() or 0
     placement_rate = round((placed_count / total_students * 100), 1) if total_students > 0 else 0.0
 
+    # Live available faculty from database
+    avail_res = await db.execute(
+        select(func.count(User.id)).where(
+            User.role == "faculty",
+            or_(User.custom_status == "Available", User.custom_status.is_(None)),
+        )
+    )
+    faculty_available = avail_res.scalar() or 0
+
+    # Live unread notifications from database
+    unreads_res = await db.execute(
+        select(func.count(Notification.id)).where(
+            or_(Notification.target_role.in_(["admin", "all"]), Notification.target_role.is_(None))
+        )
+    )
+    unread_notifications = unreads_res.scalar() or 0
+
     return {
         "total_students": total_students,
         "total_faculty": total_faculty,
@@ -164,8 +190,80 @@ async def get_dashboard_command_stats(
         "active_drives": active_drives,
         "pending_applications": pending_apps,
         "placement_rate": placement_rate,
-        "faculty_available": max(0, total_faculty - 2),
-        "unread_notifications": 3
+        "total_placed_students": placed_count,
+        "faculty_available": faculty_available,
+        "unread_notifications": unread_notifications,
+    }
+
+
+@router.get("/hod-analytics")
+async def get_hod_dashboard_analytics(
+    current_user: dict = Depends(require_role("hod", "admin")),
+    db: AsyncSession = Depends(get_db),
+):
+    from app.models.attendance import Attendance
+    from app.models.communication import Notification
+    from sqlalchemy import case, or_
+
+    dept = current_user.get("department")
+
+    # Real department attendance rate from database
+    att_query = (
+        select(
+            func.count(Attendance.id).label("total"),
+            func.sum(case((Attendance.status == "present", 1), else_=0)).label("present"),
+        )
+        .join(User, User.id == Attendance.student_id)
+    )
+    if dept:
+        att_query = att_query.where(User.department == dept)
+    att_res = await db.execute(att_query)
+    att_row = att_res.first()
+    total_att = (att_row.total or 0) if att_row else 0
+    present_att = (att_row.present or 0) if att_row else 0
+    dept_att_rate = round((present_att / total_att * 100), 1) if total_att > 0 else 0.0
+
+    # Real department faculty and student counts
+    fac_query = select(func.count(User.id)).where(User.role == "faculty")
+    if dept:
+        fac_query = fac_query.where(User.department == dept)
+    dept_faculty_count = (await db.execute(fac_query)).scalar() or 0
+
+    stu_query = select(func.count(User.id)).where(User.role == "student")
+    if dept:
+        stu_query = stu_query.where(User.department == dept)
+    dept_students_count = (await db.execute(stu_query)).scalar() or 0
+
+    # Real dispatches from database
+    notifs_query = (
+        select(Notification)
+        .where(
+            or_(
+                Notification.target_role.in_(["hod", "all", "faculty"]),
+                Notification.target_role.is_(None),
+            )
+        )
+        .order_by(Notification.created_at.desc())
+        .limit(3)
+    )
+    notifs_res = await db.execute(notifs_query)
+    notifs = notifs_res.scalars().all()
+    dispatches = [
+        {
+            "id": f"disp-{n.id}",
+            "author": n.sender or "Administrative Desk",
+            "context": f"on {n.title}",
+            "time": n.created_at.strftime("%I:%M %p") if n.created_at else "Today",
+            "message": n.message,
+        }
+        for n in notifs
+    ]
+
+    return {
+        "deptAttendanceRate": dept_att_rate,
+        "deptFacultyCount": dept_faculty_count,
+        "deptStudentsCount": dept_students_count,
+        "dispatches": dispatches,
     }
 
 

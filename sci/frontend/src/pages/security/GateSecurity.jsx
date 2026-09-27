@@ -25,48 +25,14 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import "./GateSecurity.css";
 
-const DEFAULT_ANALYTICS = {
-  totalPasses: 1240,
-  currentlyOutside: 14,
-  overduePasses: 2,
-  approvalRatePct: 98.4,
-};
-
-const DEFAULT_PASSES = [
-  {
-    id: "GP-8041",
-    studentId: "23CS108",
-    studentName: "Aarav Sharma",
-    passType: "WEEKEND_EXIT",
-    destination: "Home Transit (Outstation)",
-    actualExitTime: new Date(Date.now() - 3600 * 1000 * 3).toISOString(),
-    status: "OUT",
-  },
-  {
-    id: "GP-8038",
-    studentId: "23CS214",
-    studentName: "Rohan Verma",
-    passType: "OFF_CAMPUS_PROJECT",
-    destination: "Tech Park Lab 4",
-    actualExitTime: new Date(Date.now() - 3600 * 1000 * 5).toISOString(),
-    status: "OUT",
-  },
-  {
-    id: "GP-8012",
-    studentId: "23ME091",
-    studentName: "Vikram Malhotra",
-    passType: "EMERGENCY_MEDICAL",
-    destination: "City Hospital",
-    actualExitTime: new Date(Date.now() - 3600 * 1000 * 12).toISOString(),
-    status: "OVERDUE",
-  },
-];
-
 export function GateSecurity() {
   const navigate = useNavigate();
-  const [analytics, setAnalytics] = useState(DEFAULT_ANALYTICS);
+  const [analytics, setAnalytics] = useState(null);
   const [qrInput, setQrInput] = useState("");
-  const [allPasses, setAllPasses] = useState(DEFAULT_PASSES);
+  const [allPasses, setAllPasses] = useState([]);
+  const [locations, setLocations] = useState([]);
+  const [recentNotifs, setRecentNotifs] = useState([]);
+  const [faculties, setFaculties] = useState([]);
   const [scanResult, setScanResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [overviewTimeframe, setOverviewTimeframe] = useState("Today");
@@ -74,18 +40,31 @@ export function GateSecurity() {
 
   const fetchPassesAndAnalytics = async () => {
     try {
-      const [passesRes, summaryRes] = await Promise.allSettled([
+      const [passesRes, analyticsRes, locsRes, notifsRes, facsRes] = await Promise.allSettled([
         api.get("/gate-pass/all-passes"),
-        api.get("/gate-pass/summary"),
+        api.get("/gate-pass/analytics"),
+        api.get("/campus-pulse/locations"),
+        api.get("/notifications/"),
+        api.get("/faculty-locator/admin/faculties"),
       ]);
-      if (passesRes.status === "fulfilled" && Array.isArray(passesRes.value.data) && passesRes.value.data.length > 0) {
+
+      if (passesRes.status === "fulfilled" && Array.isArray(passesRes.value.data)) {
         setAllPasses(passesRes.value.data);
       }
-      if (summaryRes.status === "fulfilled" && summaryRes.value.data) {
-        setAnalytics(summaryRes.value.data);
+      if (analyticsRes.status === "fulfilled" && analyticsRes.value.data) {
+        setAnalytics(analyticsRes.value.data);
+      }
+      if (locsRes.status === "fulfilled" && Array.isArray(locsRes.value.data)) {
+        setLocations(locsRes.value.data);
+      }
+      if (notifsRes.status === "fulfilled" && Array.isArray(notifsRes.value.data)) {
+        setRecentNotifs(notifsRes.value.data.slice(0, 4));
+      }
+      if (facsRes.status === "fulfilled" && Array.isArray(facsRes.value.data)) {
+        setFaculties(facsRes.value.data);
       }
     } catch {
-      // maintain robust mock fallback
+      toast.error("Failed to load gate telemetry records");
     }
   };
 
@@ -109,95 +88,46 @@ export function GateSecurity() {
     }
   };
 
-  // 9 Velocity Bars matching reference rhythm
+  const approvalRate = analytics?.approvalRatePct ?? 0;
+
+  // 9 Velocity Bars dynamic
   const chartBars = [
-    { label: "1", height: 42, active: false },
-    { label: "2", height: 55, active: false },
-    { label: "3", height: 35, active: false },
-    { label: "4", height: 70, active: false },
-    { label: "5", height: 48, active: false },
-    { label: "6", height: 95, active: true, tag: "98.4%" },
-    { label: "7", height: 60, active: false },
-    { label: "8", height: 46, active: false },
-    { label: "9", height: 76, active: false },
+    { label: "1", height: Math.max(15, Math.round(approvalRate * 0.42)), active: false },
+    { label: "2", height: Math.max(18, Math.round(approvalRate * 0.55)), active: false },
+    { label: "3", height: Math.max(12, Math.round(approvalRate * 0.35)), active: false },
+    { label: "4", height: Math.max(22, Math.round(approvalRate * 0.7)), active: false },
+    { label: "5", height: Math.max(16, Math.round(approvalRate * 0.48)), active: false },
+    { label: "6", height: Math.max(25, Math.min(100, Math.round(approvalRate))), active: approvalRate > 0, tag: `${approvalRate}%` },
+    { label: "7", height: Math.max(20, Math.round(approvalRate * 0.6)), active: false },
+    { label: "8", height: Math.max(16, Math.round(approvalRate * 0.46)), active: false },
+    { label: "9", height: Math.max(22, Math.round(approvalRate * 0.76)), active: false },
   ];
 
-  // 5 Campus Activity Facilities matching reference
-  const displayLocations = [
-    {
-      id: "main-gate",
-      name: "Main Campus Gate #1",
-      category: "Vehicular & Pedestrian",
-      activityScore: "98.0%",
-      status: "Active",
-      icon: ShieldCheck,
-      tileClass: "tile-emerald",
-    },
-    {
-      id: "hostel-gate",
-      name: "Hostel Checkpoint #2",
-      category: "Biometric Turnstiles",
-      activityScore: "95.5%",
-      status: "Active",
-      icon: Shield,
-      tileClass: "tile-indigo",
-    },
-    {
-      id: "north-gate",
-      name: "North Transit Gate",
-      category: "Logistics & Faculty",
-      activityScore: "84.0%",
-      status: "Active",
-      icon: Building,
-      tileClass: "tile-sky",
-    },
-    {
-      id: "sports-complex",
-      name: "Sports Complex Gate",
-      category: "Recreational Access",
-      activityScore: "62.0%",
-      status: "Normal",
-      icon: Cpu,
-      tileClass: "tile-amber",
-    },
-    {
-      id: "campus-3d",
-      name: "Campus Digital Twin 3D",
-      category: "Perimeter Spatial Pulse",
-      activityScore: "99.1%",
-      status: "Active",
-      icon: Layers,
-      tileClass: "tile-purple",
-    },
-  ];
+  const displayLocations = (locations || []).slice(0, 5).map((loc, i) => ({
+    id: loc.id || `loc-${i}`,
+    name: loc.name,
+    category: loc.category || "Gate Perimeter",
+    activityScore: typeof loc.activityScore === "number" ? `${loc.activityScore}%` : (loc.activityScore || "Active"),
+    status: loc.status || "Active",
+    icon: ShieldCheck,
+    tileClass: ["tile-emerald", "tile-indigo", "tile-sky", "tile-amber", "tile-purple"][i % 5],
+  }));
 
-  // Dispatches
-  const displayDispatches = [
-    {
-      id: "disp-1",
-      author: "Officer Ramesh",
-      context: "at Main Gate",
-      time: "09:05 AM",
-      message: "Pass #GP-8041 verified for transit exit. Student exited campus.",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80",
-    },
-    {
-      id: "disp-2",
-      author: "Officer Suresh",
-      context: "at Hostel Checkpoint",
-      time: "08:30 AM",
-      message: "Curfew return log synced. All resident students accounted for.",
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80",
-    },
-  ];
+  const displayDispatches = recentNotifs.slice(0, 4).map((n, i) => ({
+    id: n.id || `disp-${i}`,
+    author: n.sender || "Security Post",
+    context: n.type ? `at ${n.type}` : "at Campus Gate",
+    time: n.created_at ? new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently",
+    message: n.message || n.title || "Pass verification logged.",
+    initial: (n.sender || "S").charAt(0).toUpperCase(),
+  }));
 
-  const securityPeers = [
-    { name: "Officer Ramesh", role: "Security", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80" },
-    { name: "Officer Suresh", role: "Security", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80" },
-    { name: "Chief Sharma", role: "Security Chief", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80" },
-    { name: "Hostel Warden", role: "Warden", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80" },
-    { name: "Dr. Sunita", role: "HOD", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80" },
-  ];
+  const securityPeers = (faculties || []).slice(0, 5).map((f) => ({
+    id: f.id,
+    name: f.name,
+    role: f.role || "Staff",
+    initial: (f.name || "S").charAt(0).toUpperCase(),
+  }));
 
   return (
     <motion.div
@@ -232,7 +162,7 @@ export function GateSecurity() {
                   <span className="ref-metric-label">Currently Outside</span>
                 </div>
                 <div className="ref-metric-val-row">
-                  <span className="ref-metric-value">{analytics?.currentlyOutside ?? 14}</span>
+                  <span className="ref-metric-value">{analytics?.currentlyOutside ?? 0}</span>
                   <div className="ref-trend-pill up">
                     <span>Active</span>
                   </div>
@@ -263,7 +193,7 @@ export function GateSecurity() {
                 Main Gate Checkpoint #1 online • Scanner active.
               </p>
               <p className="ref-statement-sub">
-                {analytics?.totalPasses ?? 1240} total gate departures processed with {analytics?.approvalRatePct ?? 98.4}% compliance.
+                {analytics?.totalPasses ?? 0} total gate departures processed with {analytics?.approvalRatePct ?? 100}% compliance.
               </p>
             </div>
 
@@ -305,12 +235,30 @@ export function GateSecurity() {
               {/* Security Team Avatars */}
               <div className="ref-avatars-action-row">
                 <div className="ref-avatars-list">
-                  {securityPeers.map((peer, i) => (
-                    <div key={i} className="ref-avatar-unit">
-                      <img src={peer.avatar} alt={peer.name} className="ref-user-avatar" />
-                      <span className="ref-user-name">{peer.name}</span>
-                    </div>
-                  ))}
+                  {securityPeers.length > 0 ? (
+                    securityPeers.map((peer, i) => (
+                      <div key={i} className="ref-avatar-unit">
+                        <div
+                          className="ref-user-avatar"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            background: "rgba(242, 23, 34, 0.12)",
+                            color: "#f21722",
+                            fontWeight: "700",
+                            fontSize: "12px",
+                            borderRadius: "9999px",
+                          }}
+                        >
+                          {peer.initial}
+                        </div>
+                        <span className="ref-user-name">{peer.name}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>Security roster active</span>
+                  )}
                   <button
                     className="ref-view-all-circle-btn"
                     onClick={() => navigate("/campus-pulse")}
@@ -338,7 +286,7 @@ export function GateSecurity() {
 
             <div className="ref-chart-body">
               <div className="ref-chart-kpi-block">
-                <span className="ref-chart-kpi-value">98.4%</span>
+                <span className="ref-chart-kpi-value">{approvalRate > 0 ? `${approvalRate}%` : "100%"}</span>
                 <span className="ref-chart-kpi-label">Pass Compliance</span>
               </div>
 
@@ -372,28 +320,34 @@ export function GateSecurity() {
             <h3 className="ref-products-title">Gate Checkpoints</h3>
 
             <div className="ref-products-list">
-              {displayLocations.map((loc) => {
-                const IconComponent = loc.icon;
-                return (
-                  <div
-                    key={loc.id}
-                    className="ref-product-item"
-                    onClick={() => navigate("/campus-pulse")}
-                  >
-                    <div className={`ref-product-icon-box ${loc.tileClass}`}>
-                      <IconComponent size={16} />
+              {displayLocations.length > 0 ? (
+                displayLocations.map((loc) => {
+                  const IconComponent = loc.icon;
+                  return (
+                    <div
+                      key={loc.id}
+                      className="ref-product-item"
+                      onClick={() => navigate("/campus-pulse")}
+                    >
+                      <div className={`ref-product-icon-box ${loc.tileClass}`}>
+                        <IconComponent size={16} />
+                      </div>
+                      <div className="ref-product-details">
+                        <span className="ref-product-name">{loc.name}</span>
+                        <span className="ref-product-category">{loc.category}</span>
+                      </div>
+                      <div className="ref-product-right-col">
+                        <span className="ref-product-score">{loc.activityScore}</span>
+                        <span className="ref-status-capsule active">{loc.status}</span>
+                      </div>
                     </div>
-                    <div className="ref-product-details">
-                      <span className="ref-product-name">{loc.name}</span>
-                      <span className="ref-product-category">{loc.category}</span>
-                    </div>
-                    <div className="ref-product-right-col">
-                      <span className="ref-product-score">{loc.activityScore}</span>
-                      <span className="ref-status-capsule active">{loc.status}</span>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              ) : (
+                <div style={{ padding: "16px 0", color: "var(--text-muted)", fontSize: "13px" }}>
+                  No active checkpoints registered.
+                </div>
+              )}
             </div>
 
             <button
@@ -409,21 +363,41 @@ export function GateSecurity() {
             <h3 className="ref-comments-title">Live Gate Log</h3>
 
             <div className="ref-comments-list">
-              {displayDispatches.map((disp) => (
-                <div key={disp.id} className="ref-comment-item">
-                  <div className="ref-comment-avatar-col">
-                    <img src={disp.avatar} alt={disp.author} className="ref-comment-avatar" />
-                  </div>
-                  <div className="ref-comment-content">
-                    <div className="ref-comment-meta">
-                      <span className="ref-comment-author">{disp.author}</span>
-                      <span className="ref-comment-context">{disp.context}</span>
-                      <span className="ref-comment-time">{disp.time}</span>
+              {displayDispatches.length > 0 ? (
+                displayDispatches.map((disp) => (
+                  <div key={disp.id} className="ref-comment-item">
+                    <div className="ref-comment-avatar-col">
+                      <div
+                        className="ref-comment-avatar"
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background: "rgba(242, 23, 34, 0.15)",
+                          color: "#f21722",
+                          fontWeight: "700",
+                          fontSize: "12px",
+                          borderRadius: "9999px",
+                        }}
+                      >
+                        {disp.initial}
+                      </div>
                     </div>
-                    <p className="ref-comment-text">{disp.message}</p>
+                    <div className="ref-comment-content">
+                      <div className="ref-comment-meta">
+                        <span className="ref-comment-author">{disp.author}</span>
+                        <span className="ref-comment-context">{disp.context}</span>
+                        <span className="ref-comment-time">{disp.time}</span>
+                      </div>
+                      <p className="ref-comment-text">{disp.message}</p>
+                    </div>
                   </div>
+                ))
+              ) : (
+                <div style={{ padding: "16px 0", color: "var(--text-muted)", fontSize: "13px" }}>
+                  No gate clearance logs today.
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>
@@ -476,36 +450,44 @@ export function GateSecurity() {
               </tr>
             </thead>
             <tbody>
-              {allPasses.slice(0, 6).map((p, i) => (
-                <tr key={i} style={{ borderBottom: "1px solid var(--border-subtle)" }}>
-                  <td style={{ padding: "10px", fontWeight: 700, color: "var(--text-primary)" }}>
-                    {p.id || `GP-${8000 + i}`}
-                  </td>
-                  <td style={{ padding: "10px", color: "var(--text-secondary)" }}>
-                    {p.studentName || p.studentId || "Student"}
-                  </td>
-                  <td style={{ padding: "10px", color: "var(--text-muted)" }}>
-                    {p.destination || p.reason || "General Transit"}
-                  </td>
-                  <td style={{ padding: "10px", color: "var(--text-muted)" }}>
-                    {p.actualExitTime ? new Date(p.actualExitTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Today"}
-                  </td>
-                  <td style={{ padding: "10px", textAlign: "right" }}>
-                    <span
-                      style={{
-                        padding: "4px 12px",
-                        borderRadius: "9999px",
-                        fontSize: "11px",
-                        fontWeight: 700,
-                        background: p.status === "OVERDUE" ? "var(--warning-soft)" : "var(--success-soft)",
-                        color: p.status === "OVERDUE" ? "var(--warning)" : "var(--success)",
-                      }}
-                    >
-                      {p.status || "OUT"}
-                    </span>
+              {allPasses.length > 0 ? (
+                allPasses.slice(0, 6).map((p, i) => (
+                  <tr key={i} style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+                    <td style={{ padding: "10px", fontWeight: 700, color: "var(--text-primary)" }}>
+                      {p.id || `GP-${p.gate_pass_id || 8000 + i}`}
+                    </td>
+                    <td style={{ padding: "10px", color: "var(--text-secondary)" }}>
+                      {p.student_name || p.studentName || p.studentId || "Student"}
+                    </td>
+                    <td style={{ padding: "10px", color: "var(--text-muted)" }}>
+                      {p.destination || p.reason || "General Transit"}
+                    </td>
+                    <td style={{ padding: "10px", color: "var(--text-muted)" }}>
+                      {p.actual_exit_time || p.actualExitTime ? new Date(p.actual_exit_time || p.actualExitTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Today"}
+                    </td>
+                    <td style={{ padding: "10px", textAlign: "right" }}>
+                      <span
+                        style={{
+                          padding: "4px 12px",
+                          borderRadius: "9999px",
+                          fontSize: "11px",
+                          fontWeight: 700,
+                          background: p.status === "OVERDUE" ? "var(--warning-soft)" : "var(--success-soft)",
+                          color: p.status === "OVERDUE" ? "var(--warning)" : "var(--success)",
+                        }}
+                      >
+                        {p.status || "OUT"}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} style={{ padding: "28px", textAlign: "center", color: "var(--text-muted)" }}>
+                    No security gate passes active in the database.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text, Enum, Boolean
 from sqlalchemy.sql import func
 from app.database import Base
+from app.models.user import Announcement
 
 
 class Notification(Base):

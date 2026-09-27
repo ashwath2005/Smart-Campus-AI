@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -15,28 +15,58 @@ router = APIRouter(prefix="/attendance", tags=["Attendance"])
 
 
 from pydantic import Field
-from typing import List, Dict
+from typing import List, Dict, Union, Any
+from datetime import datetime
+
+
+def normalize_attendance_date(val: Any) -> date:
+    if isinstance(val, date):
+        return val
+    if not val:
+        return date.today()
+    val_str = str(val).strip()
+    for fmt in ("%Y-%m-%d", "%d-%m-%Y", "%d/%m/%Y", "%Y/%m/%d"):
+        try:
+            return datetime.strptime(val_str, fmt).date()
+        except ValueError:
+            pass
+    return date.today()
+
+
+def normalize_attendance_status(status_str: str) -> tuple[str, str]:
+    cleaned = (status_str or "").strip().lower()
+    if cleaned in ("present", "p", "true", "1"):
+        return ("present", "present")
+    elif cleaned in ("late", "tardy"):
+        return ("present", "late")
+    elif cleaned in ("od", "on-duty", "duty"):
+        return ("present", "od")
+    else:
+        return ("absent", "absent")
+
 
 class MarkAttendanceRequest(BaseModel):
     student_id: int
     subject: str
-    date: date
+    date: Union[date, str]
     status: str
     status_type: Optional[str] = "present"
     remarks: Optional[str] = None
 
 
-class BulkMarkAttendanceRecord(BaseModel):
+class BulkMarkAttendanceItem(BaseModel):
     student_id: int
     status: str
-    status_type: Optional[str] = "present"
+    status_type: Optional[str] = None
+    subject: Optional[str] = None
+    date: Optional[Union[date, str]] = None
     remarks: Optional[str] = None
 
 
 class BulkMarkAttendanceRequest(BaseModel):
-    subject: str
-    date: date
-    records: List[BulkMarkAttendanceRecord]
+    subject: Optional[str] = None
+    date: Optional[Union[date, str]] = None
+    records: List[BulkMarkAttendanceItem]
 
 
 @router.get("/students")
@@ -112,6 +142,31 @@ async def get_attendance_summary(
     db: AsyncSession = Depends(get_db),
 ):
     return await get_my_attendance(current_user, db)
+
+
+@router.get("/history")
+@router.get("/my-records")
+async def get_my_attendance_history(
+    current_user: dict = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Returns actual individual attendance logs from the database for the authenticated student."""
+    result = await db.execute(
+        select(Attendance)
+        .where(Attendance.student_id == current_user["id"])
+        .order_by(Attendance.date.desc())
+    )
+    records = result.scalars().all()
+    return [
+        {
+            "id": r.id,
+            "subject": r.subject,
+            "date": r.date.isoformat() if hasattr(r.date, "isoformat") else str(r.date),
+            "status": r.status,
+            "remarks": r.remarks,
+        }
+        for r in records
+    ]
 
 
 @router.post("/mark")
@@ -205,48 +260,106 @@ async def mark_attendance(
     return {"message": "Attendance marked successfully"}
 
 
+@router.post("/bulk")
 @router.post("/mark-bulk")
+@router.post("")
+@router.post("/")
 async def mark_attendance_bulk(
     req: BulkMarkAttendanceRequest,
     current_user: dict = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    if current_user["role"] not in ("faculty", "admin"):
+    if current_user.get("role") not in ("faculty", "admin", "hod"):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only faculty can mark attendance",
+            detail="Only faculty, admin, or department heads can record class attendance",
         )
 
+    if not req.records:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No student attendance records provided in submission",
+        )
+
+    # Master subject and date resolution
+    default_sub = req.subject or (req.records[0].subject if req.records and req.records[0].subject else "Data Structures")
+    default_date = normalize_attendance_date(req.date or (req.records[0].date if req.records and req.records[0].date else None))
+
+    saved_count = 0
+    faculty_id = current_user["id"]
+
     for rec in req.records:
+        rec_subject = rec.subject or default_sub
+        rec_date = normalize_attendance_date(rec.date) if rec.date else default_date
+        db_status, status_type = normalize_attendance_status(rec.status)
+
         exist_res = await db.execute(
             select(Attendance).where(
                 Attendance.student_id == rec.student_id,
-                Attendance.subject == req.subject,
-                Attendance.date == req.date
+                Attendance.subject == rec_subject,
+                Attendance.date == rec_date,
             )
         )
         record = exist_res.scalar_one_or_none()
         if record:
-            record.status = rec.status
-            record.status_type = rec.status_type
+            record.status = db_status
+            record.status_type = rec.status_type or status_type
             record.remarks = rec.remarks
-            record.faculty_id = current_user["id"]
-            record.edited_by = current_user["id"]
+            record.faculty_id = faculty_id
+            record.edited_by = faculty_id
         else:
             record = Attendance(
                 student_id=rec.student_id,
-                faculty_id=current_user["id"],
-                subject=req.subject,
-                date=req.date,
-                status=rec.status,
-                status_type=rec.status_type,
-                remarks=rec.remarks
+                faculty_id=faculty_id,
+                subject=rec_subject,
+                date=rec_date,
+                status=db_status,
+                status_type=rec.status_type or status_type,
+                remarks=rec.remarks,
             )
             db.add(record)
-            
+        saved_count += 1
+
     await db.flush()
     await db.commit()
-    return {"message": f"Successfully marked/updated attendance for {len(req.records)} students"}
+
+    return {
+        "success": True,
+        "message": f"Successfully marked/updated attendance for {saved_count} students in {default_sub}",
+        "count": saved_count,
+        "subject": default_sub,
+        "date": str(default_date),
+    }
+
+
+@router.get("/class-status")
+async def get_class_attendance_status(
+    subject: str = Query(...),
+    date: str = Query(...),
+    department: Optional[str] = None,
+    current_user: dict = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    parsed_date = normalize_attendance_date(date)
+    query = select(Attendance).where(
+        Attendance.subject == subject,
+        Attendance.date == parsed_date,
+    )
+    result = await db.execute(query)
+    records = result.scalars().all()
+
+    status_map = {r.student_id: r.status for r in records}
+    present_cnt = sum(1 for r in records if r.status == "present")
+    absent_cnt = sum(1 for r in records if r.status == "absent")
+
+    return {
+        "subject": subject,
+        "date": str(parsed_date),
+        "total_recorded": len(records),
+        "present_count": present_cnt,
+        "absent_count": absent_cnt,
+        "records": status_map,
+    }
 
 
 from datetime import timedelta

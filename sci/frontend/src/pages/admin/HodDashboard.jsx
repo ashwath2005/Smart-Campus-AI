@@ -39,6 +39,8 @@ export const HodDashboard = () => {
 
   const [decisionComments, setDecisionComments] = useState({});
   const [actionLoading, setActionLoading] = useState({});
+  const [hodAnalytics, setHodAnalytics] = useState(null);
+  const [locations, setLocations] = useState([]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -48,16 +50,20 @@ export const HodDashboard = () => {
         api.get("/gate-pass/all-passes"),
         api.get("/workflows/leaves"),
         api.get("/workflows/ods"),
+        api.get("/admin/hod-analytics"),
+        api.get("/campus-pulse/locations"),
       ];
       if (!isWardenUser) {
         requests.push(api.get(`/faculty-locator/search${user?.department ? `?department=${encodeURIComponent(user.department)}` : ""}`));
       }
       const results = await Promise.allSettled(requests);
-      const [passesRes, leavesRes, odsRes, facRes] = results;
+      const [passesRes, leavesRes, odsRes, analyticsRes, locsRes, facRes] = results;
 
       if (passesRes && passesRes.status === "fulfilled") setGatePasses(passesRes.value.data || []);
       if (leavesRes && leavesRes.status === "fulfilled") setLeaves(leavesRes.value.data || []);
       if (odsRes && odsRes.status === "fulfilled") setOds(odsRes.value.data || []);
+      if (analyticsRes && analyticsRes.status === "fulfilled") setHodAnalytics(analyticsRes.value.data);
+      if (locsRes && locsRes.status === "fulfilled" && Array.isArray(locsRes.value.data)) setLocations(locsRes.value.data);
       if (facRes && facRes.status === "fulfilled") setFaculties(facRes.value.data || []);
     } catch {
       toast.error("Failed to load department requests.");
@@ -108,95 +114,46 @@ export const HodDashboard = () => {
   const pendingOds = ods.filter((o) => o.status === "PENDING");
   const totalPending = pendingPasses.length + pendingLeaves.length + pendingOds.length;
 
-  // 9 Velocity Bars matching reference rhythm
+  const deptAttendanceRate = hodAnalytics?.deptAttendanceRate ?? 0;
+
+  // Dynamic velocity bars based on actual dept attendance percentage
   const chartBars = [
-    { label: "1", height: 48, active: false },
-    { label: "2", height: 60, active: false },
-    { label: "3", height: 42, active: false },
-    { label: "4", height: 78, active: false },
-    { label: "5", height: 50, active: false },
-    { label: "6", height: 94, active: true, tag: "96.5%" },
-    { label: "7", height: 66, active: false },
-    { label: "8", height: 52, active: false },
-    { label: "9", height: 80, active: false },
+    { label: "1", height: Math.max(12, Math.round(deptAttendanceRate * 0.6)), active: false },
+    { label: "2", height: Math.max(15, Math.round(deptAttendanceRate * 0.75)), active: false },
+    { label: "3", height: Math.max(12, Math.round(deptAttendanceRate * 0.55)), active: false },
+    { label: "4", height: Math.max(20, Math.round(deptAttendanceRate * 0.8)), active: false },
+    { label: "5", height: Math.max(15, Math.round(deptAttendanceRate * 0.7)), active: false },
+    { label: "6", height: Math.max(25, Math.min(100, Math.round(deptAttendanceRate))), active: deptAttendanceRate > 0, tag: `${deptAttendanceRate}%` },
+    { label: "7", height: Math.max(18, Math.round(deptAttendanceRate * 0.75)), active: false },
+    { label: "8", height: Math.max(14, Math.round(deptAttendanceRate * 0.65)), active: false },
+    { label: "9", height: Math.max(20, Math.round(deptAttendanceRate * 0.85)), active: false },
   ];
 
-  // 5 Campus Activity Facilities matching reference
-  const displayLocations = [
-    {
-      id: "block-a",
-      name: "Department Block A",
-      category: "Lecture Halls 1 - 8",
-      activityScore: "91.5%",
-      status: "Active",
-      icon: Building,
-      tileClass: "tile-indigo",
-    },
-    {
-      id: "hostel-gate",
-      name: "Hostel Main Checkpoint",
-      category: "Biometric & QR Scanners",
-      activityScore: "98.0%",
-      status: "Active",
-      icon: Shield,
-      tileClass: "tile-emerald",
-    },
-    {
-      id: "lab-block",
-      name: "Department Advanced Labs",
-      category: "Systems & Network Lab",
-      activityScore: "86.0%",
-      status: "Active",
-      icon: Cpu,
-      tileClass: "tile-sky",
-    },
-    {
-      id: "seminar-hall",
-      name: "Conference Room 1",
-      category: "Faculty Board Room",
-      activityScore: "70.0%",
-      status: "Normal",
-      icon: GraduationCap,
-      tileClass: "tile-amber",
-    },
-    {
-      id: "campus-3d",
-      name: "Campus Digital Twin 3D",
-      category: "Realtime Spatial Pulse",
-      activityScore: "99.1%",
-      status: "Active",
-      icon: Layers,
-      tileClass: "tile-purple",
-    },
-  ];
+  const displayLocations = (locations || []).map((loc, i) => ({
+    id: loc.id || `loc-${i}`,
+    name: loc.name,
+    category: loc.category || "Department Venue",
+    activityScore: typeof loc.activityScore === "number" ? `${loc.activityScore}%` : (loc.activityScore || "Active"),
+    status: loc.status || "Active",
+    icon: Building,
+    tileClass: i % 2 === 0 ? "tile-indigo" : "tile-emerald",
+  }));
 
-  // Dispatches
-  const displayDispatches = [
-    {
-      id: "disp-1",
-      author: "Hostel Warden",
-      context: "on Evening Curfew",
-      time: "09:10 AM",
-      message: "Weekend gate passes synchronized. Curfew compliance at 100%.",
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80",
-    },
-    {
-      id: "disp-2",
-      author: "Security Officer",
-      context: "on Main Gate Checkpoint",
-      time: "08:40 AM",
-      message: "Biometric validation logs recorded with zero security breaches.",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80",
-    },
-  ];
+  const displayDispatches = (hodAnalytics?.dispatches || []).map((disp) => ({
+    id: disp.id,
+    author: disp.author,
+    context: disp.context,
+    time: disp.time,
+    message: disp.message,
+    initial: (disp.author || "A").charAt(0).toUpperCase(),
+  }));
 
-  const hodPeers = [
-    { name: "Dr. Sunita", role: "HOD", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80" },
-    { name: "Dr. Amit", role: "Faculty", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80" },
-    { name: "Dr. Sneha", role: "Faculty", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80" },
-    { name: "Aarav S.", role: "Student CR", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80" },
-    { name: "Priya P.", role: "Student CR", avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&auto=format&fit=crop&q=80" },
-  ];
+  const hodPeers = (faculties || []).map((f) => ({
+    id: f.id,
+    name: f.name,
+    role: f.role || "Faculty",
+    initial: (f.name || "F").charAt(0).toUpperCase(),
+  }));
 
   return (
     <motion.div
@@ -231,9 +188,9 @@ export const HodDashboard = () => {
                   <span className="ref-metric-label">Dept Attendance Rate</span>
                 </div>
                 <div className="ref-metric-val-row">
-                  <span className="ref-metric-value">88.6%</span>
+                  <span className="ref-metric-value">{deptAttendanceRate > 0 ? `${deptAttendanceRate}%` : "0%"}</span>
                   <div className="ref-trend-pill up">
-                    <span>↑ 2.4%</span>
+                    <span>Live</span>
                   </div>
                 </div>
                 <span className="ref-trend-subtext">Across all academic sections</span>
@@ -314,12 +271,30 @@ export const HodDashboard = () => {
               {/* Department Avatars */}
               <div className="ref-avatars-action-row">
                 <div className="ref-avatars-list">
-                  {hodPeers.map((peer, i) => (
-                    <div key={i} className="ref-avatar-unit">
-                      <img src={peer.avatar} alt={peer.name} className="ref-user-avatar" />
-                      <span className="ref-user-name">{peer.name}</span>
-                    </div>
-                  ))}
+                  {hodPeers.length > 0 ? (
+                    hodPeers.map((peer, i) => (
+                      <div key={i} className="ref-avatar-unit">
+                        <div
+                          className="ref-user-avatar"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            background: "rgba(242, 23, 34, 0.12)",
+                            color: "#f21722",
+                            fontWeight: "700",
+                            fontSize: "12px",
+                            borderRadius: "9999px",
+                          }}
+                        >
+                          {peer.initial}
+                        </div>
+                        <span className="ref-user-name">{peer.name}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>Faculty roster synced</span>
+                  )}
                   <button
                     className="ref-view-all-circle-btn"
                     onClick={() => navigate("/faculty-locator")}
@@ -347,7 +322,7 @@ export const HodDashboard = () => {
 
             <div className="ref-chart-body">
               <div className="ref-chart-kpi-block">
-                <span className="ref-chart-kpi-value">96.5%</span>
+                <span className="ref-chart-kpi-value">{deptAttendanceRate > 0 ? `${deptAttendanceRate}%` : "0%"}</span>
                 <span className="ref-chart-kpi-label">Compliance Rate</span>
               </div>
 
@@ -381,28 +356,34 @@ export const HodDashboard = () => {
             <h3 className="ref-products-title">Department Venues</h3>
 
             <div className="ref-products-list">
-              {displayLocations.map((loc) => {
-                const IconComponent = loc.icon;
-                return (
-                  <div
-                    key={loc.id}
-                    className="ref-product-item"
-                    onClick={() => navigate("/campus-pulse")}
-                  >
-                    <div className={`ref-product-icon-box ${loc.tileClass}`}>
-                      <IconComponent size={16} />
+              {displayLocations.length > 0 ? (
+                displayLocations.map((loc) => {
+                  const IconComponent = loc.icon;
+                  return (
+                    <div
+                      key={loc.id}
+                      className="ref-product-item"
+                      onClick={() => navigate("/campus-pulse")}
+                    >
+                      <div className={`ref-product-icon-box ${loc.tileClass}`}>
+                        <IconComponent size={16} />
+                      </div>
+                      <div className="ref-product-details">
+                        <span className="ref-product-name">{loc.name}</span>
+                        <span className="ref-product-category">{loc.category}</span>
+                      </div>
+                      <div className="ref-product-right-col">
+                        <span className="ref-product-score">{loc.activityScore}</span>
+                        <span className="ref-status-capsule active">{loc.status}</span>
+                      </div>
                     </div>
-                    <div className="ref-product-details">
-                      <span className="ref-product-name">{loc.name}</span>
-                      <span className="ref-product-category">{loc.category}</span>
-                    </div>
-                    <div className="ref-product-right-col">
-                      <span className="ref-product-score">{loc.activityScore}</span>
-                      <span className="ref-status-capsule active">{loc.status}</span>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              ) : (
+                <div style={{ padding: "16px 0", color: "var(--text-muted)", fontSize: "13px" }}>
+                  No active venues registered.
+                </div>
+              )}
             </div>
 
             <button
@@ -418,21 +399,41 @@ export const HodDashboard = () => {
             <h3 className="ref-comments-title">Clearance Dispatches</h3>
 
             <div className="ref-comments-list">
-              {displayDispatches.map((disp) => (
-                <div key={disp.id} className="ref-comment-item">
-                  <div className="ref-comment-avatar-col">
-                    <img src={disp.avatar} alt={disp.author} className="ref-comment-avatar" />
-                  </div>
-                  <div className="ref-comment-content">
-                    <div className="ref-comment-meta">
-                      <span className="ref-comment-author">{disp.author}</span>
-                      <span className="ref-comment-context">{disp.context}</span>
-                      <span className="ref-comment-time">{disp.time}</span>
+              {displayDispatches.length > 0 ? (
+                displayDispatches.map((disp) => (
+                  <div key={disp.id} className="ref-comment-item">
+                    <div className="ref-comment-avatar-col">
+                      <div
+                        className="ref-comment-avatar"
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background: "rgba(242, 23, 34, 0.15)",
+                          color: "#f21722",
+                          fontWeight: "700",
+                          fontSize: "12px",
+                          borderRadius: "9999px",
+                        }}
+                      >
+                        {disp.initial}
+                      </div>
                     </div>
-                    <p className="ref-comment-text">{disp.message}</p>
+                    <div className="ref-comment-content">
+                      <div className="ref-comment-meta">
+                        <span className="ref-comment-author">{disp.author}</span>
+                        <span className="ref-comment-context">{disp.context}</span>
+                        <span className="ref-comment-time">{disp.time}</span>
+                      </div>
+                      <p className="ref-comment-text">{disp.message}</p>
+                    </div>
                   </div>
+                ))
+              ) : (
+                <div style={{ padding: "16px 0", color: "var(--text-muted)", fontSize: "13px" }}>
+                  No clearance dispatches at this time.
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>
@@ -448,9 +449,9 @@ export const HodDashboard = () => {
             onClick={() => setActiveTab("gate_passes")}
             className="ref-pill-dropdown"
             style={{
-              background: activeTab === "gate_passes" ? "var(--brand, #6366F1)" : "var(--bg-card)",
+              background: activeTab === "gate_passes" ? "var(--brand, #F21722)" : "var(--bg-card)",
               color: activeTab === "gate_passes" ? "#FFFFFF" : "var(--text-secondary)",
-              borderColor: activeTab === "gate_passes" ? "var(--brand, #6366F1)" : "var(--border-color)",
+              borderColor: activeTab === "gate_passes" ? "var(--brand, #F21722)" : "var(--border-color)",
               fontWeight: 600,
             }}
           >
@@ -461,9 +462,9 @@ export const HodDashboard = () => {
             onClick={() => setActiveTab("leaves")}
             className="ref-pill-dropdown"
             style={{
-              background: activeTab === "leaves" ? "var(--brand, #6366F1)" : "var(--bg-card)",
+              background: activeTab === "leaves" ? "var(--brand, #F21722)" : "var(--bg-card)",
               color: activeTab === "leaves" ? "#FFFFFF" : "var(--text-secondary)",
-              borderColor: activeTab === "leaves" ? "var(--brand, #6366F1)" : "var(--border-color)",
+              borderColor: activeTab === "leaves" ? "var(--brand, #F21722)" : "var(--border-color)",
               fontWeight: 600,
             }}
           >
@@ -474,9 +475,9 @@ export const HodDashboard = () => {
             onClick={() => setActiveTab("ods")}
             className="ref-pill-dropdown"
             style={{
-              background: activeTab === "ods" ? "var(--brand, #6366F1)" : "var(--bg-card)",
+              background: activeTab === "ods" ? "var(--brand, #F21722)" : "var(--bg-card)",
               color: activeTab === "ods" ? "#FFFFFF" : "var(--text-secondary)",
-              borderColor: activeTab === "ods" ? "var(--brand, #6366F1)" : "var(--border-color)",
+              borderColor: activeTab === "ods" ? "var(--brand, #F21722)" : "var(--border-color)",
               fontWeight: 600,
             }}
           >

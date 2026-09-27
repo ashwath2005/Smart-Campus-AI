@@ -1,16 +1,50 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { Mail, Lock, GraduationCap } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation, Link, Navigate } from "react-router-dom";
+import { Mail, Lock } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { Button, Input, Card } from "../../components/ui";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
+import { ROLE_DEFAULT_REDIRECTS } from "../../constants/roles";
+import { ROUTES } from "../../constants/routes";
+
 export const Login = () => {
-  const { login } = useAuth();
+  const { user, login } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const location = useLocation();
+
+  const [rememberMe, setRememberMe] = useState(() => {
+    return localStorage.getItem("campus_remember_me") === "true";
+  });
+  const [email, setEmail] = useState(() => {
+    return localStorage.getItem("campus_saved_email") || "";
+  });
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // If already authenticated, redirect immediately to destination or default role dashboard
+  if (user) {
+    const from = location.state?.from?.pathname;
+    const destination = from || ROLE_DEFAULT_REDIRECTS[user.role] || ROUTES.STUDENT_DASHBOARD;
+    return <Navigate to={destination} replace />;
+  }
+
+  const handleSuccessfulAuth = (loggedInUser, currentEmail) => {
+    const emailToSave = currentEmail || email;
+    if (rememberMe) {
+      localStorage.setItem("campus_remember_me", "true");
+      localStorage.setItem("campus_saved_email", emailToSave);
+    } else {
+      localStorage.removeItem("campus_remember_me");
+      localStorage.removeItem("campus_saved_email");
+    }
+
+    const from = location.state?.from?.pathname;
+    const roleKey = loggedInUser?.role?.toLowerCase();
+    const dest = from || ROLE_DEFAULT_REDIRECTS[roleKey] || ROUTES.STUDENT_DASHBOARD;
+    navigate(dest, { replace: true });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) {
@@ -19,26 +53,15 @@ export const Login = () => {
     }
     setLoading(true);
     try {
-      await login({ email, password });
-      const stored = localStorage.getItem("campus_user");
-      if (stored) {
-        const { user: loggedInUser } = JSON.parse(stored);
-        if (loggedInUser) {
-          const defaultPaths = {
-            student: "/dashboard",
-            faculty: "/faculty",
-            admin: "/admin",
-            hod: "/hod",
-            warden: "/hod",
-            security: "/gate-security",
-            guardian: "/guardian-gate-pass"
-          };
-          navigate(defaultPaths[loggedInUser.role] || "/dashboard");
-          return;
-        }
+      const authResult = await login({ email, password });
+      const loggedInUser = authResult?.user || (localStorage.getItem("campus_user") ? JSON.parse(localStorage.getItem("campus_user")).user : null);
+      if (loggedInUser) {
+        handleSuccessfulAuth(loggedInUser, email);
+        return;
       }
-      navigate("/");
-    } catch (err) {
+      navigate(ROUTES.ROOT);
+    } catch {
+      // Handled by login toast
     } finally {
       setLoading(false);
     }
@@ -49,52 +72,42 @@ export const Login = () => {
     setPassword("password123");
     setLoading(true);
     try {
-      await login({ email: roleEmail, password: "password123" });
-      const stored = localStorage.getItem("campus_user");
-      if (stored) {
-        const { user: loggedInUser } = JSON.parse(stored);
-        if (loggedInUser) {
-          const defaultPaths = {
-            student: "/dashboard",
-            faculty: "/faculty",
-            admin: "/admin",
-            hod: "/hod",
-            warden: "/hod",
-            security: "/gate-security",
-            guardian: "/guardian-gate-pass"
-          };
-          navigate(defaultPaths[loggedInUser.role] || "/dashboard");
-          return;
-        }
+      const authResult = await login({ email: roleEmail, password: "password123" });
+      const loggedInUser = authResult?.user || (localStorage.getItem("campus_user") ? JSON.parse(localStorage.getItem("campus_user")).user : null);
+      if (loggedInUser) {
+        handleSuccessfulAuth(loggedInUser, roleEmail);
+        return;
       }
-      navigate("/");
-    } catch (err) {
+      navigate(ROUTES.ROOT);
+    } catch {
+      // Handled by login toast
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <div className="auth-page-container">
-      {/* Premium ambient glows */}
+      {/* Subtle Ambient Atmosphere */}
       <div className="auth-glow-top" />
       <div className="auth-glow-bottom" />
       
       <motion.div
-        initial={{ opacity: 0, y: 15 }}
+        initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 350, damping: 28 }}
+        transition={{ duration: 0.22, ease: "easeOut" }}
         className="auth-wrapper auth-wrapper-login"
       >
-        {/* Branding header */}
+        {/* Branding header with official logo */}
         <div className="auth-header">
           <Link to="/" className="auth-logo-link">
             <div className="auth-logo-img-container">
-              <img src="/logo.png" alt="SCME-AWN Logo" className="auth-logo-img" width="64" height="64" />
+              <img src="/logo.png" alt="Smart Campus AI Logo" className="auth-logo-img" width="60" height="60" />
             </div>
-            <img src="/title.png" alt="SCME-AWN" className="auth-logo-title-img" />
+            <img src="/title.png" alt="Smart Campus AI" className="auth-logo-title-img" />
           </Link>
           <p className="auth-subtitle-text">
-            AI-Powered Intelligent Management Ecosystem
+            Autonomous Digital Campus Platform
           </p>
         </div>
 
@@ -134,22 +147,34 @@ export const Login = () => {
               />
             </div>
 
+            {/* Remember Me Option */}
+            <div className="auth-remember-row">
+              <label className="auth-remember-checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="auth-remember-checkbox"
+                />
+                <span>Remember this device</span>
+              </label>
+            </div>
+
             <Button type="submit" loading={loading} className="auth-btn-primary">
               Sign In
             </Button>
           </form>
 
-          {/* Transparent Grid-Friendly Divider */}
+          {/* Quick Demo Login Grid */}
           <div className="auth-quick-login-divider">
             <div className="auth-quick-login-line" />
             <span className="auth-quick-login-title">
-              Demo Accounts
+              One-Click Demo Access
             </span>
             <div className="auth-quick-login-line" />
           </div>
 
-          {/* Demo Login buttons */}
-          <div className="auth-quick-login-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(85px, 1fr))' }}>
+          <div className="auth-quick-login-grid">
             <Button
               variant="secondary"
               size="sm"
@@ -179,7 +204,6 @@ export const Login = () => {
               size="sm"
               onClick={() => handleQuickLogin("warden@campus.com")}
               className="auth-quick-login-btn"
-              style={{ borderColor: "rgba(99, 102, 241, 0.4)" }}
             >
               Warden
             </Button>
@@ -210,10 +234,12 @@ export const Login = () => {
           </div>
 
           <p className="auth-footer-text">
-            Contact your campus administrator to request account provisioning.
+            Enterprise protected portal. Unauthorized access is monitored.
           </p>
         </Card>
       </motion.div>
     </div>
   );
 };
+
+export default Login;

@@ -1,0 +1,585 @@
+/* Warden Leave Management - Black & Red Premium Theme */
+
+.warden-leaves-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6, 24px);
+  padding: var(--space-6, 24px);
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.wl-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.wl-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wl-title {
+  font-size: var(--text-2xl, 1.5rem);
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.wl-subtitle {
+  font-size: var(--text-sm, 0.875rem);
+  color: #8A8A8A;
+  margin: 0;
+}
+
+/* KPI Summary Ribbon */
+.wl-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .wl-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.wl-kpi-card {
+  background: #0D0D0D;
+  border: 1px solid #1F1F1F;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+
+.wl-kpi-card:hover {
+  border-color: #333333;
+  background: #111111;
+}
+
+.wl-kpi-card.active {
+  border-color: #F21722;
+  box-shadow: 0 0 12px rgba(242, 23, 34, 0.15);
+}
+
+.wl-kpi-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wl-kpi-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #8A8A8A;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.wl-kpi-val {
+  font-size: 26px;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1;
+}
+
+.wl-kpi-sub {
+  font-size: 11px;
+  color: #666666;
+}
+
+/* Controls & Filters Bar */
+.wl-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: #0A0A0A;
+  border: 1px solid #1F1F1F;
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+
+.wl-tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #111111;
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid #1E1E1E;
+}
+
+.wl-tab-btn {
+  background: transparent;
+  border: none;
+  color: #8A8A8A;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wl-tab-btn:hover {
+  color: #FFFFFF;
+}
+
+.wl-tab-btn.active {
+  background: #1C1C1C;
+  color: #FFFFFF;
+  border: 1px solid #2B2B2B;
+}
+
+.wl-tab-count {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  background: #252525;
+  color: #A3A3A3;
+}
+
+.wl-tab-btn.active .wl-tab-count {
+  background: #F21722;
+  color: #FFFFFF;
+}
+
+.wl-search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 280px;
+}
+
+.wl-search-icon {
+  position: absolute;
+  left: 12px;
+  color: #666666;
+  pointer-events: none;
+}
+
+.wl-search-input {
+  width: 100%;
+  background: #121212;
+  border: 1px solid #222222;
+  border-radius: 8px;
+  padding: 8px 12px 8px 36px;
+  font-size: 13px;
+  color: #FFFFFF;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.wl-search-input:focus {
+  border-color: #F21722;
+}
+
+/* Desktop Data Table */
+.wl-table-card {
+  background: #0D0D0D;
+  border: 1px solid #1F1F1F;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.wl-table-container {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.wl-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+.wl-table th {
+  background: #090909;
+  color: #8A8A8A;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 14px 18px;
+  border-bottom: 1px solid #1F1F1F;
+  white-space: nowrap;
+}
+
+.wl-table td {
+  padding: 16px 18px;
+  border-bottom: 1px solid #171717;
+  color: #CCCCCC;
+  vertical-align: middle;
+}
+
+.wl-table tr:hover td {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.wl-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Student Cell */
+.wl-student-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wl-student-name {
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.wl-student-sub {
+  font-size: 11px;
+  color: #777777;
+  font-family: monospace;
+}
+
+/* Leave Details Cell */
+.wl-leave-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.wl-leave-type {
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.wl-leave-dates {
+  font-size: 11px;
+  color: #8A8A8A;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.wl-days-pill {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #1A1A1A;
+  color: #CCCCCC;
+  font-weight: 600;
+  display: inline-block;
+  margin-top: 2px;
+}
+
+/* Reason Cell */
+.wl-reason-cell {
+  max-width: 260px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #B3B3B3;
+  word-break: break-word;
+}
+
+.wl-attachment-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #F21722;
+  font-size: 11px;
+  margin-top: 4px;
+  text-decoration: none;
+}
+
+.wl-attachment-link:hover {
+  text-decoration: underline;
+}
+
+/* Status Badges */
+.wl-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.wl-status-badge.pending {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  color: #FBBF24;
+}
+
+.wl-status-badge.approved {
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  color: #4ADE80;
+}
+
+.wl-status-badge.rejected {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #F87171;
+}
+
+.wl-status-badge.cancelled {
+  background: rgba(115, 115, 115, 0.12);
+  border: 1px solid rgba(115, 115, 115, 0.25);
+  color: #A3A3A3;
+}
+
+/* Action Buttons */
+.wl-actions-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.wl-btn-approve {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ADE80;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s;
+}
+
+.wl-btn-approve:hover:not(:disabled) {
+  background: #22C55E;
+  color: #000000;
+  border-color: #22C55E;
+}
+
+.wl-btn-reject {
+  background: rgba(242, 23, 34, 0.12);
+  color: #F21722;
+  border: 1px solid rgba(242, 23, 34, 0.3);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s;
+}
+
+.wl-btn-reject:hover:not(:disabled) {
+  background: #F21722;
+  color: #FFFFFF;
+  border-color: #F21722;
+}
+
+.wl-btn-approve:disabled,
+.wl-btn-reject:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Empty State */
+.wl-empty {
+  padding: 56px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: #8A8A8A;
+}
+
+.wl-empty-icon {
+  color: #333333;
+}
+
+.wl-empty-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #CCCCCC;
+  margin: 0;
+}
+
+.wl-empty-sub {
+  font-size: 12px;
+  color: #777777;
+  margin: 0;
+  max-width: 320px;
+}
+
+/* Mobile Responsive Cards */
+.wl-mobile-cards {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .wl-table-card {
+    display: none;
+  }
+  .wl-mobile-cards {
+    display: flex;
+  }
+}
+
+.wl-card-item {
+  background: #0D0D0D;
+  border: 1px solid #1F1F1F;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wl-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.wl-card-body {
+  font-size: 12px;
+  color: #B3B3B3;
+  line-height: 1.4;
+  background: #121212;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #1C1C1C;
+}
+
+.wl-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 6px;
+  border-top: 1px solid #1A1A1A;
+}
+
+/* Modals */
+.wl-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.wl-modal-box {
+  background: #0E0E0E;
+  border: 1px solid #2B2B2B;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 500px;
+  padding: 24px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.85);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.wl-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wl-modal-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.wl-modal-summary {
+  background: #141414;
+  border: 1px solid #222222;
+  border-radius: 8px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.wl-modal-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.wl-modal-row-label {
+  color: #8A8A8A;
+}
+
+.wl-modal-row-val {
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.wl-modal-reason-box {
+  background: #171717;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: #CCCCCC;
+  margin-top: 4px;
+}
+
+.wl-textarea {
+  width: 100%;
+  background: #141414;
+  border: 1px solid #262626;
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #FFFFFF;
+  font-size: 13px;
+  min-height: 90px;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.wl-textarea:focus {
+  border-color: #F21722;
+}
+
+.wl-modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}

@@ -3,7 +3,12 @@ Central API Router for Smart Campus AI
 Aggregates all domain routes into a single router.
 """
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from app.database import get_db
+from app.models.user import User
+from app.middleware.auth_middleware import get_current_user
 from app.routes import (
     auth,
     students,
@@ -35,6 +40,8 @@ from app.routes import (
     incidents,
     search,
     internal_marks,
+    warden,
+    faculty,
 )
 
 api_router = APIRouter()
@@ -70,4 +77,28 @@ api_router.include_router(guardian.router)
 api_router.include_router(incidents.router)
 api_router.include_router(search.router)
 api_router.include_router(internal_marks.router)
+api_router.include_router(warden.router)
+api_router.include_router(faculty.router)
+ 
+ 
+@api_router.get("/faculty")
+async def list_faculty_members(
+    current_user: dict = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(
+        select(User).where(User.role.in_(["faculty", "hod"])).order_by(User.name)
+    )
+    faculty_list = result.scalars().all()
+    return [
+        {
+            "id": f.id,
+            "name": f.name,
+            "email": f.email,
+            "role": f.role,
+            "department": f.department,
+            "employee_id": f.employee_id or f"FAC{f.id:03d}",
+        }
+        for f in faculty_list
+    ]
 

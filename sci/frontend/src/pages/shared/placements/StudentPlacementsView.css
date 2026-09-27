@@ -1,4 +1,4 @@
-/* StudentPlacementsView.css */
+/* StudentPlacementsView.css - Black & Red Theme */
 
 .student-placements-container {
   display: flex;
@@ -6,6 +6,7 @@
   gap: 1.5rem;
   font-family: var(--font-sans);
   box-sizing: border-box;
+  width: 100%;
 }
 
 .student-placements-header {
@@ -19,12 +20,15 @@
   color: #ffffff;
   letter-spacing: -0.02em;
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
 }
 
 .student-placements-subtitle {
   font-size: 13px;
   color: var(--text-secondary);
-  margin-top: 4px;
+  margin-top: 6px;
   margin-bottom: 0;
 }
 
@@ -53,6 +57,9 @@
   position: relative;
   transition: color 0.2s ease;
   outline: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .student-tab-btn:hover {
@@ -60,7 +67,7 @@
 }
 
 .student-tab-btn.active {
-  color: #ef4444;
+  color: #f21722;
 }
 
 .student-tab-btn.active::after {
@@ -70,8 +77,74 @@
   left: 0;
   right: 0;
   height: 2px;
-  background-color: #ef4444;
+  background-color: #f21722;
   border-radius: 99px;
+  box-shadow: 0 0 8px rgba(242, 23, 34, 0.5);
+}
+
+.student-tab-count {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 1px 7px;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+}
+
+.student-tab-btn.active .student-tab-count {
+  background-color: rgba(242, 23, 34, 0.15);
+  color: #f21722;
+}
+
+/* Filter controls for student */
+.student-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.student-search-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.student-search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+.student-search-input {
+  background: #111215;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 8px 12px 8px 36px;
+  color: #ffffff;
+  font-size: 13px;
+  min-width: 240px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.student-search-input:focus {
+  border-color: rgba(242, 23, 34, 0.5);
+  box-shadow: 0 0 0 2px rgba(242, 23, 34, 0.15);
+}
+
+.student-filter-select {
+  background: #111215;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
 }
 
 /* Responsive Cards Grid */
@@ -101,7 +174,7 @@
 }
 
 .student-job-card:hover {
-  border-color: rgba(239, 68, 68, 0.3);
+  border-color: rgba(242, 23, 34, 0.3);
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
 }
@@ -126,8 +199,8 @@
 }
 
 .student-logo-box {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   background-color: #16171b;
   border: 1px solid var(--border-color);
   border-radius: 10px;
@@ -135,6 +208,13 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.student-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .student-role-title {
@@ -182,9 +262,9 @@
 .student-ctc-pill {
   font-size: 12px;
   font-weight: 800;
-  color: #ef4444;
-  background-color: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #f21722;
+  background-color: rgba(242, 23, 34, 0.12);
+  border: 1px solid rgba(242, 23, 34, 0.25);
   padding: 3px 9px;
   border-radius: 6px;
 }
@@ -241,7 +321,7 @@
   align-items: center;
   gap: 0.4rem;
   padding: 0.55rem 1rem;
-  background: linear-gradient(135deg, #e31b23 0%, #b91c1c 100%);
+  background: linear-gradient(135deg, #f21722 0%, #b91c1c 100%);
   color: #ffffff;
   border: none;
   border-radius: 8px;
@@ -249,13 +329,27 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(227, 27, 35, 0.3);
+  box-shadow: 0 4px 12px rgba(242, 23, 34, 0.3);
   outline: none;
 }
 
 .student-btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(227, 27, 35, 0.45);
+  box-shadow: 0 6px 16px rgba(242, 23, 34, 0.45);
+}
+
+.student-btn-applied {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.85rem;
+  background-color: rgba(59, 130, 246, 0.12);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: default;
 }
 
 .student-btn-disabled {
@@ -271,49 +365,122 @@
 
 .student-empty-state {
   text-align: center;
-  padding: 3rem 1rem;
+  padding: 3rem 1.5rem;
   background-color: #111215;
   border: 1px dashed var(--border-color);
   border-radius: 14px;
   color: var(--text-secondary);
   font-size: 13.5px;
-}
-
-.student-applications-list {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 0.75rem;
 }
 
-.student-app-row {
+/* Student Applications List & Cards */
+.student-applications-list {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.student-app-card {
   background-color: #111215;
   border: 1px solid var(--border-color);
   border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.student-app-card:hover {
+  border-color: rgba(242, 23, 34, 0.25);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+
+.student-app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
 }
 
 .student-app-title {
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 800;
   color: #ffffff;
+  margin: 0;
 }
 
 .student-app-sub {
   font-size: 12px;
   color: var(--text-secondary);
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
 .student-app-status-tag {
   font-size: 11px;
-  font-weight: 700;
-  color: #f59e0b;
-  background-color: rgba(245, 158, 11, 0.12);
-  border: 1px solid rgba(245, 158, 11, 0.25);
-  padding: 3px 9px;
+  font-weight: 800;
+  padding: 3px 10px;
   border-radius: 9999px;
   text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.student-app-status-tag.applied {
+  color: #60a5fa;
+  background-color: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.student-app-status-tag.shortlisted {
+  color: #c084fc;
+  background-color: rgba(168, 85, 247, 0.12);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+}
+
+.student-app-status-tag.selected {
+  color: #34d399;
+  background-color: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.student-app-status-tag.rejected {
+  color: #f87171;
+  background-color: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.student-app-review-box {
+  background: #0d0e11;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 12px;
+  color: #cbd5e1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.student-app-review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.student-app-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding-top: 0.25rem;
 }

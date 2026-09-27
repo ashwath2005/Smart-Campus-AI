@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import api from "../../../api/axios";
-import { Card, Skeleton, Button, Badge } from "../../../components/ui";
+import { Skeleton, Button } from "../../../components/ui";
 import {
   Briefcase,
   Users,
@@ -9,113 +9,81 @@ import {
   TrendingUp,
   Download,
   Calendar,
-  ChevronDown,
   Plus,
   Search,
   ExternalLink,
   Edit,
   Trash2,
   CheckCircle2,
+  XCircle,
   Clock,
+  Sparkles,
+  FileText,
   Filter,
   RefreshCw,
   Award,
-  Sparkles,
-  ArrowUpRight
+  ChevronRight,
+  Eye
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { CreateDriveModal } from "./CreateDriveModal";
 import { CompanyModal } from "./CompanyModal";
-import "../Placements.css";
-
-const DEFAULT_OVERVIEW = {
-  eligible: 532,
-  registered: 468,
-  applied: 286,
-  shortlisted: 137,
-  placed: 96,
-  placement_rate: 94.8,
-  highest_package: "42.0 LPA",
-  avg_package: "14.2 LPA"
-};
-
-const DEFAULT_DRIVES = [
-  {
-    id: "drv-1",
-    title: "Senior Full Stack Software Engineer",
-    companyName: "Google India",
-    company: "Google India",
-    type: "FULL_TIME",
-    package: "38.5 LPA",
-    registrationType: "INTERNAL",
-    deadline: "2026-09-15",
-    status: "open"
-  },
-  {
-    id: "drv-2",
-    title: "AI & Machine Learning Research Intern",
-    companyName: "Microsoft AI Lab",
-    company: "Microsoft AI Lab",
-    type: "INTERNSHIP",
-    package: "1.2 Lakh / month",
-    registrationType: "EXTERNAL",
-    registrationUrl: "https://careers.microsoft.com",
-    deadline: "2026-09-20",
-    status: "open"
-  },
-  {
-    id: "drv-3",
-    title: "Cloud Solutions Architect & Systems Dev",
-    companyName: "Amazon Web Services",
-    company: "Amazon Web Services",
-    type: "FULL_TIME",
-    package: "32.0 LPA",
-    registrationType: "INTERNAL",
-    deadline: "2026-08-30",
-    status: "open"
-  }
-];
+import "./AdminPlacementsView.css";
 
 export const AdminPlacementsView = () => {
-  const [drives, setDrives] = useState(DEFAULT_DRIVES);
+  const [drives, setDrives] = useState([]);
   const [companies, setCompanies] = useState([]);
-  const [overview, setOverview] = useState(DEFAULT_OVERVIEW);
+  const [applications, setApplications] = useState([]);
+  const [overview, setOverview] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("drives"); // 'drives' | 'applications' | 'companies' | 'funnel'
 
-  // Filters
-  const [searchTerm, setSearchTerm] = useState("");
-  const [activeType, setActiveType] = useState("all");
+  // Drives filter
+  const [driveSearch, setDriveSearch] = useState("");
+  const [driveTypeFilter, setDriveTypeFilter] = useState("all");
+  const [driveStatusFilter, setDriveStatusFilter] = useState("all");
+
+  // Applications filter
+  const [appSearch, setAppSearch] = useState("");
+  const [appStatusFilter, setAppStatusFilter] = useState("all");
+  const [appDriveFilter, setAppDriveFilter] = useState("all");
+
+  // Cycle
   const [cycleYear, setCycleYear] = useState("2026");
 
   // Modals
   const [isDriveModalOpen, setIsDriveModalOpen] = useState(false);
   const [driveToEdit, setDriveToEdit] = useState(null);
   const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
+  const [companyToEdit, setCompanyToEdit] = useState(null);
 
-  const fetchAdminPlacementData = async () => {
+  const fetchAdminData = async () => {
     setLoading(true);
     try {
-      const [drivesRes, compRes, overviewRes] = await Promise.all([
+      const [drivesRes, compRes, overviewRes, appsRes] = await Promise.all([
         api.get("/placements"),
         api.get("/placements/companies"),
-        api.get("/placements/admin-overview")
+        api.get("/placements/admin-overview"),
+        api.get("/placements/applications/all"),
       ]);
-      if (Array.isArray(drivesRes.data) && drivesRes.data.length > 0) setDrives(drivesRes.data);
-      if (Array.isArray(compRes.data)) setCompanies(compRes.data);
-      if (overviewRes.data && overviewRes.data.eligible) setOverview(overviewRes.data);
-    } catch {
-      // Fallback to populated simulation
-      setOverview(DEFAULT_OVERVIEW);
+
+      setDrives(Array.isArray(drivesRes.data) ? drivesRes.data : []);
+      setCompanies(Array.isArray(compRes.data) ? compRes.data : []);
+      setOverview(overviewRes.data || null);
+      setApplications(Array.isArray(appsRes.data) ? appsRes.data : []);
+    } catch (err) {
+      toast.error("Failed to load placement management data from server");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchAdminPlacementData();
+    fetchAdminData();
   }, []);
 
+  // Drive operations
   const handleSaveDrive = async (payload, editId = null) => {
     try {
       if (editId) {
@@ -125,39 +93,119 @@ export const AdminPlacementsView = () => {
         await api.post("/placements", payload);
         toast.success("New placement drive published successfully!");
       }
-      fetchAdminPlacementData();
+      fetchAdminData();
     } catch (err) {
       toast.error(err.response?.data?.detail || "Error saving placement drive");
       throw err;
     }
   };
 
-  const handleSaveCompany = async (payload) => {
+  const handleDeleteDrive = async (driveId, title) => {
+    if (!window.confirm(`Are you sure you want to delete "${title}"? This will also remove any linked applications.`)) {
+      return;
+    }
     try {
-      await api.post("/placements/companies", payload);
-      toast.success("Company profile created successfully!");
-      fetchAdminPlacementData();
+      await api.delete(`/placements/${driveId}`);
+      toast.success("Placement drive deleted successfully");
+      fetchAdminData();
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Failed to delete placement drive");
+    }
+  };
+
+  // Company operations
+  const handleSaveCompany = async (payload, editId = null) => {
+    try {
+      if (editId) {
+        await api.put(`/placements/companies/${editId}`, payload);
+        toast.success("Company profile updated successfully!");
+      } else {
+        await api.post("/placements/companies", payload);
+        toast.success("Company profile created successfully!");
+      }
+      fetchAdminData();
     } catch (err) {
       toast.error(err.response?.data?.detail || "Error saving company");
       throw err;
     }
   };
 
+  const handleDeleteCompany = async (companyId, name) => {
+    if (!window.confirm(`Are you sure you want to delete corporate partner "${name}"?`)) {
+      return;
+    }
+    try {
+      await api.delete(`/placements/companies/${companyId}`);
+      toast.success("Company deleted successfully");
+      fetchAdminData();
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Failed to delete company");
+    }
+  };
+
+  // Application status updates
+  const handleUpdateAppStatus = async (appId, newStatus) => {
+    try {
+      await api.put(`/placements/applications/${appId}/status`, {
+        status: newStatus,
+        interview_status: newStatus === "shortlisted" ? "Round 1 Scheduled" : undefined,
+        offer_status: newStatus === "selected" ? "Offer Released" : undefined,
+      });
+      toast.success(`Application marked as '${newStatus.toUpperCase()}'`);
+      fetchAdminData();
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Failed to update application status");
+    }
+  };
+
+  // Export CSV Report with real data
   const handleExportReport = () => {
     const reportData = [
-      ["SCME-AWN Placement Command Center Report"],
-      ["Metric", "Value"],
-      ["Total Eligible Students", overview?.eligible ?? 532],
-      ["Registered / Active", overview?.registered ?? 468],
-      ["Applied Candidates", overview?.applied ?? 286],
-      ["Shortlisted", overview?.shortlisted ?? 137],
-      ["Placed Students", overview?.placed ?? 96],
-      ["Placement Rate", `${overview?.placement_rate ?? 94.8}%`],
-      ["Active Recruitment Drives", drives.length]
+      ["CAMPUS PLACEMENT COMMAND REPORT", `Cycle ${cycleYear}`],
+      ["Generated At", new Date().toLocaleString()],
+      [],
+      ["PLACEMENT METRICS", "COUNT"],
+      ["Total Eligible Students", overview?.eligible ?? 0],
+      ["Total Active Drives", drives.length],
+      ["Total Applications", applications.length],
+      ["Shortlisted Candidates", overview?.shortlisted ?? 0],
+      ["Placed / Offers Extended", overview?.placed ?? 0],
+      ["Placement Rate", `${overview?.placement_rate ?? 0}%`],
+      ["Highest Package", overview?.highest_package ?? "0 LPA"],
+      ["Average Package", overview?.avg_package ?? "0 LPA"],
+      [],
+      ["ACTIVE PLACEMENT DRIVES"],
+      ["ID", "Role Title", "Company", "Type", "Package", "Deadline", "Registration Mode", "Applicants", "Status"],
+      ...drives.map((d) => [
+        d.id,
+        d.title,
+        d.companyName || d.company,
+        d.type,
+        d.package,
+        d.deadline,
+        d.registrationType,
+        d.applicantCount ?? 0,
+        d.status,
+      ]),
+      [],
+      ["STUDENT APPLICATIONS"],
+      ["App ID", "Student Name", "Roll Number", "Department", "Company", "Job Title", "Resume Score", "Status", "Applied At"],
+      ...applications.map((a) => [
+        a.id,
+        a.studentName,
+        a.studentRollNumber,
+        a.studentDepartment,
+        a.companyName,
+        a.placementTitle,
+        a.resumeScore ?? "N/A",
+        a.status,
+        a.appliedAt,
+      ]),
     ];
+
     const csvContent =
       "data:text/csv;charset=utf-8," +
-      reportData.map((e) => e.map((val) => `"${val}"`).join(",")).join("\n");
+      reportData.map((row) => row.map((val) => `"${val}"`).join(",")).join("\n");
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
@@ -165,22 +213,40 @@ export const AdminPlacementsView = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    toast.success("Placement report exported!");
+    toast.success("Placement report downloaded successfully!");
   };
 
-  const filteredDrives = drives.filter((item) => {
-    const matchesSearch =
-      item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (item.companyName || item.company || "").toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = activeType === "all" || item.type === activeType;
-    return matchesSearch && matchesType;
-  });
+  // Filtered drives
+  const filteredDrives = useMemo(() => {
+    return drives.filter((d) => {
+      const matchSearch =
+        d.title.toLowerCase().includes(driveSearch.toLowerCase()) ||
+        (d.companyName || d.company || "").toLowerCase().includes(driveSearch.toLowerCase());
+      const matchType = driveTypeFilter === "all" || d.type === driveTypeFilter;
+      const matchStatus = driveStatusFilter === "all" || d.status === driveStatusFilter;
+      return matchSearch && matchType && matchStatus;
+    });
+  }, [drives, driveSearch, driveTypeFilter, driveStatusFilter]);
+
+  // Filtered applications
+  const filteredApplications = useMemo(() => {
+    return applications.filter((a) => {
+      const matchSearch =
+        a.studentName.toLowerCase().includes(appSearch.toLowerCase()) ||
+        a.studentRollNumber.toLowerCase().includes(appSearch.toLowerCase()) ||
+        a.companyName.toLowerCase().includes(appSearch.toLowerCase()) ||
+        a.placementTitle.toLowerCase().includes(appSearch.toLowerCase());
+      const matchStatus = appStatusFilter === "all" || a.status === appStatusFilter;
+      const matchDrive = appDriveFilter === "all" || String(a.placementId) === String(appDriveFilter);
+      return matchSearch && matchStatus && matchDrive;
+    });
+  }, [applications, appSearch, appStatusFilter, appDriveFilter]);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.25 }}
       className="admin-placements-command-view"
     >
       {/* Modals */}
@@ -197,21 +263,28 @@ export const AdminPlacementsView = () => {
 
       <CompanyModal
         isOpen={isCompanyModalOpen}
-        onClose={() => setIsCompanyModalOpen(false)}
+        onClose={() => {
+          setIsCompanyModalOpen(false);
+          setCompanyToEdit(null);
+        }}
         onSave={handleSaveCompany}
+        companyToEdit={companyToEdit}
       />
 
       {/* Header Bar */}
       <header className="admin-placements-header-row">
         <div>
           <div className="flex items-center gap-3">
-            <h2 className="admin-placements-title">Placements & Career Intelligence</h2>
+            <h2 className="admin-placements-title">
+              <Briefcase size={24} className="text-red-500" />
+              Placement Command Center
+            </h2>
             <span className="placements-live-badge">
-              <Sparkles size={12} /> RECRUITMENT CYCLE {cycleYear}
+              <Sparkles size={12} /> CYCLE {cycleYear}
             </span>
           </div>
           <p className="admin-placements-subtitle">
-            Manage institutional recruitment drives, corporate partnerships & hiring analytics
+            Administer recruitment drives, verify student applications, manage corporate partners & placement analytics
           </p>
         </div>
 
@@ -228,19 +301,23 @@ export const AdminPlacementsView = () => {
             </select>
           </div>
 
-          <Button variant="ghost" size="sm" onClick={handleExportReport} className="placements-export-btn">
+          <button onClick={handleExportReport} className="placements-export-btn drives-action-btn">
             <Download size={14} />
             <span>Export Report</span>
-          </Button>
+          </button>
 
-          <Button variant="secondary" size="sm" onClick={() => setIsCompanyModalOpen(true)} className="placements-add-comp-btn">
+          <button
+            onClick={() => {
+              setCompanyToEdit(null);
+              setIsCompanyModalOpen(true);
+            }}
+            className="placements-add-comp-btn drives-action-btn"
+          >
             <Building size={14} />
             <span>Add Company</span>
-          </Button>
+          </button>
 
-          <Button
-            variant="primary"
-            size="sm"
+          <button
             onClick={() => {
               setDriveToEdit(null);
               setIsDriveModalOpen(true);
@@ -248,222 +325,569 @@ export const AdminPlacementsView = () => {
             className="command-export-btn"
           >
             <Plus size={14} />
-            <span>Create Placement Drive</span>
-          </Button>
+            <span>Create Drive</span>
+          </button>
         </div>
       </header>
 
-      {/* KPI Dashboard Glassmorphism Cards Grid */}
+      {/* Real-time KPI Cards Grid */}
       <section className="admin-placements-kpi-grid">
-        <motion.div whileHover={{ y: -4 }} className="kpi-card glassmorphism-card">
+        <motion.div whileHover={{ y: -2 }} className="kpi-card">
           <div className="kpi-card-header-row">
-            <span className="kpi-label">TOTAL ELIGIBLE STUDENTS</span>
+            <span className="kpi-label">Eligible Students</span>
             <div className="kpi-icon-wrapper blue"><Users size={16} /></div>
           </div>
-          <div className="kpi-value">{overview?.eligible ?? 532}</div>
-          <div className="kpi-footer-text">
-            <span>Verified candidates in 2026 batch</span>
-          </div>
+          <div className="kpi-value">{overview?.eligible ?? 0}</div>
+          <div className="kpi-footer-text">Registered student pool</div>
         </motion.div>
 
-        <motion.div whileHover={{ y: -4 }} className="kpi-card glassmorphism-card">
+        <motion.div whileHover={{ y: -2 }} className="kpi-card">
           <div className="kpi-card-header-row">
-            <span className="kpi-label">APPLIED / ACTIVE DRIVES</span>
+            <span className="kpi-label">Active Drives</span>
             <div className="kpi-icon-wrapper amber"><Briefcase size={16} /></div>
           </div>
-          <div className="kpi-value amber">{overview?.applied ?? 286}</div>
-          <div className="kpi-footer-text amber">
-            <span>Active candidate submissions</span>
+          <div className="kpi-value amber">{drives.length}</div>
+          <div className="kpi-footer-text">
+            Across {companies.length} corporate partners
           </div>
         </motion.div>
 
-        <motion.div whileHover={{ y: -4 }} className="kpi-card glassmorphism-card">
+        <motion.div whileHover={{ y: -2 }} className="kpi-card">
           <div className="kpi-card-header-row">
-            <span className="kpi-label">SHORTLISTED CANDIDATES</span>
+            <span className="kpi-label">Applications Received</span>
             <div className="kpi-icon-wrapper purple"><UserCheck size={16} /></div>
           </div>
-          <div className="kpi-value purple">{overview?.shortlisted ?? 137}</div>
-          <div className="kpi-footer-text purple">
-            <span>Advanced to interview rounds</span>
+          <div className="kpi-value purple">{applications.length}</div>
+          <div className="kpi-footer-text">
+            {overview?.shortlisted ?? 0} shortlisted for interviews
           </div>
         </motion.div>
 
-        <motion.div whileHover={{ y: -4 }} className="kpi-card glassmorphism-card">
+        <motion.div whileHover={{ y: -2 }} className="kpi-card">
           <div className="kpi-card-header-row">
-            <span className="kpi-label">PLACEMENT SUCCESS RATE</span>
+            <span className="kpi-label">Placement Success Rate</span>
             <div className="kpi-icon-wrapper emerald"><Award size={16} /></div>
           </div>
-          <div className="kpi-value emerald">{overview?.placement_rate ?? 94.8}%</div>
+          <div className="kpi-value emerald">{overview?.placement_rate ?? 0}%</div>
           <div className="kpi-footer-text emerald">
-            <TrendingUp size={12} className="inline mr-1" />
-            <span>Highest CTC: {overview?.highest_package || "42 LPA"}</span>
+            Highest: {overview?.highest_package || "0 LPA"}
           </div>
         </motion.div>
       </section>
 
-      {/* Placement Funnel Progress Section */}
-      <div className="placement-funnel-card glassmorphism-card">
-        <div className="funnel-card-header">
-          <div>
-            <span className="funnel-title-highlight">Placement </span>
-            <span className="funnel-title-sub">Recruitment Funnel</span>
-            <p className="funnel-subtitle">Real-time candidate conversion & drop-off metrics</p>
-          </div>
-        </div>
+      {/* Tab Navigation */}
+      <nav className="admin-tabs-nav">
+        <button
+          onClick={() => setActiveTab("drives")}
+          className={`admin-tab-btn ${activeTab === "drives" ? "active" : ""}`}
+        >
+          <Briefcase size={15} />
+          <span>Placement Drives</span>
+          <span className="admin-tab-count">{drives.length}</span>
+        </button>
 
-        <div className="funnel-rows-container">
-          <div className="funnel-row-item">
-            <div className="funnel-icon-box"><Users size={16} /></div>
-            <div className="funnel-stage-details">
-              <span className="funnel-stage-name">Eligible Candidates</span>
-              <span className="funnel-stage-subtext">Total verified eligible students</span>
-            </div>
-            <div className="funnel-progress-bar-container">
-              <div className="funnel-progress-fill" style={{ width: "100%" }} />
-            </div>
-            <div className="funnel-stage-metrics">
-              <span className="funnel-stage-of-total">100% ELIGIBLE</span>
-              <span className="funnel-stage-val-label">{overview?.eligible ?? 532} Students</span>
-            </div>
-          </div>
+        <button
+          onClick={() => setActiveTab("applications")}
+          className={`admin-tab-btn ${activeTab === "applications" ? "active" : ""}`}
+        >
+          <UserCheck size={15} />
+          <span>Student Applications</span>
+          <span className="admin-tab-count">{applications.length}</span>
+        </button>
 
-          <div className="funnel-row-item active-highlight">
-            <div className="funnel-icon-box"><UserCheck size={16} /></div>
-            <div className="funnel-stage-details">
-              <span className="funnel-stage-name">Applications Received</span>
-              <span className="funnel-stage-subtext">Candidates applied to active drives</span>
-            </div>
-            <div className="funnel-progress-bar-container">
-              <div className="funnel-progress-fill" style={{ width: "54%" }} />
-            </div>
-            <div className="funnel-stage-metrics">
-              <span className="funnel-stage-of-total">54% CONVERSION</span>
-              <span className="funnel-stage-val-label">{overview?.applied ?? 286} Candidates</span>
-            </div>
-          </div>
+        <button
+          onClick={() => setActiveTab("companies")}
+          className={`admin-tab-btn ${activeTab === "companies" ? "active" : ""}`}
+        >
+          <Building size={15} />
+          <span>Corporate Partners</span>
+          <span className="admin-tab-count">{companies.length}</span>
+        </button>
 
-          <div className="funnel-row-item">
-            <div className="funnel-icon-box"><Award size={16} /></div>
-            <div className="funnel-stage-details">
-              <span className="funnel-stage-name">Placed & Offers Extended</span>
-              <span className="funnel-stage-subtext">Verified job & internship offers</span>
-            </div>
-            <div className="funnel-progress-bar-container">
-              <div className="funnel-progress-fill" style={{ width: "24%" }} />
-            </div>
-            <div className="funnel-stage-metrics">
-              <span className="funnel-stage-of-total">24% OFFERS</span>
-              <span className="funnel-stage-val-label">{overview?.placed ?? 96} Offers</span>
-            </div>
-          </div>
-        </div>
-      </div>
+        <button
+          onClick={() => setActiveTab("funnel")}
+          className={`admin-tab-btn ${activeTab === "funnel" ? "active" : ""}`}
+        >
+          <TrendingUp size={15} />
+          <span>Recruitment Funnel</span>
+        </button>
+      </nav>
 
-      {/* Active Placement Drives Table Section */}
-      <div className="drives-section-card glassmorphism-card">
-        <div className="drives-section-header">
-          <div>
-            <h4 className="drives-section-title">Active Recruitment Drives ({filteredDrives.length})</h4>
-            <p className="drives-section-sub">Corporate hiring schedules and application portals</p>
-          </div>
+      {/* Main Tab Content */}
+      {loading ? (
+        <Skeleton variant="card" count={3} />
+      ) : (
+        <>
+          {/* TAB 1: PLACEMENT DRIVES */}
+          {activeTab === "drives" && (
+            <div className="drives-section-card glassmorphism-card">
+              <div className="drives-section-header">
+                <div>
+                  <h4 className="drives-section-title">Institutional Recruitment Drives ({filteredDrives.length})</h4>
+                  <p className="drives-section-sub">Corporate hiring listings, requirements, packages and application dead-lines</p>
+                </div>
 
-          <div className="drives-search-bar">
-            <Search size={15} className="drives-search-icon" />
-            <input
-              type="text"
-              placeholder="Search drive or company..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="drives-search-input"
-            />
-          </div>
-        </div>
+                <div className="drives-filter-bar">
+                  <div className="drives-search-bar">
+                    <Search size={14} className="drives-search-icon" />
+                    <input
+                      type="text"
+                      placeholder="Search role or company..."
+                      value={driveSearch}
+                      onChange={(e) => setDriveSearch(e.target.value)}
+                      className="drives-search-input"
+                    />
+                  </div>
 
-        {loading ? (
-          <Skeleton variant="card" count={3} />
-        ) : filteredDrives.length > 0 ? (
-          <div className="drives-table-container">
-            <table className="drives-table">
-              <thead className="drives-thead">
-                <tr>
-                  <th className="drives-th" style={{ width: "32%" }}>Company & Job Role</th>
-                  <th className="drives-th">Type</th>
-                  <th className="drives-th">Package (CTC)</th>
-                  <th className="drives-th">Registration Mode</th>
-                  <th className="drives-th">Deadline</th>
-                  <th className="drives-th">Status</th>
-                  <th className="drives-th text-right" style={{ textAlign: "right" }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredDrives.map((d) => (
-                  <tr key={d.id} className="drives-tr">
-                    <td className="drives-td">
-                      <div className="drives-company-name">{d.title}</div>
-                      <div className="drives-company-sub">{d.companyName || d.company}</div>
-                    </td>
-                    <td className="drives-td">
-                      <span className="drives-type-tag">{d.type}</span>
-                    </td>
-                    <td className="drives-td">
-                      <span className="drives-package-badge">{d.package}</span>
-                    </td>
-                    <td className="drives-td">
-                      {d.registrationType === "EXTERNAL" ? (
-                        <div className="drives-mode-external">
-                          <ExternalLink size={13} />
-                          <span>External Portal</span>
+                  <select
+                    value={driveTypeFilter}
+                    onChange={(e) => setDriveTypeFilter(e.target.value)}
+                    className="drives-filter-select"
+                  >
+                    <option value="all">All Types</option>
+                    <option value="fulltime">Full-Time</option>
+                    <option value="internship">Internship</option>
+                  </select>
+
+                  <select
+                    value={driveStatusFilter}
+                    onChange={(e) => setDriveStatusFilter(e.target.value)}
+                    className="drives-filter-select"
+                  >
+                    <option value="all">All Status</option>
+                    <option value="open">Open</option>
+                    <option value="closed">Closed</option>
+                  </select>
+                </div>
+              </div>
+
+              {filteredDrives.length > 0 ? (
+                <div className="drives-table-container">
+                  <table className="drives-table">
+                    <thead className="drives-thead">
+                      <tr>
+                        <th className="drives-th" style={{ width: "30%" }}>Role & Company</th>
+                        <th className="drives-th">Type</th>
+                        <th className="drives-th">Package (CTC)</th>
+                        <th className="drives-th">Portal Mode</th>
+                        <th className="drives-th">Deadline</th>
+                        <th className="drives-th">Applicants</th>
+                        <th className="drives-th">Status</th>
+                        <th className="drives-th" style={{ textAlign: "right" }}>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredDrives.map((d) => (
+                        <tr key={d.id} className="drives-tr">
+                          <td className="drives-td">
+                            <div className="drives-company-name">{d.title}</div>
+                            <div className="drives-company-sub">{d.companyName || d.company}</div>
+                          </td>
+                          <td className="drives-td">
+                            <span className="drives-type-tag">
+                              {d.type === "internship" ? "Internship" : "Full-Time"}
+                            </span>
+                          </td>
+                          <td className="drives-td">
+                            <span className="drives-package-badge">{d.package}</span>
+                          </td>
+                          <td className="drives-td">
+                            {d.registrationType === "EXTERNAL" ? (
+                              <div className="drives-mode-external">
+                                <ExternalLink size={13} />
+                                <span>External</span>
+                              </div>
+                            ) : (
+                              <span className="drives-mode-internal">Internal SCME</span>
+                            )}
+                          </td>
+                          <td className="drives-td text-date">{d.deadline}</td>
+                          <td className="drives-td">
+                            <button
+                              onClick={() => {
+                                setAppDriveFilter(String(d.id));
+                                setActiveTab("applications");
+                              }}
+                              className="drives-action-btn"
+                              title="View applicants for this drive"
+                            >
+                              <Users size={12} />
+                              <span>{d.applicantCount ?? 0}</span>
+                            </button>
+                          </td>
+                          <td className="drives-td">
+                            <span className={`drives-status-badge ${d.status === "open" ? "status-open" : "status-closed"}`}>
+                              {d.status === "open" ? "● Open" : "Closed"}
+                            </span>
+                          </td>
+                          <td className="drives-td" style={{ textAlign: "right" }}>
+                            <div className="drives-actions-group">
+                              <button
+                                onClick={() => {
+                                  setDriveToEdit(d);
+                                  setIsDriveModalOpen(true);
+                                }}
+                                className="drives-action-btn"
+                                title="Edit Drive"
+                              >
+                                <Edit size={13} />
+                                <span>Edit</span>
+                              </button>
+
+                              <button
+                                onClick={() => handleDeleteDrive(d.id, d.title)}
+                                className="drives-action-btn delete"
+                                title="Delete Drive"
+                              >
+                                <Trash2 size={13} />
+                                <span>Delete</span>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="drives-empty">
+                  <div className="empty-icon-circle"><Briefcase size={22} /></div>
+                  <p>No placement drives match your filters.</p>
+                  <button
+                    onClick={() => {
+                      setDriveToEdit(null);
+                      setIsDriveModalOpen(true);
+                    }}
+                    className="command-export-btn"
+                    style={{ marginTop: 8 }}
+                  >
+                    <Plus size={14} /> Create New Drive
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* TAB 2: STUDENT APPLICATIONS */}
+          {activeTab === "applications" && (
+            <div className="drives-section-card glassmorphism-card">
+              <div className="drives-section-header">
+                <div>
+                  <h4 className="drives-section-title">Student Applications ({filteredApplications.length})</h4>
+                  <p className="drives-section-sub">Review candidate submissions, AI resume scores, and update shortlisting status</p>
+                </div>
+
+                <div className="drives-filter-bar">
+                  <div className="drives-search-bar">
+                    <Search size={14} className="drives-search-icon" />
+                    <input
+                      type="text"
+                      placeholder="Search student, roll no, company..."
+                      value={appSearch}
+                      onChange={(e) => setAppSearch(e.target.value)}
+                      className="drives-search-input"
+                    />
+                  </div>
+
+                  <select
+                    value={appDriveFilter}
+                    onChange={(e) => setAppDriveFilter(e.target.value)}
+                    className="drives-filter-select"
+                  >
+                    <option value="all">All Drives</option>
+                    {drives.map((d) => (
+                      <option key={d.id} value={String(d.id)}>
+                        {d.title} ({d.companyName || d.company})
+                      </option>
+                    ))}
+                  </select>
+
+                  <select
+                    value={appStatusFilter}
+                    onChange={(e) => setAppStatusFilter(e.target.value)}
+                    className="drives-filter-select"
+                  >
+                    <option value="all">All Statuses</option>
+                    <option value="applied">Applied</option>
+                    <option value="shortlisted">Shortlisted</option>
+                    <option value="selected">Selected / Offer</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                </div>
+              </div>
+
+              {filteredApplications.length > 0 ? (
+                <div className="drives-table-container">
+                  <table className="drives-table">
+                    <thead className="drives-thead">
+                      <tr>
+                        <th className="drives-th" style={{ width: "26%" }}>Candidate</th>
+                        <th className="drives-th" style={{ width: "24%" }}>Role & Company</th>
+                        <th className="drives-th">Applied On</th>
+                        <th className="drives-th">AI Score</th>
+                        <th className="drives-th">Status</th>
+                        <th className="drives-th" style={{ textAlign: "right" }}>Update Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredApplications.map((app) => {
+                        const score = app.resumeScore ?? 75;
+                        const scoreClass = score >= 80 ? "high" : score >= 60 ? "mid" : "low";
+
+                        return (
+                          <tr key={app.id} className="drives-tr">
+                            <td className="drives-td">
+                              <div className="candidate-info-cell">
+                                <div className="candidate-name">{app.studentName}</div>
+                                <div className="candidate-meta">
+                                  {app.studentRollNumber} • {app.studentDepartment}
+                                </div>
+                                <div className="candidate-meta text-xs text-slate-400">
+                                  {app.studentEmail}
+                                </div>
+                              </div>
+                            </td>
+                            <td className="drives-td">
+                              <div className="drives-company-name">{app.placementTitle}</div>
+                              <div className="drives-company-sub">{app.companyName} ({app.package})</div>
+                            </td>
+                            <td className="drives-td text-date">{app.appliedAt?.slice(0, 10) || "N/A"}</td>
+                            <td className="drives-td">
+                              <span className={`candidate-score-badge ${scoreClass}`} title={app.resumeReview || "Resume score"}>
+                                <Sparkles size={11} /> {score}/100
+                              </span>
+                            </td>
+                            <td className="drives-td">
+                              <span className={`app-status-badge ${app.status}`}>
+                                {app.status === "selected" ? "Selected (Offer)" : app.status}
+                              </span>
+                            </td>
+                            <td className="drives-td" style={{ textAlign: "right" }}>
+                              <select
+                                value={app.status}
+                                onChange={(e) => handleUpdateAppStatus(app.id, e.target.value)}
+                                className="status-select"
+                              >
+                                <option value="applied">Applied</option>
+                                <option value="shortlisted">Shortlist</option>
+                                <option value="selected">Select (Offer)</option>
+                                <option value="rejected">Reject</option>
+                              </select>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="drives-empty">
+                  <div className="empty-icon-circle"><UserCheck size={22} /></div>
+                  <p>No student applications found matching criteria.</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* TAB 3: CORPORATE PARTNERS */}
+          {activeTab === "companies" && (
+            <div className="drives-section-card glassmorphism-card">
+              <div className="drives-section-header">
+                <div>
+                  <h4 className="drives-section-title">Recruiting Corporate Partners ({companies.length})</h4>
+                  <p className="drives-section-sub">Corporate enterprise partners registered for on-campus & off-campus hiring</p>
+                </div>
+
+                <button
+                  onClick={() => {
+                    setCompanyToEdit(null);
+                    setIsCompanyModalOpen(true);
+                  }}
+                  className="command-export-btn"
+                >
+                  <Plus size={14} /> Add Company Profile
+                </button>
+              </div>
+
+              {companies.length > 0 ? (
+                <div className="companies-grid">
+                  {companies.map((c) => (
+                    <div key={c.id} className="company-card">
+                      <div>
+                        <div className="company-card-top">
+                          <div className="company-logo-box">
+                            {c.logo && !c.logo.includes("placeholder") ? (
+                              <img src={c.logo} alt={c.name} className="company-logo-img" />
+                            ) : (
+                              <Building size={22} className="text-slate-400" />
+                            )}
+                          </div>
+                          <div>
+                            <h3 className="company-card-title">{c.name}</h3>
+                            <span className="company-card-industry">{c.industry || "Technology"}</span>
+                          </div>
                         </div>
-                      ) : (
-                        <span className="drives-mode-internal">Internal SCME</span>
-                      )}
-                    </td>
-                    <td className="drives-td text-date">{d.deadline}</td>
-                    <td className="drives-td">
-                      <span className={`drives-status-badge ${d.status === "open" ? "status-open" : "status-closed"}`}>
-                        {d.status === "open" ? "● Open" : "Closed"}
-                      </span>
-                    </td>
-                    <td className="drives-td" style={{ textAlign: "right" }}>
-                      <div className="drives-actions-group">
-                        <button
-                          onClick={() => {
-                            setDriveToEdit(d);
-                            setIsDriveModalOpen(true);
-                          }}
-                          className="drives-action-btn"
-                          title="Edit Drive"
-                        >
-                          <Edit size={13} />
-                          <span>Edit</span>
-                        </button>
 
-                        {d.registrationUrl && (
-                          <a
-                            href={d.registrationUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="drives-action-btn external"
-                            title="Test External Link"
-                          >
-                            <ExternalLink size={13} />
-                            <span>Test Link</span>
-                          </a>
-                        )}
+                        <p className="company-card-desc" style={{ marginTop: 12 }}>
+                          {c.description || "Leading recruitment partner offering graduate and internship programs."}
+                        </p>
                       </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div className="drives-empty">
-            No active placement drives found matching search criteria.
-          </div>
-        )}
-      </div>
+
+                      <div className="company-card-footer">
+                        <span className="company-drives-tag">
+                          {c.drivesCount ?? 0} Drives Posted
+                        </span>
+
+                        <div className="drives-actions-group">
+                          {c.website && (
+                            <a
+                              href={c.website.startsWith("http") ? c.website : `https://${c.website}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="drives-action-btn"
+                              title="Visit Website"
+                            >
+                              <ExternalLink size={12} />
+                            </a>
+                          )}
+
+                          <button
+                            onClick={() => {
+                              setCompanyToEdit(c);
+                              setIsCompanyModalOpen(true);
+                            }}
+                            className="drives-action-btn"
+                            title="Edit Company"
+                          >
+                            <Edit size={12} />
+                          </button>
+
+                          <button
+                            onClick={() => handleDeleteCompany(c.id, c.name)}
+                            className="drives-action-btn delete"
+                            title="Delete Company"
+                          >
+                            <Trash2 size={12} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="drives-empty">
+                  <div className="empty-icon-circle"><Building size={22} /></div>
+                  <p>No corporate partner companies registered yet.</p>
+                  <button
+                    onClick={() => {
+                      setCompanyToEdit(null);
+                      setIsCompanyModalOpen(true);
+                    }}
+                    className="command-export-btn"
+                    style={{ marginTop: 8 }}
+                  >
+                    <Plus size={14} /> Add First Company
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* TAB 4: RECRUITMENT FUNNEL & ANALYTICS */}
+          {activeTab === "funnel" && (
+            <div className="placement-funnel-card glassmorphism-card">
+              <div className="funnel-card-header">
+                <div>
+                  <span className="funnel-title-highlight">Recruitment </span>
+                  <span className="funnel-title-sub">Funnel & Conversion</span>
+                  <p className="funnel-subtitle">
+                    Real-time student progress tracking from eligible pool to confirmed job offers
+                  </p>
+                </div>
+              </div>
+
+              <div className="funnel-rows-container">
+                <div className="funnel-row-item">
+                  <div className="funnel-icon-box"><Users size={16} /></div>
+                  <div className="funnel-stage-details">
+                    <span className="funnel-stage-name">Total Eligible Students</span>
+                    <span className="funnel-stage-subtext">Verified candidate base</span>
+                  </div>
+                  <div className="funnel-progress-bar-container">
+                    <div className="funnel-progress-fill" style={{ width: "100%" }} />
+                  </div>
+                  <div className="funnel-stage-metrics">
+                    <span className="funnel-stage-of-total">100% POOL</span>
+                    <span className="funnel-stage-val-label">{overview?.eligible ?? 0} Students</span>
+                  </div>
+                </div>
+
+                <div className="funnel-row-item active-highlight">
+                  <div className="funnel-icon-box"><UserCheck size={16} /></div>
+                  <div className="funnel-stage-details">
+                    <span className="funnel-stage-name">Applications Received</span>
+                    <span className="funnel-stage-subtext">Applied across active drives</span>
+                  </div>
+                  <div className="funnel-progress-bar-container">
+                    <div
+                      className="funnel-progress-fill"
+                      style={{
+                        width: `${overview?.eligible ? Math.min(100, Math.round((applications.length / overview.eligible) * 100)) : 0}%`,
+                      }}
+                    />
+                  </div>
+                  <div className="funnel-stage-metrics">
+                    <span className="funnel-stage-of-total">
+                      {overview?.eligible ? Math.round((applications.length / overview.eligible) * 100) : 0}% ENGAGED
+                    </span>
+                    <span className="funnel-stage-val-label">{applications.length} Submissions</span>
+                  </div>
+                </div>
+
+                <div className="funnel-row-item">
+                  <div className="funnel-icon-box"><Briefcase size={16} /></div>
+                  <div className="funnel-stage-details">
+                    <span className="funnel-stage-name">Shortlisted Candidates</span>
+                    <span className="funnel-stage-subtext">Selected for interview rounds</span>
+                  </div>
+                  <div className="funnel-progress-bar-container">
+                    <div
+                      className="funnel-progress-fill"
+                      style={{
+                        width: `${applications.length ? Math.min(100, Math.round(((overview?.shortlisted || 0) / applications.length) * 100)) : 0}%`,
+                      }}
+                    />
+                  </div>
+                  <div className="funnel-stage-metrics">
+                    <span className="funnel-stage-of-total">
+                      {applications.length ? Math.round(((overview?.shortlisted || 0) / applications.length) * 100) : 0}% SHORTLIST
+                    </span>
+                    <span className="funnel-stage-val-label">{overview?.shortlisted ?? 0} Candidates</span>
+                  </div>
+                </div>
+
+                <div className="funnel-row-item">
+                  <div className="funnel-icon-box"><Award size={16} /></div>
+                  <div className="funnel-stage-details">
+                    <span className="funnel-stage-name">Placed & Offers Extended</span>
+                    <span className="funnel-stage-subtext">Confirmed hiring offers</span>
+                  </div>
+                  <div className="funnel-progress-bar-container">
+                    <div
+                      className="funnel-progress-fill"
+                      style={{ width: `${Math.min(100, overview?.placement_rate || 0)}%` }}
+                    />
+                  </div>
+                  <div className="funnel-stage-metrics">
+                    <span className="funnel-stage-of-total">{overview?.placement_rate ?? 0}% PLACED</span>
+                    <span className="funnel-stage-val-label">{overview?.placed ?? 0} Offers</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </>
+      )}
     </motion.div>
   );
 };
-

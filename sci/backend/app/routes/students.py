@@ -28,6 +28,31 @@ async def get_profile(current_user: dict = Depends(get_current_user)):
     }
 
 
+@router.get("/peers")
+async def get_student_peers(
+    current_user: dict = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Returns real classmates and department peers from the database."""
+    dept = current_user.get("department")
+    query = select(User).where(User.role == "student", User.id != current_user["id"])
+    if dept:
+        query = query.where(User.department == dept)
+    query = query.order_by(User.name).limit(6)
+    result = await db.execute(query)
+    peers = result.scalars().all()
+    return [
+        {
+            "id": p.id,
+            "name": p.name,
+            "role": "Student",
+            "roll_number": p.roll_number or f"CS00{p.id}",
+            "department": p.department or "CSE",
+        }
+        for p in peers
+    ]
+
+
 @router.get("/timetable/today")
 async def get_today_timetable(
     current_user: dict = Depends(get_current_user),

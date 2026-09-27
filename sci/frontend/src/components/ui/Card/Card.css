@@ -1,21 +1,21 @@
-/* Enhanced Card Component - Modern Enterprise UI using Design Tokens */
+/* Card Component - Black & Logo Red Design System */
 
-/* Card specific styles - Improved */
 .glass-card {
   position: relative;
-  background: var(--color-bg-card) !important;
-  border: 1px solid var(--color-border) !important;
+  background: #0D0D0D !important;
+  border: 1px solid #1F1F1F !important;
   border-radius: var(--radius-xl) !important;
-  box-shadow: var(--shadow-sm) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6) !important;
   overflow: hidden;
-  transition: var(--transition-normal) ease;
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
   isolation: isolate;
   will-change: transform, box-shadow, border-color;
 }
 
-/* Enhanced Hover Effects */
+/* Subtle Hover Effect */
 .glass-card:hover {
-  box-shadow: var(--shadow-md) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.75) !important;
+  border-color: #292929 !important;
   transform: translateY(-2px);
 }
 
@@ -26,57 +26,28 @@
 
 /* Elevated Card Variant */
 .glass-card.elevated {
-  box-shadow: var(--shadow-md) !important;
+  background: #111111 !important;
+  border-color: #262626 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8) !important;
 }
 
 .glass-card.elevated:hover {
-  box-shadow: var(--shadow-lg) !important;
-  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.9) !important;
+  border-color: #333333 !important;
+  transform: translateY(-2px);
 }
 
 /* Outlined Card Variant */
 .glass-card.outlined {
   background-color: transparent !important;
-  border: 1px solid var(--color-border) !important;
+  border: 1px solid #222222 !important;
   box-shadow: none !important;
 }
 
 .glass-card.outlined:hover {
-  border-color: var(--color-primary) !important;
-  background-color: var(--color-bg-muted) !important;
+  border-color: #F21722 !important;
+  background-color: #0D0D0D !important;
   transform: translateY(-1px);
-}
-
-.dark .glass-card.outlined:hover {
-  border-color: var(--color-primary) !important;
-}
-
-/* Card-specific pseudo-element for enhanced effects */
-.glass-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.glass-card:hover::before {
-  opacity: 0.03;
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.05),
-    rgba(255, 255, 255, 0)
-  );
-}
-
-.dark .glass-card:hover::before {
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.01),
-    rgba(255, 255, 255, 0)
-  );
 }
 
 /* Clickable Card States */
@@ -86,18 +57,14 @@
 }
 
 .card-clickable:hover {
-  border-color: var(--color-primary) !important;
-}
-
-.dark .card-clickable:hover {
-  border-color: var(--color-primary) !important;
+  border-color: rgba(242, 23, 34, 0.4) !important;
 }
 
 .card-clickable:active {
   transform: scale(0.99);
 }
 
-/* Enhanced Card Padding */
+/* Card Padding */
 .card-padding {
   padding: var(--space-5);
 }
@@ -108,32 +75,15 @@
   }
 }
 
-/* Card Header/Footer Variations */
+/* Card Header/Footer */
 .card-header {
   margin-bottom: var(--space-4);
   padding-bottom: var(--space-3);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid #1F1F1F;
 }
 
 .card-footer {
   margin-top: var(--space-4);
   padding-top: var(--space-3);
-  border-top: 1px solid var(--color-border);
-}
-
-/* Dark mode adjustments - handled automatically by design tokens */
-.dark .glass-card {
-  /* Colors are handled by design tokens */
-}
-
-.dark .glass-card:hover {
-  box-shadow: var(--shadow-md) !important;
-}
-
-.dark .glass-card.elevated {
-  box-shadow: var(--shadow-md) !important;
-}
-
-.dark .glass-card.elevated:hover {
-  box-shadow: var(--shadow-lg) !important;
+  border-top: 1px solid #1F1F1F;
 }

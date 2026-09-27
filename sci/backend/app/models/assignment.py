@@ -12,6 +12,9 @@ class Assignment(Base):
     subject = Column(String(100), nullable=False)
     faculty_id = Column(Integer, ForeignKey("users.id"))
     due_date = Column(Date, nullable=False)
+    due_time = Column(String(20), default="23:59", nullable=True)
+    max_marks = Column(Integer, default=100, nullable=True)
+    status = Column(String(20), default="PUBLISHED", nullable=True)  # "DRAFT", "PUBLISHED", "CLOSED", "ARCHIVED"
     department = Column(String(50), nullable=True)
     year = Column(String(20), nullable=True)
     class_name = Column(String(50), nullable=True)
@@ -27,7 +30,7 @@ class Submission(Base):
     assignment_id = Column(Integer, ForeignKey("assignments.id"))
     student_id = Column(Integer, ForeignKey("users.id"))
     submitted_at = Column(DateTime, default=func.now())
-    status = Column(String(50), default="submitted")  # "submitted", "graded"
+    status = Column(String(50), default="submitted")  # "submitted", "graded", "late"
     grade = Column(String(20), nullable=True)
     remarks = Column(Text, nullable=True)
     file_url = Column(String(500), nullable=True)

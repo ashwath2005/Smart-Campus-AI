@@ -22,20 +22,19 @@ const CustomTooltip = ({ active, payload }) => {
 };
 
 export const PerformanceChart = ({ data }) => {
-  const fallbackData = [
-    { semester: 1, sgpa: 8.2, cgpa: 8.2 },
-    { semester: 2, sgpa: 8.5, cgpa: 8.35 },
-    { semester: 3, sgpa: 8.8, cgpa: 8.5 },
-    { semester: 4, sgpa: 9.0, cgpa: 8.62 },
-  ];
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    return (
+      <div className="performance-chart-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>
+        No semester grade records available.
+      </div>
+    );
+  }
 
-  const chartData = data
-    ? data.map((item) => ({
-        semester: item.semester,
-        sgpa: item.sgpa,
-        cgpa: item.cgpa,
-      }))
-    : fallbackData;
+  const chartData = data.map((item) => ({
+    semester: item.semester,
+    sgpa: item.sgpa,
+    cgpa: item.cgpa,
+  }));
 
   return (
     <div className="performance-chart-container">

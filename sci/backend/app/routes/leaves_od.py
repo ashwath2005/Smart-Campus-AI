@@ -176,6 +176,11 @@ async def list_student_leaves(
             hod_rev_res = await db.execute(select(User.name).where(User.id == leave.hod_reviewer_id))
             hod_rev_name = hod_rev_res.scalar() or "N/A"
 
+        warden_rev_name = "N/A"
+        if leave.warden_reviewer_id:
+            warden_rev_res = await db.execute(select(User.name).where(User.id == leave.warden_reviewer_id))
+            warden_rev_name = warden_rev_res.scalar() or "N/A"
+
         output.append({
             "id": leave.id,
             "student_id": leave.student_id,
@@ -197,6 +202,10 @@ async def list_student_leaves(
             "hod_comment": leave.hod_comment,
             "hod_reviewer_name": hod_rev_name,
             "hod_reviewed_at": str(leave.hod_reviewed_at) if leave.hod_reviewed_at else None,
+            "warden_comment": leave.warden_comment,
+            "warden_reviewer_name": warden_rev_name,
+            "warden_reviewed_at": str(leave.warden_reviewed_at) if leave.warden_reviewed_at else None,
+            "rejection_reason": leave.rejection_reason,
             "created_at": str(leave.created_at) if leave.created_at else None
         })
 

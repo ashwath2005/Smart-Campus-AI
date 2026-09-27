@@ -399,23 +399,23 @@
 }
 
 .timetable-class-card.card-lab {
-  border-color: rgba(99, 102, 241, 0.25);
-  background-color: rgba(99, 102, 241, 0.02);
+  border-color: rgba(242, 23, 34, 0.3);
+  background-color: rgba(242, 23, 34, 0.04);
 }
 
 .timetable-class-card.card-theory {
-  border-color: rgba(37, 99, 235, 0.25);
-  background-color: rgba(37, 99, 235, 0.02);
+  border-color: #222222;
+  background-color: #0D0D0D;
 }
 
 .dark .timetable-class-card.card-lab {
-  border-color: rgba(99, 102, 241, 0.35);
-  background-color: rgba(99, 102, 241, 0.06);
+  border-color: rgba(242, 23, 34, 0.35);
+  background-color: rgba(242, 23, 34, 0.06);
 }
 
 .dark .timetable-class-card.card-theory {
-  border-color: rgba(59, 130, 246, 0.35);
-  background-color: rgba(59, 130, 246, 0.06);
+  border-color: #222222;
+  background-color: #0D0D0D;
 }
 
 .class-card-header {
@@ -442,27 +442,27 @@
 }
 
 .class-card-badge.badge-theory {
-  background-color: rgba(37, 99, 235, 0.08);
-  color: #1D4ED8;
-  border: 1px solid rgba(37, 99, 235, 0.20);
+  background-color: #141414;
+  color: #B3B3B3;
+  border: 1px solid #262626;
 }
 
 .class-card-badge.badge-lab {
-  background-color: rgba(99, 102, 241, 0.08);
-  color: #4338CA;
-  border: 1px solid rgba(99, 102, 241, 0.20);
+  background-color: rgba(242, 23, 34, 0.12);
+  color: #FF4D57;
+  border: 1px solid rgba(242, 23, 34, 0.3);
 }
 
 .dark .class-card-badge.badge-theory {
-  background-color: rgba(59, 130, 246, 0.18);
-  color: #93C5FD;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  background-color: #141414;
+  color: #B3B3B3;
+  border: 1px solid #262626;
 }
 
 .dark .class-card-badge.badge-lab {
-  background-color: rgba(99, 102, 241, 0.18);
-  color: #A5B4FC;
-  border: 1px solid rgba(99, 102, 241, 0.3);
+  background-color: rgba(242, 23, 34, 0.15);
+  color: #FF4D57;
+  border: 1px solid rgba(242, 23, 34, 0.3);
 }
 
 .class-card-details {
@@ -607,23 +607,23 @@
 }
 
 .weekly-class-item.item-lab {
-  border-color: rgba(99, 102, 241, 0.25);
-  background-color: rgba(99, 102, 241, 0.03);
+  border-color: rgba(242, 23, 34, 0.3);
+  background-color: rgba(242, 23, 34, 0.05);
 }
 
 .weekly-class-item.item-theory {
-  border-color: rgba(37, 99, 235, 0.25);
-  background-color: rgba(37, 99, 235, 0.03);
+  border-color: #222222;
+  background-color: #0A0A0A;
 }
 
 .dark .weekly-class-item.item-lab {
-  border-color: rgba(99, 102, 241, 0.35);
-  background-color: rgba(99, 102, 241, 0.08);
+  border-color: rgba(242, 23, 34, 0.35);
+  background-color: rgba(242, 23, 34, 0.08);
 }
 
 .dark .weekly-class-item.item-theory {
-  border-color: rgba(59, 130, 246, 0.35);
-  background-color: rgba(59, 130, 246, 0.08);
+  border-color: #222222;
+  background-color: #0A0A0A;
 }
 
 .weekly-class-subject {

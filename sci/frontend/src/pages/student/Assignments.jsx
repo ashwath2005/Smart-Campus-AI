@@ -1,11 +1,37 @@
 import "./Assignments.css";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import api from "../../api/axios";
+import { useAuth } from "../../context/AuthContext";
 import { Card, Skeleton, Badge, Button, Modal, Input, Tabs } from "../../components/ui";
-import { FileText, Calendar, BookOpen, CheckCircle2 } from "lucide-react";
+import { FileText, Calendar, BookOpen, CheckCircle2, Award, MessageSquare, Clock, ExternalLink } from "lucide-react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
+import { FacultyAssignments } from "../faculty/FacultyAssignments";
+
 export const Assignments = () => {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div style={{ padding: "2rem" }}>
+        <Skeleton variant="card" count={2} />
+      </div>
+    );
+  }
+
+  const role = (user?.role || "").toLowerCase();
+  const isFacultyOrAdmin = role === "faculty" || role === "admin" || role === "hod";
+
+  // If Faculty, render Faculty Assignment Command Center
+  if (isFacultyOrAdmin) {
+    return <FacultyAssignments />;
+  }
+
+  // Otherwise, render Student Assignment View
+  return <StudentAssignmentsView />;
+};
+
+const StudentAssignmentsView = () => {
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
@@ -13,42 +39,51 @@ export const Assignments = () => {
   const [isSubmitOpen, setIsSubmitOpen] = useState(false);
   const [submitUrl, setSubmitUrl] = useState("");
   const [submitLoading, setSubmitLoading] = useState(false);
+
   const fetchAssignments = async () => {
     try {
-      const res = await api.get("/assignments/");
-      setAssignments(res.data);
+      const res = await api.get("/assignments");
+      setAssignments(Array.isArray(res.data) ? res.data : []);
     } catch {
       toast.error("Failed to load assignments");
     } finally {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchAssignments();
   }, []);
+
   const openSubmitModal = (assign) => {
     setSelectedAssignment(assign);
-    setSubmitUrl("");
+    setSubmitUrl(assign.file_url || "");
     setIsSubmitOpen(true);
   };
+
   const handleAssignmentSubmit = async (e) => {
     e.preventDefault();
-    if (!selectedAssignment || !submitUrl) return;
+    if (!selectedAssignment || !submitUrl.trim()) return;
     setSubmitLoading(true);
     try {
       await api.post(`/assignments/${selectedAssignment.id}/submit`, {
-        file_url: submitUrl
+        file_url: submitUrl.trim(),
       });
-      toast.success("Assignment submitted successfully!");
+      toast.success("Assignment solution submitted successfully!");
       setIsSubmitOpen(false);
       fetchAssignments();
     } catch (err) {
-      toast.error(err.message || "Error submitting assignment");
+      toast.error(err.response?.data?.detail || err.message || "Error submitting assignment");
     } finally {
       setSubmitLoading(false);
     }
   };
-  const getStatus = (item) => item.status || (item.submitted ? "submitted" : "pending");
+
+  const getStatus = (item) => {
+    if (item.grade || item.status === "graded") return "graded";
+    if (item.submitted || item.status === "submitted" || item.status === "late") return "submitted";
+    return "pending";
+  };
 
   const filtered = assignments.filter((item) => {
     const status = getStatus(item);
@@ -61,9 +96,9 @@ export const Assignments = () => {
   const submittedCount = assignments.filter((a) => getStatus(a) === "submitted" || getStatus(a) === "graded").length;
 
   const assignmentTabs = [
-    { id: "all", label: `All Assignments (${assignments.length})` },
+    { id: "all", label: `All Coursework (${assignments.length})` },
     { id: "pending", label: `Pending (${pendingCount})` },
-    { id: "submitted", label: `Submitted (${submittedCount})` }
+    { id: "submitted", label: `Submitted & Graded (${submittedCount})` },
   ];
 
   return (
@@ -73,9 +108,9 @@ export const Assignments = () => {
       className="pg-assignments-1"
     >
       <div className="pg-assignments-2">
-        <h2 className="pg-assignments-3">Academic Assignments</h2>
+        <h2 className="pg-assignments-3">Academic Assignments & Coursework</h2>
         <p className="pg-assignments-4">
-          Upload and submit coursework, check deadlines and feedback grades
+          View assigned coursework, submit solutions, check deadlines, and inspect faculty feedback and grades
         </p>
       </div>
 
@@ -93,12 +128,13 @@ export const Assignments = () => {
         <div className="pg-assignments-6">
           {filtered.map((item, idx) => {
             const status = getStatus(item);
-            const isSubmitted = status === "submitted" || status === "graded";
+            const isGraded = status === "graded";
+            const isSubmitted = status === "submitted" || isGraded;
 
             return (
               <motion.div
                 key={item.id}
-                initial={{ opacity: 0, scale: 0.96 }}
+                initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: idx * 0.03, type: "spring", stiffness: 350, damping: 25 }}
                 className="pg-assignments-card-wrapper"
@@ -110,27 +146,75 @@ export const Assignments = () => {
                         <FileText size={16} className="pg-assignments-10" />
                         <h3 className="pg-assignments-11">{item.title}</h3>
                       </div>
-                      <Badge variant={isSubmitted ? "success" : "warning"}>
-                        {isSubmitted ? "Submitted" : "Pending"}
+                      <Badge variant={isGraded ? "success" : isSubmitted ? "info" : "warning"}>
+                        {isGraded ? "✓ Graded" : isSubmitted ? "Submitted" : "Pending"}
                       </Badge>
                     </div>
+
                     <span className="pg-assignments-12">{item.subject}</span>
-                    <p className="pg-assignments-13">{item.description || "No instructions provided."}</p>
+                    <p className="pg-assignments-13">{item.description || "No specific instructions provided."}</p>
+
+                    {/* Graded Feedback Card */}
+                    {isGraded && (
+                      <div
+                        style={{
+                          background: "rgba(16, 185, 129, 0.08)",
+                          border: "1px solid rgba(16, 185, 129, 0.25)",
+                          borderRadius: 8,
+                          padding: "10px 12px",
+                          marginBottom: "1rem",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "4px",
+                        }}
+                      >
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <span style={{ fontSize: 11, fontWeight: 700, color: "#10b981", textTransform: "uppercase" }}>
+                            <Award size={12} style={{ display: "inline", marginRight: 4 }} />
+                            Grade Awarded
+                          </span>
+                          <span style={{ fontSize: 13, fontWeight: 800, color: "#34d399" }}>
+                            {item.grade} {item.max_marks ? `/ ${item.max_marks}` : ""}
+                          </span>
+                        </div>
+                        {item.remarks && (
+                          <p style={{ margin: 0, fontSize: 12, color: "#cbd5e1", fontStyle: "italic" }}>
+                            "{item.remarks}"
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Submitted Work Link */}
+                    {isSubmitted && item.file_url && (
+                      <div style={{ marginBottom: "0.75rem", fontSize: 12, color: "var(--text-secondary)" }}>
+                        <span>Your submission: </span>
+                        <a
+                          href={item.file_url.startsWith("http") ? item.file_url : `https://${item.file_url}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{ color: "#38bdf8", textDecoration: "underline", display: "inline-flex", alignItems: "center", gap: 3 }}
+                        >
+                          <ExternalLink size={11} /> View submitted solution
+                        </a>
+                      </div>
+                    )}
                   </div>
+
                   <div className="pg-assignments-14">
                     <div className="pg-assignments-15">
                       <Calendar size={13} />
-                      <span>Due: {item.due_date}</span>
+                      <span>Due: {item.due_date} {item.due_time ? `at ${item.due_time}` : ""}</span>
                     </div>
+
                     {!isSubmitted ? (
                       <Button variant="primary" size="sm" onClick={() => openSubmitModal(item)}>
-                        Submit
+                        Submit Solution
                       </Button>
                     ) : (
-                      <span className="pg-assignments-16">
-                        <CheckCircle2 size={13} />
-                        Submitted
-                      </span>
+                      <Button variant="ghost" size="sm" onClick={() => openSubmitModal(item)}>
+                        {isGraded ? "Resubmit Work" : "Update Solution"}
+                      </Button>
                     )}
                   </div>
                 </Card>
@@ -146,20 +230,21 @@ export const Assignments = () => {
       )}
 
       {/* Submit Modal */}
-      <Modal isOpen={isSubmitOpen} onClose={() => setIsSubmitOpen(false)} title="Submit Assignment">
+      <Modal isOpen={isSubmitOpen} onClose={() => setIsSubmitOpen(false)} title="Submit Assignment Solution">
         <form onSubmit={handleAssignmentSubmit} className="pg-assignments-20">
           <p className="pg-assignments-21">
-            Upload your solution file to a shared drive (e.g. Google Drive, OneDrive) or paste your Git repository link, and share the URL below:
+            Submit your solution file link (Google Drive, OneDrive, GitHub repo, or cloud document) for{" "}
+            <strong>{selectedAssignment?.title}</strong>:
           </p>
           <Input
-            label="Submission URL"
-            placeholder="https://drive.google.com/..."
+            label="Solution Link or Document URL"
+            placeholder="https://drive.google.com/... or https://github.com/..."
             value={submitUrl}
             onChange={(e) => setSubmitUrl(e.target.value)}
             disabled={submitLoading}
             required
           />
-          <Button type="submit" loading={submitLoading} className="pg-assignments-22">
+          <Button type="submit" variant="primary" loading={submitLoading} className="pg-assignments-22">
             Submit Solution
           </Button>
         </form>
@@ -167,3 +252,5 @@ export const Assignments = () => {
     </motion.div>
   );
 };
+
+export default Assignments;

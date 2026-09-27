@@ -38,17 +38,19 @@ export const StudentDashboard = () => {
 
   const [activeGatePass, setActiveGatePass] = useState(null);
   const [urgentAssignments, setUrgentAssignments] = useState([]);
+  const [peers, setPeers] = useState([]);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const [dashRes, pulseRes, locsRes, forumRes, passRes, assignRes] = await Promise.allSettled([
+        const [dashRes, pulseRes, locsRes, forumRes, passRes, assignRes, peersRes] = await Promise.allSettled([
           api.get("/students/dashboard"),
           api.get("/campus-pulse/current"),
           api.get("/campus-pulse/locations"),
           api.get("/forum/posts?page=1&page_size=3"),
           api.get("/gate-pass/my-passes"),
           api.get("/assignments/"),
+          api.get("/students/peers"),
         ]);
 
         if (dashRes.status === "fulfilled") {
@@ -76,6 +78,10 @@ export const StudentDashboard = () => {
         if (assignRes.status === "fulfilled" && Array.isArray(assignRes.value.data)) {
           setUrgentAssignments(assignRes.value.data.slice(0, 2));
         }
+
+        if (peersRes.status === "fulfilled" && Array.isArray(peersRes.value.data)) {
+          setPeers(peersRes.value.data);
+        }
       } catch (err) {
         toast.error("Failed to load live Smart Campus metrics");
       } finally {
@@ -85,122 +91,53 @@ export const StudentDashboard = () => {
     fetchDashboardData();
   }, []);
 
-  // Peer students & faculty matching human warmth of reference avatars
-  const campusPeers = [
-    {
-      name: "Rahul S.",
-      role: "Student",
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80"
-    },
-    {
-      name: "Priya P.",
-      role: "Student",
-      avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&auto=format&fit=crop&q=80"
-    },
-    {
-      name: "Dr. Amit",
-      role: "Faculty",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80"
-    },
-    {
-      name: "Dr. Sneha",
-      role: "Faculty",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80"
-    },
-    {
-      name: "Dr. Sunita",
-      role: "HOD",
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80"
-    }
-  ];
-
-  // 9 Vertical Bars matching reference visual rhythm & highlighted active bar
-  const chartBars = [
-    { label: "1", height: 40, active: false },
-    { label: "2", height: 52, active: false },
-    { label: "3", height: 35, active: false },
-    { label: "4", height: 65, active: false },
-    { label: "5", height: 38, active: false },
-    { label: "6", height: 88, active: true, tag: "96%" },
-    { label: "7", height: 58, active: false },
-    { label: "8", height: 44, active: false },
-    { label: "9", height: 72, active: false }
-  ];
-
-  // 5 Campus Activity Facilities matching Popular Products card geometry
-  const displayLocations = [
-    {
-      id: "block-a",
-      name: "Block A (Main Academic)",
-      category: "Lecture Halls & Depts",
-      activityScore: "88.0%",
-      status: "Active",
-      icon: Building,
-      tileClass: "tile-indigo"
-    },
-    {
-      id: "block-b",
-      name: "Block B (Placements & IT)",
-      category: "Career & Computing Hub",
-      activityScore: "94.5%",
-      status: "Active",
-      icon: Cpu,
-      tileClass: "tile-sky"
-    },
-    {
-      id: "block-c",
-      name: "Block C (Research & PG)",
-      category: "Innovation & PG Labs",
-      activityScore: "64.0%",
-      status: "Normal",
-      icon: GraduationCap,
-      tileClass: "tile-amber"
-    },
-    {
-      id: "lab-block",
-      name: "Innovation & Lab Complex",
-      category: "Advanced Robotics Center",
-      activityScore: "82.0%",
-      status: "Active",
-      icon: Sparkles,
-      tileClass: "tile-emerald"
-    },
-    {
-      id: "campus-3d",
-      name: "Campus Digital Twin 3D",
-      category: "Realtime Spatial Pulse",
-      activityScore: "99.1%",
-      status: "Active",
-      icon: Layers,
-      tileClass: "tile-purple"
-    }
-  ];
-
-  // 2 Dispatches matching Comments card geometry in reference
-  const displayDispatches = [
-    {
-      id: "disp-1",
-      author: "Dr. Sneha",
-      context: "on AI Intelligence Lab",
-      time: "09:00 AM",
-      message: "Semester lab schedules and attendance metrics synchronized.",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80"
-    },
-    {
-      id: "disp-2",
-      author: "Priya P.",
-      context: "on Placement Drive",
-      time: "08:35 AM",
-      message: "Tier-1 campus recruitment schedules posted on placement portal.",
-      avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&auto=format&fit=crop&q=80"
-    }
-  ];
-
-  const attendancePct = data?.attendancePercentage ?? 82.3;
-  const activeStudentsCount = pulseData?.students?.active ?? 120;
-  const pulseScore = pulseData?.activityScore ?? 50.1;
+  const attendancePct = data?.attendancePercentage ?? 0;
+  const activeStudentsCount = pulseData?.students?.active ?? 0;
+  const pulseScore = pulseData?.activityScore ?? 0;
   const pendingAssignmentsCount = data?.pendingAssignments ?? 0;
-  const todayClassesCount = data?.todayClasses?.length ?? 3;
+  const todayClassesCount = data?.todayClasses?.length ?? 0;
+
+  // Real classmates & department peers from database
+  const campusPeers = (peers || []).map((p) => ({
+    id: p.id,
+    name: p.name,
+    role: p.role || "Student",
+    initial: (p.name || "S").charAt(0).toUpperCase(),
+  }));
+
+  // Dynamic 9 Velocity Bars based on student attendance rate
+  const chartBars = [
+    { label: "1", height: Math.max(12, Math.round(attendancePct * 0.55)), active: false },
+    { label: "2", height: Math.max(15, Math.round(attendancePct * 0.7)), active: false },
+    { label: "3", height: Math.max(12, Math.round(attendancePct * 0.5)), active: false },
+    { label: "4", height: Math.max(20, Math.round(attendancePct * 0.8)), active: false },
+    { label: "5", height: Math.max(15, Math.round(attendancePct * 0.65)), active: false },
+    { label: "6", height: Math.max(25, Math.min(100, Math.round(attendancePct))), active: attendancePct > 0, tag: `${attendancePct}%` },
+    { label: "7", height: Math.max(18, Math.round(attendancePct * 0.75)), active: false },
+    { label: "8", height: Math.max(14, Math.round(attendancePct * 0.6)), active: false },
+    { label: "9", height: Math.max(20, Math.round(attendancePct * 0.85)), active: false },
+  ];
+
+  // Dynamic locations from Campus Pulse
+  const displayLocations = (locations || []).map((loc, i) => ({
+    id: loc.id || `loc-${i}`,
+    name: loc.name,
+    category: loc.category || "Campus Facility",
+    activityScore: typeof loc.activityScore === "number" ? `${loc.activityScore}%` : (loc.activityScore || "Active"),
+    status: loc.status || "Active",
+    icon: Building,
+    tileClass: i % 2 === 0 ? "tile-indigo" : "tile-emerald",
+  }));
+
+  // Dynamic dispatches from Peer Discussion Forum
+  const displayDispatches = (forumPosts || []).map((post) => ({
+    id: post.id,
+    author: post.author_name || post.author || "Student",
+    context: post.category ? `on ${post.category}` : "in Campus Forum",
+    time: post.created_at ? new Date(post.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recent",
+    message: post.title || post.content || "Discussion topic shared.",
+    initial: (post.author_name || post.author || "S").charAt(0).toUpperCase(),
+  }));
 
   return (
     <motion.div
@@ -239,10 +176,10 @@ export const StudentDashboard = () => {
                 <div className="ref-metric-val-row">
                   <span className="ref-metric-value">{attendancePct}%</span>
                   <div className="ref-trend-pill up">
-                    <span>↑ 4.2%</span>
+                    <span>Live</span>
                   </div>
                 </div>
-                <span className="ref-trend-subtext">vs last month</span>
+                <span className="ref-trend-subtext">Across registered subjects</span>
               </div>
 
               {/* Right Metric: Flush on parent surface */}
@@ -254,7 +191,7 @@ export const StudentDashboard = () => {
                 <div className="ref-metric-val-row">
                   <span className="ref-metric-value">{pulseScore}</span>
                   <div className="ref-trend-pill up">
-                    <span>↑ 36.8%</span>
+                    <span>Active</span>
                   </div>
                 </div>
                 <span className="ref-trend-subtext">{activeStudentsCount} students active on campus</span>
@@ -382,16 +319,30 @@ export const StudentDashboard = () => {
             {/* Active Users Avatar Row with Circular View All Button */}
             <div className="ref-avatars-action-row">
               <div className="ref-avatars-list">
-                {campusPeers.map((peer, idx) => (
-                  <div key={idx} className="ref-avatar-unit">
-                    <img 
-                      src={peer.avatar} 
-                      alt={peer.name}
-                      className="ref-user-avatar"
-                    />
-                    <span className="ref-user-name">{peer.name}</span>
-                  </div>
-                ))}
+                {campusPeers.length > 0 ? (
+                  campusPeers.map((peer, idx) => (
+                    <div key={idx} className="ref-avatar-unit">
+                      <div
+                        className="ref-user-avatar"
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background: "rgba(242, 23, 34, 0.12)",
+                          color: "#f21722",
+                          fontWeight: "700",
+                          fontSize: "12px",
+                          borderRadius: "9999px",
+                        }}
+                      >
+                        {peer.initial}
+                      </div>
+                      <span className="ref-user-name">{peer.name}</span>
+                    </div>
+                  ))
+                ) : (
+                  <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>Class directory connected</span>
+                )}
 
                 {/* Circular View All Button with arrow */}
                 <button
@@ -424,7 +375,7 @@ export const StudentDashboard = () => {
             <div className="ref-chart-body">
               {/* Intentional Supporting KPI Block */}
               <div className="ref-chart-kpi-block">
-                <span className="ref-chart-kpi-value">{attendancePct}%</span>
+                <span className="ref-chart-kpi-value">{attendancePct > 0 ? `${attendancePct}%` : "0%"}</span>
                 <span className="ref-chart-kpi-label">Avg Attendance</span>
               </div>
 
@@ -463,33 +414,39 @@ export const StudentDashboard = () => {
             <h3 className="ref-products-title">Campus Activity</h3>
 
             <div className="ref-products-list">
-              {displayLocations.map((loc) => {
-                const IconComponent = loc.icon;
-                return (
-                  <div
-                    key={loc.id}
-                    className="ref-product-item"
-                    onClick={() => navigate('/campus-pulse')}
-                    title="View in Campus Pulse 3D Digital Twin"
-                  >
-                    <div className={`ref-product-icon-box ${loc.tileClass}`}>
-                      <IconComponent size={20} strokeWidth={1.8} />
-                    </div>
-                    
-                    <div className="ref-product-details">
-                      <span className="ref-product-name">{loc.name}</span>
-                      <span className="ref-product-category">{loc.category}</span>
-                    </div>
+              {displayLocations.length > 0 ? (
+                displayLocations.map((loc) => {
+                  const IconComponent = loc.icon;
+                  return (
+                    <div
+                      key={loc.id}
+                      className="ref-product-item"
+                      onClick={() => navigate('/campus-pulse')}
+                      title="View in Campus Pulse 3D Digital Twin"
+                    >
+                      <div className={`ref-product-icon-box ${loc.tileClass}`}>
+                        <IconComponent size={20} strokeWidth={1.8} />
+                      </div>
+                      
+                      <div className="ref-product-details">
+                        <span className="ref-product-name">{loc.name}</span>
+                        <span className="ref-product-category">{loc.category}</span>
+                      </div>
 
-                    <div className="ref-product-right-col">
-                      <span className="ref-product-score">{loc.activityScore}</span>
-                      <span className={`ref-status-capsule ${loc.status === "Active" ? "active" : "offline"}`}>
-                        {loc.status}
-                      </span>
+                      <div className="ref-product-right-col">
+                        <span className="ref-product-score">{loc.activityScore}</span>
+                        <span className={`ref-status-capsule ${loc.status === "Active" ? "active" : "offline"}`}>
+                          {loc.status}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              ) : (
+                <div style={{ padding: "1.5rem 1rem", textAlign: "center", color: "var(--text-muted)", fontSize: "12px" }}>
+                  No real-time facility telemetry active.
+                </div>
+              )}
             </div>
 
             {/* Pill Action Button at Bottom */}
@@ -507,30 +464,48 @@ export const StudentDashboard = () => {
             <h3 className="ref-comments-title">Campus Dispatches</h3>
 
             <div className="ref-comments-list">
-              {displayDispatches.map((post) => (
-                <div 
-                  key={post.id} 
-                  className="ref-comment-item"
-                  onClick={() => navigate('/forum')}
-                  title="Open in Peer Forum"
-                >
-                  <div className="ref-comment-header-row">
-                    <img
-                      src={post.avatar}
-                      alt={post.author}
-                      className="ref-comment-avatar"
-                    />
-                    <div className="ref-comment-author-block">
-                      <p className="ref-comment-author-line">
-                        <span className="ref-comment-author">{post.author}</span>{" "}
-                        <span className="ref-comment-context">{post.context}</span>
-                      </p>
-                      <span className="ref-comment-time">{post.time}</span>
+              {displayDispatches.length > 0 ? (
+                displayDispatches.map((post) => (
+                  <div 
+                    key={post.id} 
+                    className="ref-comment-item"
+                    onClick={() => navigate('/forum')}
+                    title="Open in Peer Forum"
+                  >
+                    <div className="ref-comment-header-row">
+                      <div
+                        className="ref-comment-avatar"
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background: "rgba(242, 23, 34, 0.12)",
+                          color: "#f21722",
+                          fontWeight: "700",
+                          fontSize: "12px",
+                          borderRadius: "9999px",
+                          width: "36px",
+                          height: "36px",
+                        }}
+                      >
+                        {post.initial}
+                      </div>
+                      <div className="ref-comment-author-block">
+                        <p className="ref-comment-author-line">
+                          <span className="ref-comment-author">{post.author}</span>{" "}
+                          <span className="ref-comment-context">{post.context}</span>
+                        </p>
+                        <span className="ref-comment-time">{post.time}</span>
+                      </div>
                     </div>
+                    <p className="ref-comment-body">{post.message}</p>
                   </div>
-                  <p className="ref-comment-body">{post.message}</p>
+                ))
+              ) : (
+                <div style={{ padding: "1.5rem 1rem", textAlign: "center", color: "var(--text-muted)", fontSize: "12px" }}>
+                  No peer dispatches posted yet.
                 </div>
-              ))}
+              )}
             </div>
 
             {/* Clean subtle footer action */}

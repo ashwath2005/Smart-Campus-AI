@@ -64,7 +64,13 @@ class StudentLeave(Base):
     hod_comment = Column(Text, nullable=True)
     hod_reviewed_at = Column(DateTime, nullable=True)
 
+    warden_reviewer_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    warden_comment = Column(Text, nullable=True)
+    warden_reviewed_at = Column(DateTime, nullable=True)
+    rejection_reason = Column(Text, nullable=True)
+
     created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now(), nullable=True)
 
 
 class StudentOD(Base):

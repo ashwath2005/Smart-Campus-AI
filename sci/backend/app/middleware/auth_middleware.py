@@ -38,7 +38,11 @@ async def get_current_user(
         "role": user.role,
         "department": user.department,
         "roll_number": user.roll_number,
+        "employee_id": user.employee_id,
+        "staff_room": user.staff_room,
+        "phone_number": user.phone_number,
         "semester": user.semester,
         "section": user.section,
         "is_first_login": user.is_first_login,
+        "created_at": str(user.created_at) if user.created_at else None,
     }

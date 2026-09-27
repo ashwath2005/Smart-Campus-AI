@@ -1,12 +1,35 @@
 import "./Attendance.css";
 import React, { useState, useEffect } from "react";
 import api from "../../api/axios";
+import { useAuth } from "../../context/AuthContext";
 import { Card, Skeleton, Badge, ProgressBar } from "../../components/ui";
 import { Clock, Info, ShieldAlert } from "lucide-react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
+import { FacultyAttendance } from "../faculty/FacultyAttendance";
 
 export const Attendance = () => {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div style={{ padding: "2rem" }}>
+        <Skeleton variant="card" count={2} />
+      </div>
+    );
+  }
+
+  const role = (user?.role || "").toLowerCase();
+  const isFacultyOrAdmin = role === "faculty" || role === "admin" || role === "hod";
+
+  if (isFacultyOrAdmin) {
+    return <FacultyAttendance />;
+  }
+
+  return <StudentAttendanceView />;
+};
+
+const StudentAttendanceView = () => {
   const [summaries, setSummaries] = useState([]);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,26 +37,17 @@ export const Attendance = () => {
   useEffect(() => {
     const fetchAttendance = async () => {
       try {
-        const res = await api.get("/attendance/my");
-        setSummaries(res.data);
-        const mockHistory = [];
-        res.data.forEach((item, idx) => {
-          mockHistory.push(
-            {
-              id: idx * 2 + 1,
-              subject: item.subject,
-              date: "2026-06-15",
-              status: "present"
-            },
-            {
-              id: idx * 2 + 2,
-              subject: item.subject,
-              date: "2026-06-12",
-              status: "absent"
-            }
-          );
-        });
-        setHistory(mockHistory);
+        const [sumRes, histRes] = await Promise.allSettled([
+          api.get("/attendance/my"),
+          api.get("/attendance/history"),
+        ]);
+
+        if (sumRes.status === "fulfilled" && Array.isArray(sumRes.value.data)) {
+          setSummaries(sumRes.value.data);
+        }
+        if (histRes.status === "fulfilled" && Array.isArray(histRes.value.data)) {
+          setHistory(histRes.value.data);
+        }
       } catch (err) {
         toast.error("Failed to load attendance metrics");
       } finally {
@@ -136,17 +150,25 @@ export const Attendance = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {history.map((record) => (
-                    <tr key={record.id}>
-                      <td className="bold-td">{record.subject}</td>
-                      <td>{record.date}</td>
-                      <td>
-                        <Badge variant={record.status === "present" ? "success" : "danger"}>
-                          {record.status}
-                        </Badge>
+                  {history.length > 0 ? (
+                    history.map((record) => (
+                      <tr key={record.id}>
+                        <td className="bold-td">{record.subject}</td>
+                        <td>{record.date}</td>
+                        <td>
+                          <Badge variant={record.status === "present" ? "success" : "danger"}>
+                            {record.status}
+                          </Badge>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={3} style={{ textAlign: "center", padding: "1.5rem", color: "#64748b" }}>
+                        No individual attendance entries recorded yet.
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

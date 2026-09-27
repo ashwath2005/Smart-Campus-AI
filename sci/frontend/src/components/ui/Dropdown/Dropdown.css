@@ -1,6 +1,5 @@
-/* Dropdown Component - Modern Enterprise UI using Design Tokens */
+/* Dropdown Component - Black & Logo Red Design System */
 
-/* Dropdown Layout */
 .dropdown-container {
   position: relative;
   display: inline-block;
@@ -17,10 +16,10 @@
   z-index: var(--z-index-popover);
   margin-top: var(--space-2);
   width: 14rem; /* 224px */
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  background-color: var(--color-bg-card);
-  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-lg);
+  border: 1px solid #222222;
+  background-color: #0D0D0D;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
   outline: none;
   overflow: hidden;
 }
@@ -42,60 +41,59 @@
   display: flex;
   width: 100%;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-2-5);
   padding: var(--space-2-5) var(--space-4);
   font-size: 0.875rem; /* text-sm */
-  font-weight: var(--font-weight-medium);
-  transition: var(--transition-fast);
+  font-weight: 500;
+  transition: all var(--transition-fast);
   font-family: var(--font-sans);
   border: none;
   background: transparent;
   cursor: pointer;
   text-align: left;
   outline: none;
+  color: #B3B3B3;
+}
+
+.dropdown-item:hover {
+  background-color: #141414;
+  color: #FFFFFF;
 }
 
 .dropdown-item-normal {
-  color: var(--color-text-primary);
+  color: #B3B3B3;
 }
 
 .dropdown-item-normal:hover {
-  background-color: var(--color-bg-muted);
+  background-color: #141414;
+  color: #FFFFFF;
 }
 
-.dark .dropdown-menu {
-  background-color: #111111;
-  border-color: #292929;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8);
-}
-
-.dark .dropdown-item-normal {
-  color: #F5F5F5;
-}
-
-.dark .dropdown-item-normal:hover {
-  background-color: #181818;
-}
-
-.dark .dropdown-item-selected {
-  background-color: rgba(99, 102, 241, 0.12);
+.dropdown-item-selected {
+  background-color: rgba(242, 23, 34, 0.12);
   color: #FFFFFF;
 }
 
 .dropdown-item-danger {
-  color: var(--color-error);
+  color: #FF4D57;
 }
 
 .dropdown-item-danger:hover {
-  background-color: var(--color-error-50);
-}
-
-.dark .dropdown-item-danger:hover {
-  background-color: var(--color-error-50);
+  background-color: rgba(242, 23, 34, 0.12);
+  color: #FFFFFF;
 }
 
 .dropdown-item-icon {
-  color: var(--color-text-muted);
+  color: #737373;
   display: inline-flex;
   align-items: center;
+  transition: color var(--transition-fast);
+}
+
+.dropdown-item:hover .dropdown-item-icon {
+  color: #FFFFFF;
+}
+
+.dropdown-item-danger:hover .dropdown-item-icon {
+  color: #FF4D57;
 }

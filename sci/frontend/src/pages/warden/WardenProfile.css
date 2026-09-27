@@ -1,0 +1,384 @@
+/* Warden Profile - Black & Red Premium Theme */
+
+.warden-profile-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6, 24px);
+  padding: var(--space-6, 24px);
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.wp-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wp-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.wp-title {
+  font-size: var(--text-2xl, 1.5rem);
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.wp-subtitle {
+  font-size: var(--text-sm, 0.875rem);
+  color: #8A8A8A;
+  margin: 0;
+  max-width: 700px;
+}
+
+.wp-badge-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  color: #4ADE80;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.wp-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22C55E;
+  box-shadow: 0 0 6px #22C55E;
+}
+
+/* Layout Grid */
+.wp-grid {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: var(--space-6, 24px);
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .wp-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Profile Identity Card */
+.wp-card {
+  background: #0D0D0D;
+  border: 1px solid #1F1F1F;
+  border-radius: 12px;
+  padding: 24px;
+  position: relative;
+}
+
+.wp-identity-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #1F1F1F;
+}
+
+.wp-avatar-wrapper {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.wp-avatar-circle {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: #151515;
+  border: 2px solid #F21722;
+  box-shadow: 0 0 16px rgba(242, 23, 34, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.wp-warden-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0 0 4px 0;
+}
+
+.wp-warden-designation {
+  font-size: 0.875rem;
+  color: #F21722;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+}
+
+.wp-tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  background: #141414;
+  border: 1px solid #292929;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #B3B3B3;
+  font-family: monospace;
+}
+
+/* Key Value Metas */
+.wp-meta-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.wp-meta-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.84rem;
+}
+
+.wp-meta-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #8A8A8A;
+}
+
+.wp-meta-value {
+  color: #FFFFFF;
+  font-weight: 500;
+  text-align: right;
+}
+
+/* Right Content Column */
+.wp-main-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6, 24px);
+}
+
+/* Stats Ribbon */
+.wp-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .wp-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.wp-stat-card {
+  background: #0D0D0D;
+  border: 1px solid #1F1F1F;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.2s;
+}
+
+.wp-stat-card:hover {
+  border-color: #2E2E2E;
+}
+
+.wp-stat-card.alert {
+  border-left: 3px solid #F21722;
+}
+
+.wp-stat-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: #8A8A8A;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.wp-stat-num {
+  font-size: 24px;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.1;
+}
+
+.wp-stat-sub {
+  font-size: 11px;
+  color: #666666;
+}
+
+/* Responsibilities & Governance */
+.wp-section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wp-duties-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wp-duty-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #111111;
+  border: 1px solid #1F1F1F;
+  border-radius: 8px;
+}
+
+.wp-duty-icon {
+  margin-top: 2px;
+  color: #F21722;
+  flex-shrink: 0;
+}
+
+.wp-duty-text {
+  font-size: 0.85rem;
+  color: #CCCCCC;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Action Banner */
+.wp-cta-banner {
+  background: linear-gradient(135deg, #141414 0%, #0A0A0A 100%);
+  border: 1px solid rgba(242, 23, 34, 0.3);
+  border-radius: 12px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.wp-cta-text h4 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0 0 4px 0;
+}
+
+.wp-cta-text p {
+  font-size: 0.85rem;
+  color: #8A8A8A;
+  margin: 0;
+}
+
+/* Edit Modal */
+.wp-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.wp-modal {
+  background: #0D0D0D;
+  border: 1px solid #292929;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 480px;
+  padding: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+}
+
+.wp-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.wp-modal-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.wp-modal-close {
+  background: transparent;
+  border: none;
+  color: #8A8A8A;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: color 0.15s;
+}
+
+.wp-modal-close:hover {
+  color: #FFFFFF;
+}
+
+.wp-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.wp-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #B3B3B3;
+}
+
+.wp-input {
+  background: #141414;
+  border: 1px solid #222222;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.875rem;
+  color: #FFFFFF;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.wp-input:focus {
+  border-color: #F21722;
+  box-shadow: 0 0 0 2px rgba(242, 23, 34, 0.15);
+}
+
+.wp-modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}

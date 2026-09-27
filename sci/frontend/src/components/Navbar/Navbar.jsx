@@ -30,15 +30,17 @@ export const Navbar = ({ isSidebarOpen, onMenuToggle, onOpenCmdPalette }) => {
 
   if (!user) return null;
 
+  const profilePath = user.role === 'warden' ? '/warden/profile' : '/profile';
+
   const dropdownItems = [
     {
       label: 'My Profile',
-      onClick: () => navigate('/profile'),
+      onClick: () => navigate(profilePath),
       icon: <UserIcon size={14} />,
     },
     {
       label: 'Settings',
-      onClick: () => navigate('/profile'),
+      onClick: () => navigate(profilePath),
       icon: <Settings size={14} />,
     },
     {

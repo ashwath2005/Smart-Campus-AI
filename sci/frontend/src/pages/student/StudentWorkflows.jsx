@@ -39,22 +39,34 @@ export const StudentWorkflows = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [leavesRes, odsRes, advisorsRes] = await Promise.all([
+      const [leavesRes, odsRes, advisorsRes] = await Promise.allSettled([
         api.get("/workflows/leaves"),
         api.get("/workflows/ods"),
         api.get("/faculty")
       ]);
-      setLeaves(leavesRes.data);
-      setOds(odsRes.data);
       
-      // Filter advisors to CSE or department of student
-      const deptFaculty = advisorsRes.data.filter(
-        (f) => f.department?.toUpperCase() === user?.department?.toUpperCase()
-      );
-      setAdvisors(deptFaculty);
-      if (deptFaculty.length > 0) {
-        setLeaveAdvisorId(deptFaculty[0].id);
-        setOdAdvisorId(deptFaculty[0].id);
+      if (leavesRes.status === "fulfilled" && Array.isArray(leavesRes.value.data)) {
+        setLeaves(leavesRes.value.data);
+      } else {
+        setLeaves([]);
+      }
+
+      if (odsRes.status === "fulfilled" && Array.isArray(odsRes.value.data)) {
+        setOds(odsRes.value.data);
+      } else {
+        setOds([]);
+      }
+
+      if (advisorsRes.status === "fulfilled" && Array.isArray(advisorsRes.value.data)) {
+        const deptFaculty = advisorsRes.value.data.filter(
+          (f) => !user?.department || f.department?.toUpperCase() === user?.department?.toUpperCase()
+        );
+        const finalAdvisors = deptFaculty.length > 0 ? deptFaculty : advisorsRes.value.data;
+        setAdvisors(finalAdvisors);
+        if (finalAdvisors.length > 0) {
+          setLeaveAdvisorId(finalAdvisors[0].id);
+          setOdAdvisorId(finalAdvisors[0].id);
+        }
       }
     } catch {
       toast.error("Failed to load request history.");
@@ -212,6 +224,38 @@ export const StudentWorkflows = () => {
                       <span>View Attachment</span>
                     </a>
                   )}
+
+                  {/* Prominent Rejection Reason Box */}
+                  {(l.status === 'Rejected' || l.status === 'REJECTED') && (l.rejection_reason || l.warden_comment || l.hod_comment || l.faculty_comment) && (
+                    <div style={{
+                      marginTop: '10px',
+                      padding: '10px 12px',
+                      borderRadius: '8px',
+                      backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                      border: '1px solid rgba(239, 68, 68, 0.3)',
+                      color: '#FCA5A5',
+                      fontSize: '12px'
+                    }}>
+                      <strong style={{ color: '#F87171' }}>Rejection Reason: </strong>
+                      <span>{l.rejection_reason || l.warden_comment || l.hod_comment || l.faculty_comment}</span>
+                    </div>
+                  )}
+
+                  {/* Prominent Warden Approval Box */}
+                  {(l.status === 'Approved' || l.status === 'APPROVED') && l.warden_comment && (
+                    <div style={{
+                      marginTop: '10px',
+                      padding: '10px 12px',
+                      borderRadius: '8px',
+                      backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                      border: '1px solid rgba(34, 197, 94, 0.25)',
+                      color: '#86EFAC',
+                      fontSize: '12px'
+                    }}>
+                      <strong style={{ color: '#4ADE80' }}>Warden Signoff: </strong>
+                      <span>{l.warden_comment}</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Real-time Timeline */}
@@ -298,6 +342,35 @@ export const StudentWorkflows = () => {
                         </div>
                       </div>
                     )
+                  )}
+
+                  {/* Step 4: Hostel Warden Governance Review */}
+                  {(l.warden_reviewed_at || l.warden_comment || (l.warden_reviewer_name && l.warden_reviewer_name !== "N/A")) && (
+                    <div className="pg-workflow-timeline-item">
+                      <div className="pg-workflow-timeline-icon">
+                        {l.status === "Approved" || l.status === "APPROVED" ? (
+                          <Check size={12} className="text-green-500" />
+                        ) : (
+                          <X size={12} className="text-red-500" />
+                        )}
+                      </div>
+                      <div className="pg-workflow-timeline-content">
+                        <span className="pg-workflow-timeline-actor">
+                          Hostel Warden: {l.warden_reviewer_name || 'Chief Hostel Warden'}
+                        </span>
+                        <span className="pg-workflow-timeline-action">
+                          {l.status === "Approved" || l.status === "APPROVED"
+                            ? "Authorized residential leave pass."
+                            : "Declined leave application."}
+                        </span>
+                        {l.warden_reviewed_at && (
+                          <span className="pg-workflow-timeline-time">{l.warden_reviewed_at}</span>
+                        )}
+                        {l.warden_comment && (
+                          <p className="pg-workflow-timeline-comment">"{l.warden_comment}"</p>
+                        )}
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>
@@ -466,6 +539,8 @@ export const StudentWorkflows = () => {
                 <Select
                   label="Leave Type"
                   options={[
+                    { value: "Hostel Leave", label: "Hostel / Residential Leave" },
+                    { value: "Weekend Leave", label: "Hostel Weekend Leave" },
                     { value: "Casual Leave", label: "Casual Leave" },
                     { value: "Medical Leave", label: "Medical/Sick Leave" },
                     { value: "Duty Leave", label: "Duty Leave" },

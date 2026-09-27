@@ -19,9 +19,9 @@ function getStoredAuth() {
 }
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState(() => getStoredAuth().user);
+  const [token, setToken] = useState(() => getStoredAuth().token);
+  const [isLoading, setIsLoading] = useState(() => !getStoredAuth().user);
 
   // On mount, restore session from localStorage
   useEffect(() => {
@@ -64,6 +64,7 @@ export function AuthProvider({ children }) {
       if (finalToken) {
         saveAuth(finalUser, finalToken);
         toast.success(`Welcome back, ${finalUser.name || 'User'}!`);
+        return { user: finalUser, token: finalToken };
       } else {
         throw new Error('No token received');
       }

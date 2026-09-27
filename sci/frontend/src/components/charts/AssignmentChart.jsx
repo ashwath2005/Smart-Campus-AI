@@ -18,19 +18,19 @@ const CustomTooltip = ({ active, payload }) => {
 };
 
 export const AssignmentChart = ({ data }) => {
-  const fallbackData = [
-    { name: 'Submitted', value: 8, color: '#10b981' },
-    { name: 'Pending', value: 3, color: '#f59e0b' },
-    { name: 'Overdue', value: 1, color: '#f43f5e' },
-  ];
+  if (!data || (!data.submitted && !data.pending && !data.overdue)) {
+    return (
+      <div className="chart-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>
+        No assignment telemetry available.
+      </div>
+    );
+  }
 
-  const chartData = data
-    ? [
-        { name: 'Submitted', value: data.submitted, color: '#10b981' },
-        { name: 'Pending', value: data.pending, color: '#f59e0b' },
-        { name: 'Overdue', value: data.overdue, color: '#f43f5e' },
-      ]
-    : fallbackData;
+  const chartData = [
+    { name: 'Submitted', value: data.submitted || 0, color: '#10b981' },
+    { name: 'Pending', value: data.pending || 0, color: '#f59e0b' },
+    { name: 'Overdue', value: data.overdue || 0, color: '#f43f5e' },
+  ];
 
   return (
     <div className="chart-container">
