@@ -30,8 +30,10 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
+import { ManualRecordManager } from "./ManualRecordManager";
 
 export const AdminDataImport = () => {
+  const [mainMode, setMainMode] = useState("bulk"); // "bulk" or "manual"
   const [selectedCategory, setSelectedCategory] = useState("all_in_one");
   const [history, setHistory] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(true);
@@ -366,8 +368,33 @@ export const AdminDataImport = () => {
         </div>
       </div>
 
-      {/* Categories Selector grid */}
-      <div className="category-selection-grid">
+      {/* Primary Mode Switcher: Bulk Import vs Manual Record Management */}
+      <div className="primary-mode-switcher-bar">
+        <button
+          type="button"
+          className={`mode-switch-btn ${mainMode === "bulk" ? "mode-switch-btn-active" : ""}`}
+          onClick={() => setMainMode("bulk")}
+        >
+          <UploadCloud size={16} />
+          <span>Bulk Spreadsheet Import</span>
+        </button>
+        <button
+          type="button"
+          className={`mode-switch-btn ${mainMode === "manual" ? "mode-switch-btn-active" : ""}`}
+          onClick={() => setMainMode("manual")}
+        >
+          <Users size={16} />
+          <span>Manual Record Management</span>
+          <span className="mode-switch-badge">Live CRUD</span>
+        </button>
+      </div>
+
+      {mainMode === "manual" ? (
+        <ManualRecordManager />
+      ) : (
+        <>
+          {/* Categories Selector grid */}
+          <div className="category-selection-grid">
         {categories.map((cat) => {
           const CatIcon = cat.icon;
           const isActive = selectedCategory === cat.id;
@@ -804,6 +831,8 @@ export const AdminDataImport = () => {
           </div>
         </div>
       </Card>
+      </>
+      )}
 
       {/* Log Detail Viewer Modal */}
       {showDetailModal && selectedLog && (

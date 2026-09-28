@@ -312,7 +312,7 @@ export const AppRoutes = () => {
         <Route
           path={ROUTES.AI_ASSISTANT}
           element={
-            <ProtectedRoute allowedRoles={[ROLES.STUDENT]}>
+            <ProtectedRoute allowedRoles={[ROLES.STUDENT, ROLES.ADMIN, ROLES.FACULTY]}>
               <Layout>
                 <AIAssistant />
               </Layout>

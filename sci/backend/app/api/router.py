@@ -42,11 +42,13 @@ from app.routes import (
     internal_marks,
     warden,
     faculty,
+    system,
 )
 
 api_router = APIRouter()
 
 # Register all domain routes
+api_router.include_router(system.router)
 api_router.include_router(auth.router)
 api_router.include_router(students.router)
 api_router.include_router(attendance.router)

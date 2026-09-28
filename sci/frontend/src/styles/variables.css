@@ -1,63 +1,73 @@
 /* variables.css - Smart Campus AI Black & Red Design System */
 
 :root {
-  /* Canvas & Shell Foundation - Deep Black Dominance */
-  --bg-canvas: #050505;
-  --bg-shell: #080808;
-  --bg-primary: #050505;
-  --bg-secondary: #080808;
-  --bg-tertiary: #0D0D0D;
-  --bg-card: #0D0D0D;
-  --bg-card-hover: #111111;
-  --bg-card-elevated: #111111;
-  --bg-surface: #0A0A0A;
-  --bg-surface-1: #0A0A0A;
-  --bg-surface-2: #0D0D0D;
-  --bg-surface-3: #111111;
-  --bg-elevated: #151515;
-  --bg-surface-hover: #141414;
-  --bg-surface-active: #1A1A1A;
-  --bg-hover: #141414;
+  /* Canvas & Shell Foundation - Light Theme Default */
+  --bg-canvas: #F8F9FA;
+  --bg-shell: #FFFFFF;
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F1F3F5;
+  --bg-tertiary: #E9ECEF;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F8F9FA;
+  --bg-card-elevated: #FFFFFF;
+  --bg-surface: #FFFFFF;
+  --bg-surface-1: #FFFFFF;
+  --bg-surface-2: #F8F9FA;
+  --bg-surface-3: #F1F3F5;
+  --bg-elevated: #FFFFFF;
+  --bg-surface-hover: #F1F3F5;
+  --bg-surface-active: #E9ECEF;
+  --bg-hover: #F1F3F5;
 
-  /* Typography Hierarchy */
-  --text-primary: #FFFFFF;
-  --text-secondary: #B3B3B3;
-  --text-muted: #737373;
-  --text-disabled: #525252;
+  /* Typography Hierarchy - Light Theme */
+  --text-primary: #111827;
+  --text-secondary: #4B5563;
+  --text-muted: #6B7280;
+  --text-disabled: #9CA3AF;
   --text-body: var(--text-secondary);
 
-  /* Borders & Dividers */
-  --border-color: #1F1F1F;
-  --border-subtle: #1F1F1F;
-  --border-hover: #292929;
-  --border-strong: #333333;
-  --input-border: #222222;
-  --glass-bg: rgba(13, 13, 13, 0.85);
-  --glass-border: rgba(255, 255, 255, 0.06);
+  /* Borders & Dividers - Light Theme */
+  --border-color: #E5E7EB;
+  --border-subtle: #E5E7EB;
+  --border-hover: #D1D5DB;
+  --border-strong: #9CA3AF;
+  --input-border: #D1D5DB;
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(0, 0, 0, 0.08);
 
-  /* Primary Brand Identity (Logo Red #F21722) */
-  --brand: #F21722;
-  --brand-hover: #D8141E;
-  --brand-active: #B80F17;
-  --brand-soft: rgba(242, 23, 34, 0.12);
-  --brand-light: rgba(242, 23, 34, 0.12);
-  --brand-border: rgba(242, 23, 34, 0.35);
-  --brand-glow: rgba(242, 23, 34, 0.2);
+  /* Primary Brand Identity (Logo Red #F21722 / #E31B23) */
+  --brand: #E31B23;
+  --brand-hover: #C4141B;
+  --brand-active: #A50E14;
+  --brand-soft: rgba(227, 27, 35, 0.08);
+  --brand-light: rgba(227, 27, 35, 0.08);
+  --brand-border: rgba(227, 27, 35, 0.25);
+  --brand-glow: rgba(227, 27, 35, 0.15);
 
   /* Accent Colors */
-  --accent: #F21722;
-  --accent-hover: #D8141E;
-  --accent-blue: #3B82F6;
-  --accent-sky: #60A5FA;
-  --accent-light: rgba(242, 23, 34, 0.12);
-  --accent-border: rgba(242, 23, 34, 0.35);
-  --accent-glow: rgba(242, 23, 34, 0.2);
+  --accent: #E31B23;
+  --accent-hover: #C4141B;
+  --accent-blue: #2563EB;
+  --accent-sky: #3B82F6;
+  --accent-light: rgba(227, 27, 35, 0.08);
+  --accent-border: rgba(227, 27, 35, 0.25);
+  --accent-glow: rgba(227, 27, 35, 0.15);
+
+  --btn-primary-bg: #E31B23;
+  --btn-primary-hover: #C4141B;
+  --btn-primary-text: #FFFFFF;
+  --btn-primary-border: #E31B23;
+
+  --btn-secondary-bg: #F3F4F6;
+  --btn-secondary-hover: #E5E7EB;
+  --btn-secondary-text: #1F2937;
+  --btn-secondary-border: #E5E7EB;
 
   /* Semantic Status Colors */
   --success: #10B981;
-  --success-text: #34D399;
-  --success-light: rgba(16, 185, 129, 0.12);
-  --success-soft: rgba(16, 185, 129, 0.12);
+  --success-text: #059669;
+  --success-light: rgba(16, 185, 129, 0.1);
+  --success-soft: rgba(16, 185, 129, 0.1);
   --success-border: rgba(16, 185, 129, 0.25);
   --success-bg: rgba(16, 185, 129, 0.12);
 

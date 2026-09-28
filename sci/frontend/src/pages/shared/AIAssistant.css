@@ -809,3 +809,198 @@
 .metric-val.text-red {
   color: #E31B23;
 }
+
+/* ==========================================================================
+   QUIZ GEN STUDIO REDESIGN (ICQEA & RAG)
+   ========================================================================== */
+
+.quiz-studio-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  width: 100%;
+}
+
+@media (min-width: 1100px) {
+  .quiz-studio-layout {
+    grid-template-columns: minmax(0, 1.85fr) minmax(320px, 1.15fr);
+  }
+}
+
+.quiz-studio-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.quiz-studio-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.quiz-studio-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  position: relative;
+  box-shadow: var(--shadow-elevated);
+}
+
+.quiz-studio-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, rgba(227, 27, 35, 0.4), rgba(255, 255, 255, 0.05) 60%, transparent);
+  pointer-events: none;
+}
+
+.quiz-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 14px;
+}
+
+.quiz-topic-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.quiz-chip-btn {
+  padding: 5px 12px;
+  border-radius: 9999px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.quiz-chip-btn:hover {
+  border-color: rgba(227, 27, 35, 0.5);
+  color: var(--text-primary);
+}
+
+.quiz-chip-btn.active {
+  background: rgba(227, 27, 35, 0.12);
+  border-color: #E31B23;
+  color: #ff4d58;
+}
+
+.quiz-diff-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.quiz-diff-card {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.quiz-diff-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.quiz-diff-card.active {
+  border-color: #E31B23;
+  background: rgba(227, 27, 35, 0.08);
+}
+
+.quiz-diff-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.quiz-diff-desc {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.quiz-dropzone {
+  border: 1.5px dashed var(--border-color);
+  border-radius: 12px;
+  padding: 18px;
+  text-align: center;
+  background-color: #0e0f13;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+.quiz-dropzone:hover {
+  border-color: #E31B23;
+  background-color: #121318;
+}
+
+.quiz-progress-bar-wrap {
+  width: 100%;
+  height: 6px;
+  background: var(--bg-tertiary);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin: 12px 0 20px;
+}
+
+.quiz-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #E31B23, #ff4d58);
+  transition: width 0.3s ease;
+}
+
+.quiz-explanation-box {
+  margin-top: 14px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid #E31B23;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.quiz-stat-pill {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px;
+  background: var(--bg-tertiary);
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+}
+
+.quiz-stat-val {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-top: 2px;
+}
+
+.quiz-stat-lbl {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
