@@ -26,7 +26,9 @@ class Settings:
     def DATABASE_URL(self) -> str:
         if self.USE_MYSQL:
             return f"mysql+aiomysql://{self.MYSQL_USER}:{self.MYSQL_PASSWORD}@{self.MYSQL_HOST}:{self.MYSQL_PORT}/{self.MYSQL_DATABASE}"
-        return "sqlite+aiosqlite:///smartcampus.db"
+        backend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+        db_path = os.path.join(backend_dir, "smartcampus.db").replace("\\", "/")
+        return f"sqlite+aiosqlite:///{db_path}"
 
     # Security & JWT Settings
     JWT_SECRET: str = os.getenv("JWT_SECRET", "smartcampus_secret_key_2024")
