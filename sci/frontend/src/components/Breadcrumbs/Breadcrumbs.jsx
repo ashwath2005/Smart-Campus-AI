@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ChevronRight, ChevronsUpDown, Hexagon } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { tokenStorage } from '../../services/storage/tokenStorage';
 import './Breadcrumbs.css';
 
 const ROUTE_LABELS = {
@@ -138,7 +139,11 @@ export const Breadcrumbs = () => {
     }
     setIsSwitching(true);
     try {
-      await login({ email: account.email, password: 'password123' });
+      await login({
+        email: account.email,
+        password: 'password123',
+        rememberMe: tokenStorage.isRemembered(),
+      });
       setIsSwitcherOpen(false);
       navigate(account.homeRoute);
     } catch {

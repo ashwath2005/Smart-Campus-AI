@@ -45,9 +45,9 @@ export const Navbar = ({ isSidebarOpen, onMenuToggle, onOpenCmdPalette }) => {
     },
     {
       label: 'Log Out',
-      onClick: () => {
-        logout();
-        navigate('/login');
+      onClick: async () => {
+        await logout();
+        navigate('/login', { replace: true });
       },
       icon: <LogOut size={14} />,
       danger: true,

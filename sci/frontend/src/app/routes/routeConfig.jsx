@@ -65,9 +65,9 @@ export const PageLoader = () => (
 
 // Role redirection helper
 export const RoleHomeRedirect = () => {
-  const { user, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
   if (isLoading) return <PageLoader />;
-  if (!user) return <Navigate to={ROUTES.LOGIN} replace />;
+  if (!isAuthenticated || !user) return <Navigate to={ROUTES.LOGIN} replace />;
   const dest = ROLE_DEFAULT_REDIRECTS[user.role] || ROUTES.STUDENT_DASHBOARD;
   return <Navigate to={dest} replace />;
 };

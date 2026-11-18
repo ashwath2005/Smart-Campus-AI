@@ -52,7 +52,7 @@
 }
 
 .wl-kpi-card {
-  background: #0D0D0D;
+  background: var(--color-bg-surface);
   border: 1px solid #1F1F1F;
   border-radius: 10px;
   padding: 16px;
@@ -65,7 +65,7 @@
 
 .wl-kpi-card:hover {
   border-color: #333333;
-  background: #111111;
+  background: var(--color-bg-muted);
 }
 
 .wl-kpi-card.active {
@@ -106,7 +106,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 16px;
-  background: #0A0A0A;
+  background: var(--color-bg-surface);
   border: 1px solid #1F1F1F;
   border-radius: 10px;
   padding: 12px 16px;
@@ -116,7 +116,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  background: #111111;
+  background: var(--color-bg-muted);
   padding: 4px;
   border-radius: 8px;
   border: 1px solid #1E1E1E;
@@ -192,7 +192,7 @@
 
 /* Desktop Data Table */
 .wl-table-card {
-  background: #0D0D0D;
+  background: var(--color-bg-surface);
   border: 1px solid #1F1F1F;
   border-radius: 12px;
   overflow: hidden;
@@ -448,7 +448,7 @@
 }
 
 .wl-card-item {
-  background: #0D0D0D;
+  background: var(--color-bg-surface);
   border: 1px solid #1F1F1F;
   border-radius: 10px;
   padding: 16px;
@@ -523,7 +523,7 @@
 }
 
 .wl-modal-summary {
-  background: #141414;
+  background: var(--color-bg-muted);
   border: 1px solid #222222;
   border-radius: 8px;
   padding: 14px;
@@ -560,7 +560,7 @@
 
 .wl-textarea {
   width: 100%;
-  background: #141414;
+  background: var(--color-bg-muted);
   border: 1px solid #262626;
   border-radius: 8px;
   padding: 10px 12px;

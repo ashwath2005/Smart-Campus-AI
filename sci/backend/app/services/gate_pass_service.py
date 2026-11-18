@@ -14,6 +14,7 @@ from app.models.attendance import Attendance
 from app.models.academic import AcademicCalendarEvent
 from app.models.communication import Notification
 from app.utils.websocket_manager import manager as ws_manager
+from app.utils.audit_metadata import parse_audit_metadata, serialize_audit_metadata
 from app.core.config import settings
 
 HMAC_SECRET = getattr(settings, "HMAC_SECRET", "SCME_AWN_SECURITY_HMAC_KEY_2026")
@@ -91,7 +92,7 @@ class GatePassService:
             action=action,
             previous_state=previous_state,
             new_state=new_state,
-            metadata_json=json.dumps(metadata) if metadata else None
+            metadata_json=serialize_audit_metadata(metadata)
         )
         db.add(log_entry)
 
@@ -931,8 +932,17 @@ class GatePassService:
         }
 
     @staticmethod
-    async def get_audit_logs(db: AsyncSession) -> List[Dict[str, Any]]:
-        query = select(GatePassAuditLog).order_by(GatePassAuditLog.timestamp.desc()).limit(50)
+    async def get_audit_logs(
+        db: AsyncSession,
+        limit: int = 50,
+        offset: int = 0
+    ) -> List[Dict[str, Any]]:
+        query = (
+            select(GatePassAuditLog)
+            .order_by(GatePassAuditLog.timestamp.desc(), GatePassAuditLog.id.desc())
+            .offset(offset)
+            .limit(limit)
+        )
         res = await db.execute(query)
         logs = res.scalars().all()
         return [
@@ -944,7 +954,7 @@ class GatePassService:
                 "action": l.action,
                 "previousState": l.previous_state,
                 "newState": l.new_state,
-                "metadata": json.loads(l.metadata_json) if l.metadata_json else {},
+                "metadata": parse_audit_metadata(l.metadata_json),
                 "timestamp": l.timestamp.isoformat() if l.timestamp else None
             }
             for l in logs

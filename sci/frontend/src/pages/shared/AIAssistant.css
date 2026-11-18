@@ -123,7 +123,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--color-border);
   padding-bottom: 12px;
   margin-bottom: 12px;
 }
@@ -131,7 +131,7 @@
 .sidebar-title {
   font-size: 14px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
@@ -208,7 +208,7 @@
 .empty-history-title {
   font-size: 13.5px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
@@ -495,7 +495,7 @@
 .planner-card-title {
   font-size: 15px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-text-primary);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -560,7 +560,7 @@
 .idle-title {
   font-size: 14.5px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
@@ -582,7 +582,7 @@
 .results-title {
   font-size: 15px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
@@ -598,7 +598,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--color-border);
   padding-bottom: 8px;
   margin-bottom: 12px;
 }
@@ -606,7 +606,7 @@
 .day-title {
   font-size: 13.5px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
@@ -687,7 +687,7 @@
 .section-title {
   font-size: 14px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-text-primary);
   margin: 0 0 10px 0;
 }
 
@@ -708,7 +708,7 @@
 .question-text {
   font-size: 13.5px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-text-primary);
   margin: 0 0 12px 0;
 }
 
@@ -726,7 +726,7 @@
   border-radius: 10px;
   border: 1px solid var(--border-color);
   background-color: #121316;
-  color: #ffffff;
+  color: var(--color-text-primary);
   font-size: 12.5px;
   text-align: left;
   cursor: pointer;
@@ -777,7 +777,7 @@
 .score-title {
   font-size: 14.5px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
@@ -803,7 +803,7 @@
 .metric-val {
   font-size: 14px;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--color-text-primary);
 }
 
 .metric-val.text-red {
@@ -861,7 +861,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--color-border);
   padding-bottom: 14px;
 }
 

@@ -3,24 +3,19 @@ import { useNavigate } from "react-router-dom";
 import { Home } from "lucide-react";
 import { Button } from "../../components/ui";
 import { motion } from "framer-motion";
+import { useAuth } from "../../context/AuthContext";
+import { ROLE_DEFAULT_REDIRECTS } from "../../constants/roles";
+import { ROUTES } from "../../constants/routes";
+
 export const NotFound = () => {
   const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuth();
   const handleGoHome = () => {
-    const stored = localStorage.getItem("campus_user");
-    if (!stored) {
-      navigate("/login");
+    if (!isAuthenticated || !user) {
+      navigate(ROUTES.LOGIN);
       return;
     }
-    try {
-      const parsed = JSON.parse(stored);
-      const role = parsed.role;
-      if (role === "student") navigate("/dashboard");
-      else if (role === "faculty") navigate("/faculty");
-      else if (role === "admin") navigate("/admin");
-      else navigate("/login");
-    } catch {
-      navigate("/login");
-    }
+    navigate(ROLE_DEFAULT_REDIRECTS[user.role] || ROUTES.LOGIN);
   };
   return <div className="pg-notfound-1">{
     /* Decorative Orbs */

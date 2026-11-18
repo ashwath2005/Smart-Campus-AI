@@ -340,3 +340,159 @@
   font-weight: 800;
   color: var(--text-primary, #ffffff);
 }
+
+.gpa-error-msg {
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: #FF2D2D;
+}
+
+.gpa-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.gpa-card-heading--flush {
+  margin-bottom: 0;
+}
+
+.gpa-refresh-btn,
+.gpa-retry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid var(--border-color, #2a2a2e);
+  background: var(--bg-secondary, #18181B);
+  color: var(--text-primary, #ffffff);
+}
+
+.gpa-refresh-btn:hover:not(:disabled),
+.gpa-retry-btn:hover {
+  border-color: rgba(255, 45, 45, 0.45);
+  background: rgba(255, 45, 45, 0.12);
+}
+
+.gpa-refresh-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.gpa-audit-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.5rem;
+  padding: 2.5rem 1.25rem;
+  border: 1px dashed var(--border-color, #27272A);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.gpa-audit-state-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary, #ffffff);
+}
+
+.gpa-audit-state-sub {
+  font-size: 0.8rem;
+  color: var(--text-muted, #94a3b8);
+}
+
+.gpa-muted-icon {
+  color: var(--text-muted, #94a3b8);
+}
+
+.gpa-audit-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1.1rem 1.25rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 45, 45, 0.35);
+  background: rgba(255, 45, 45, 0.08);
+}
+
+.gpa-audit-error-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.gpa-shrink-0 {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+.gpa-audit-error-title {
+  margin: 0 0 0.2rem 0;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--text-primary, #ffffff);
+}
+
+.gpa-audit-error-msg {
+  margin: 0;
+  font-size: 0.825rem;
+  color: var(--text-muted, #cbd5e1);
+}
+
+.gpa-metadata-cell {
+  max-width: 300px;
+  color: var(--text-secondary, #cbd5e1);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.gpa-legacy-tag,
+.gpa-malformed-tag {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 5px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.gpa-legacy-tag {
+  background: rgba(245, 158, 11, 0.15);
+  color: #FBBF24;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.gpa-malformed-tag {
+  background: rgba(255, 45, 45, 0.15);
+  color: #FF6B6B;
+  border: 1px solid rgba(255, 45, 45, 0.35);
+}
+
+@keyframes gpa-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.gpa-spin {
+  animation: gpa-rotate 1s linear infinite;
+}

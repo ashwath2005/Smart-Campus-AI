@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link, Navigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
+import { tokenStorage } from "../../services/storage/tokenStorage";
 import { Button, Input, Card } from "../../components/ui";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
@@ -9,7 +10,7 @@ import { ROLE_DEFAULT_REDIRECTS } from "../../constants/roles";
 import { ROUTES } from "../../constants/routes";
 
 export const Login = () => {
-  const { user, login } = useAuth();
+  const { user, isAuthenticated, isLoading, login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -23,7 +24,7 @@ export const Login = () => {
   const [loading, setLoading] = useState(false);
 
   // If already authenticated, redirect immediately to destination or default role dashboard
-  if (user) {
+  if (!isLoading && isAuthenticated && user) {
     const from = location.state?.from?.pathname;
     const destination = from || ROLE_DEFAULT_REDIRECTS[user.role] || ROUTES.STUDENT_DASHBOARD;
     return <Navigate to={destination} replace />;
@@ -53,8 +54,8 @@ export const Login = () => {
     }
     setLoading(true);
     try {
-      const authResult = await login({ email, password });
-      const loggedInUser = authResult?.user || (localStorage.getItem("campus_user") ? JSON.parse(localStorage.getItem("campus_user")).user : null);
+      const authResult = await login({ email, password, rememberMe });
+      const loggedInUser = authResult?.user || tokenStorage.getUser();
       if (loggedInUser) {
         handleSuccessfulAuth(loggedInUser, email);
         return;
@@ -72,8 +73,8 @@ export const Login = () => {
     setPassword("password123");
     setLoading(true);
     try {
-      const authResult = await login({ email: roleEmail, password: "password123" });
-      const loggedInUser = authResult?.user || (localStorage.getItem("campus_user") ? JSON.parse(localStorage.getItem("campus_user")).user : null);
+      const authResult = await login({ email: roleEmail, password: "password123", rememberMe });
+      const loggedInUser = authResult?.user || tokenStorage.getUser();
       if (loggedInUser) {
         handleSuccessfulAuth(loggedInUser, roleEmail);
         return;

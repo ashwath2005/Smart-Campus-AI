@@ -405,7 +405,7 @@
 
 .timetable-class-card.card-theory {
   border-color: #222222;
-  background-color: #0D0D0D;
+  background-color: var(--color-bg-surface);
 }
 
 .dark .timetable-class-card.card-lab {
@@ -415,7 +415,7 @@
 
 .dark .timetable-class-card.card-theory {
   border-color: #222222;
-  background-color: #0D0D0D;
+  background-color: var(--color-bg-surface);
 }
 
 .class-card-header {
@@ -442,7 +442,7 @@
 }
 
 .class-card-badge.badge-theory {
-  background-color: #141414;
+  background-color: var(--color-bg-muted);
   color: #B3B3B3;
   border: 1px solid #262626;
 }
@@ -454,7 +454,7 @@
 }
 
 .dark .class-card-badge.badge-theory {
-  background-color: #141414;
+  background-color: var(--color-bg-muted);
   color: #B3B3B3;
   border: 1px solid #262626;
 }
@@ -613,7 +613,7 @@
 
 .weekly-class-item.item-theory {
   border-color: #222222;
-  background-color: #0A0A0A;
+  background-color: var(--color-bg-surface);
 }
 
 .dark .weekly-class-item.item-lab {
@@ -623,7 +623,7 @@
 
 .dark .weekly-class-item.item-theory {
   border-color: #222222;
-  background-color: #0A0A0A;
+  background-color: var(--color-bg-surface);
 }
 
 .weekly-class-subject {

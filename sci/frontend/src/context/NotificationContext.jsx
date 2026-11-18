@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import api from '../api/axios';
 import { useAuth } from './AuthContext';
+import { tokenStorage } from '../services/storage/tokenStorage';
 import toast from 'react-hot-toast';
 
 const NotificationContext = createContext(undefined);
 
 export const NotificationProvider = ({ children }) => {
-  const { user, token } = useAuth();
+  const { user, token, isAuthenticated, isLoading: authLoading } = useAuth();
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -90,26 +91,26 @@ export const NotificationProvider = ({ children }) => {
     }
   }, []);
 
-  // Fetch initial notifications and count on mount/login
+  // Fetch initial notifications and count on mount/login once auth is verified
   useEffect(() => {
     const isAuthPath = typeof window !== 'undefined' && 
       /^\/(login|register|forgot-password|reset-password)(\/|$)/.test(window.location.pathname);
 
-    if (token && user && !isAuthPath) {
+    if (!authLoading && isAuthenticated && token && user && !isAuthPath) {
       fetchNotifications();
       fetchUnreadCount();
-    } else {
+    } else if (!isAuthenticated) {
       setNotifications([]);
       setUnreadCount(0);
     }
-  }, [token, user, fetchNotifications, fetchUnreadCount]);
+  }, [authLoading, isAuthenticated, token, user, fetchNotifications, fetchUnreadCount]);
 
   // WebSocket connection management
   useEffect(() => {
     const isAuthPath = typeof window !== 'undefined' && 
       /^\/(login|register|forgot-password|reset-password)(\/|$)/.test(window.location.pathname);
 
-    if (!token || !user || isAuthPath) {
+    if (authLoading || !isAuthenticated || !token || !user || isAuthPath || tokenStorage.isTokenExpired(token)) {
       if (reconnectTimeoutRef.current) {
         clearTimeout(reconnectTimeoutRef.current);
         reconnectTimeoutRef.current = null;
@@ -117,7 +118,9 @@ export const NotificationProvider = ({ children }) => {
       if (wsRef.current) {
         wsRef.current.onclose = null;
         wsRef.current.onerror = null;
-        wsRef.current.close();
+        if (wsRef.current.readyState === WebSocket.OPEN) {
+          wsRef.current.close();
+        }
         wsRef.current = null;
       }
       return;
@@ -241,21 +244,29 @@ export const NotificationProvider = ({ children }) => {
       };
     };
 
-    connectWebSocket();
+    const initTimer = setTimeout(() => {
+      connectWebSocket();
+    }, 50);
 
     return () => {
+      clearTimeout(initTimer);
       if (reconnectTimeoutRef.current) {
         clearTimeout(reconnectTimeoutRef.current);
         reconnectTimeoutRef.current = null;
       }
       if (wsRef.current) {
-        wsRef.current.onclose = null;
-        wsRef.current.onerror = null;
-        wsRef.current.close();
+        const socket = wsRef.current;
         wsRef.current = null;
+        socket.onclose = null;
+        socket.onerror = null;
+        if (socket.readyState === WebSocket.OPEN) {
+          socket.close();
+        } else if (socket.readyState === WebSocket.CONNECTING) {
+          socket.onopen = () => socket.close();
+        }
       }
     };
-  }, [token, user, addNotification]);
+  }, [authLoading, isAuthenticated, token, user, addNotification]);
 
   return (
     <NotificationContext.Provider

@@ -54,6 +54,7 @@ class Settings:
     AI_API_KEY_1: str = os.getenv("AI_API_KEY_1", "")
     AI_API_KEY_2: str = os.getenv("AI_API_KEY_2", "")
     AI_API_KEY_3: str = os.getenv("AI_API_KEY_3", "")
+    GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
 
     # Storage & Uploads
     MAX_UPLOAD_SIZE_MB: int = int(os.getenv("MAX_UPLOAD_SIZE_MB", "25"))
@@ -77,3 +78,4 @@ GEMINI_API_KEY = settings.GEMINI_API_KEY
 AI_API_KEY_1 = settings.AI_API_KEY_1
 AI_API_KEY_2 = settings.AI_API_KEY_2
 AI_API_KEY_3 = settings.AI_API_KEY_3
+GEMINI_MODEL = settings.GEMINI_MODEL

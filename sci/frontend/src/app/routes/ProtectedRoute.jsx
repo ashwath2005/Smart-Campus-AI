@@ -12,7 +12,7 @@ export const ProtectedRoute = ({
   children,
   allowedRoles,
 }) => {
-  const { user, isLoading } = useAuth();
+  const { user, token, isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
 
   if (isLoading) {
@@ -26,7 +26,7 @@ export const ProtectedRoute = ({
     );
   }
 
-  if (!user) {
+  if (!isAuthenticated || !user || !token) {
     // Redirect to login preserving the attempted destination
     return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
   }

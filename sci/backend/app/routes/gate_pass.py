@@ -1,3 +1,4 @@
+import logging
 from fastapi import APIRouter, Depends, HTTPException, Body, Query
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -6,9 +7,11 @@ from datetime import datetime
 
 from app.database import get_db
 from app.middleware.auth_middleware import get_current_user
+from app.middleware.role_checker import require_role
 from app.services.gate_pass_service import GatePassService
 from app.models.gate_pass import GatePassPolicy
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/gate-pass", tags=["Autonomous AI Gate Pass"])
 
 
@@ -203,13 +206,24 @@ async def get_analytics(
 
 @router.get("/audit-logs")
 async def get_audit_logs(
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
     db: AsyncSession = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(require_role("admin"))
 ):
     """
-    Immutable Gate Pass Audit Logs endpoint.
+    Immutable Gate Pass Audit Logs endpoint (Admin RBAC).
     """
-    return await GatePassService.get_audit_logs(db=db)
+    try:
+        return await GatePassService.get_audit_logs(db=db, limit=limit, offset=offset)
+    except HTTPException:
+        raise
+    except Exception:
+        logger.exception("Failed to fetch gate pass audit logs")
+        raise HTTPException(
+            status_code=500,
+            detail="Unable to retrieve gate pass audit logs at this time."
+        )
 
 
 @router.get("/policy")

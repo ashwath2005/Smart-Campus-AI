@@ -167,7 +167,7 @@
   height: 36px;
   border-radius: 9px;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-border);
   color: #a3a3a3;
   cursor: pointer;
   transition: all 0.18s ease;
@@ -349,7 +349,7 @@
   padding: 0.35rem 0.75rem;
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-border);
   color: var(--text-secondary, #b3b3b3);
   font-size: 0.75rem;
   font-weight: 500;
@@ -428,7 +428,7 @@
 
 .forum-count-badge {
   background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border);
   color: var(--text-secondary, #b3b3b3);
   font-size: 0.75rem;
   font-weight: 600;
@@ -653,7 +653,7 @@
 .forum-textarea:focus {
   border-color: var(--brand, #f21722) !important;
   box-shadow: 0 0 0 3px rgba(242, 23, 34, 0.15) !important;
-  background: #0a0a0a !important;
+  background: var(--color-bg-surface) !important;
 }
 
 .forum-textarea::placeholder {
@@ -680,7 +680,7 @@
 
 .forum-format-pill {
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-border);
   border-radius: 5px;
   padding: 0.15rem 0.45rem;
   font-family: monospace;
@@ -759,7 +759,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--color-border);
   padding-bottom: 0.75rem;
 }
 

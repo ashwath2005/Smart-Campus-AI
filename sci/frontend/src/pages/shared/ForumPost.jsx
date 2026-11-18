@@ -27,18 +27,7 @@ import {
 import { formatDistanceToNow } from "date-fns";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
-
-function getCurrentUser() {
-  try {
-    const stored = localStorage.getItem("campus_user");
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      return parsed.user || parsed;
-    }
-  } catch {
-  }
-  return null;
-}
+import { useAuth } from "../../context/AuthContext";
 
 function buildReplyTree(replies) {
   const map = new Map();
@@ -80,7 +69,7 @@ export const ForumPost = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deletingReplyId, setDeletingReplyId] = useState(null);
 
-  const currentUser = getCurrentUser();
+  const { user: currentUser } = useAuth();
   const isAuthor = currentUser && post && currentUser.id === post.author_id;
   const isModerator = currentUser && (currentUser.role === "faculty" || currentUser.role === "admin");
 

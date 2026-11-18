@@ -51,7 +51,7 @@
 /* Tabs Switcher */
 .locator-tabs-navigation {
   display: flex;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--color-border);
   padding-bottom: 8px;
   margin-bottom: 24px;
 }
@@ -264,7 +264,7 @@
   display: grid;
   grid-template-columns: 1.2fr 1fr 1fr 1.2fr;
   gap: 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--color-border);
   padding-bottom: 20px;
   align-items: flex-start;
 }
@@ -732,7 +732,7 @@
   color: var(--text-secondary);
   text-transform: uppercase;
   padding: 10px 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .leaves-data-table td {

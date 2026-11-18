@@ -78,7 +78,7 @@
 
 /* Profile Identity Card */
 .wp-card {
-  background: #0D0D0D;
+  background: var(--color-bg-surface);
   border: 1px solid #1F1F1F;
   border-radius: 12px;
   padding: 24px;
@@ -103,7 +103,7 @@
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  background: #151515;
+  background: var(--color-bg-muted);
   border: 2px solid #F21722;
   box-shadow: 0 0 16px rgba(242, 23, 34, 0.2);
   display: flex;
@@ -133,7 +133,7 @@
   align-items: center;
   gap: 6px;
   padding: 3px 10px;
-  background: #141414;
+  background: var(--color-bg-muted);
   border: 1px solid #292929;
   border-radius: 6px;
   font-size: 11px;
@@ -191,7 +191,7 @@
 }
 
 .wp-stat-card {
-  background: #0D0D0D;
+  background: var(--color-bg-surface);
   border: 1px solid #1F1F1F;
   border-radius: 10px;
   padding: 16px;
@@ -251,7 +251,7 @@
   align-items: flex-start;
   gap: 12px;
   padding: 12px 14px;
-  background: #111111;
+  background: var(--color-bg-muted);
   border: 1px solid #1F1F1F;
   border-radius: 8px;
 }
@@ -309,7 +309,7 @@
 }
 
 .wp-modal {
-  background: #0D0D0D;
+  background: var(--color-bg-surface);
   border: 1px solid #292929;
   border-radius: 12px;
   width: 100%;
@@ -360,7 +360,7 @@
 }
 
 .wp-input {
-  background: #141414;
+  background: var(--color-bg-muted);
   border: 1px solid #222222;
   border-radius: 8px;
   padding: 10px 14px;

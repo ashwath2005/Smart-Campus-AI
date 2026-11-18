@@ -95,7 +95,7 @@
 
 .featured-hero-card {
   background: linear-gradient(135deg, rgba(17, 18, 22, 0.9) 0%, rgba(13, 14, 18, 0.95) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
   box-shadow: var(--shadow-elevated), 0 0 30px rgba(239, 68, 68, 0.04);
 }
 
@@ -192,7 +192,7 @@
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
 }
 
 .hero-calendar {
@@ -392,7 +392,7 @@
   width: 440px;
   max-width: 100%;
   background: rgba(13, 14, 18, 0.95);
-  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  border-left: 1px solid var(--color-border);
   box-shadow: -10px 0 40px rgba(0, 0, 0, 0.6);
   z-index: 1001;
   padding: 32px;

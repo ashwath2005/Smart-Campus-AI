@@ -9,7 +9,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 30000,
+  timeout: 60000,
 });
 
 // Flag to prevent infinite refresh loops
@@ -31,10 +31,68 @@ function processQueue(error, token = null) {
   failedQueue = [];
 }
 
-// Request interceptor: attach JWT from tokenStorage
+function isAuthBypassUrl(url = '') {
+  return (
+    url.includes('/auth/login') ||
+    url.includes('/auth/register') ||
+    url.includes('/auth/refresh') ||
+    url.includes('/auth/logout') ||
+    url.includes('/auth/forgot-password') ||
+    url.includes('/auth/reset-password')
+  );
+}
+
+async function refreshAccessToken() {
+  if (isRefreshing) {
+    return new Promise((resolve, reject) => {
+      failedQueue.push({ resolve, reject });
+    });
+  }
+
+  isRefreshing = true;
+  try {
+    const currentToken = tokenStorage.getToken();
+    const response = await axios.post(
+      `${ENV.API_ENDPOINT}/auth/refresh`,
+      {},
+      {
+        withCredentials: true,
+        timeout: 10000,
+        headers: currentToken ? { Authorization: `Bearer ${currentToken}` } : {},
+      }
+    );
+
+    const newAccessToken = response.data.access_token || response.data.token;
+    if (!newAccessToken) {
+      throw new Error('No access token returned');
+    }
+    tokenStorage.updateToken(newAccessToken);
+    processQueue(null, newAccessToken);
+    return newAccessToken;
+  } catch (refreshError) {
+    processQueue(refreshError, null);
+    tokenStorage.clear();
+    if (!/^\/login(\/|$)/.test(window.location.pathname)) {
+      toast.error('Session expired. Please log in again.');
+      window.location.href = '/login';
+    }
+    throw refreshError;
+  } finally {
+    isRefreshing = false;
+  }
+}
+
+// Request interceptor: attach JWT from tokenStorage (and proactively refresh if expired)
 api.interceptors.request.use(
-  (config) => {
-    const token = tokenStorage.getToken();
+  async (config) => {
+    let token = tokenStorage.getToken();
+    if (token && !isAuthBypassUrl(config.url) && tokenStorage.isTokenExpired(token)) {
+      try {
+        token = await refreshAccessToken();
+      } catch (err) {
+        return Promise.reject(err);
+      }
+    }
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -51,18 +109,15 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // Only attempt refresh for 401 errors, when we have a config, and haven't already retried
+    // Only attempt refresh for 401 errors, when we have a config, a stored token, and haven't already retried
     if (
       error.response?.status === 401 &&
       originalRequest &&
-      !originalRequest._retry
+      !originalRequest._retry &&
+      tokenStorage.getToken()
     ) {
       // Don't attempt refresh for login, register, or the refresh endpoint itself
-      if (
-        originalRequest.url?.includes('/auth/login') ||
-        originalRequest.url?.includes('/auth/register') ||
-        originalRequest.url?.includes('/auth/refresh')
-      ) {
+      if (isAuthBypassUrl(originalRequest.url)) {
         if (originalRequest.url?.includes('/auth/refresh')) {
           tokenStorage.clear();
           if (!/^\/login(\/|$)/.test(window.location.pathname)) {
@@ -73,47 +128,14 @@ api.interceptors.response.use(
         return Promise.reject(error);
       }
 
-      // If a refresh is already in progress, queue this request
-      if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        })
-          .then((token) => {
-            originalRequest.headers.Authorization = `Bearer ${token}`;
-            return api(originalRequest);
-          })
-          .catch((err) => {
-            return Promise.reject(err);
-          });
-      }
-
       originalRequest._retry = true;
-      isRefreshing = true;
 
       try {
-        const response = await api.post(
-          `/auth/refresh`,
-          {},
-          { withCredentials: true, timeout: 10000 }
-        );
-
-        const newAccessToken = response.data.access_token;
-        tokenStorage.updateToken(newAccessToken);
-
+        const newAccessToken = await refreshAccessToken();
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        processQueue(null, newAccessToken);
-
         return api(originalRequest);
       } catch (refreshError) {
-        processQueue(refreshError, null);
-        tokenStorage.clear();
-        if (!/^\/login(\/|$)/.test(window.location.pathname)) {
-          toast.error('Session expired. Please log in again.');
-          window.location.href = '/login';
-        }
         return Promise.reject(refreshError);
-      } finally {
-        isRefreshing = false;
       }
     }
 

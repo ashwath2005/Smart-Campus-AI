@@ -57,7 +57,7 @@
 .gen-config-card {
   background: rgba(15, 23, 42, 0.6);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-border);
   border-radius: 16px;
   padding: 24px;
   margin-bottom: 32px;
@@ -98,7 +98,7 @@
 
 .config-select, .config-input {
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border);
   border-radius: 10px;
   padding: 10px 14px;
   color: #f1f5f9;
@@ -122,7 +122,7 @@
   flex: 1;
   padding: 10px;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   color: #94a3b8;
   font-size: 13px;
@@ -189,7 +189,7 @@
 
 .btn-secondary {
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border);
   color: #cbd5e1;
 }
 
@@ -218,7 +218,7 @@ button:disabled {
 
 .metric-card {
   background: rgba(30, 41, 59, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 20px;
 }
@@ -271,7 +271,7 @@ button:disabled {
 /* Preview Table */
 .preview-container {
   background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-border);
   border-radius: 16px;
   padding: 20px;
   margin-bottom: 32px;
@@ -290,7 +290,7 @@ button:disabled {
   display: flex;
   gap: 4px;
   background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 4px;
 }
@@ -471,7 +471,7 @@ button:disabled {
 
 .details-panel-card {
   background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-border);
   border-radius: 16px;
   padding: 24px;
 }

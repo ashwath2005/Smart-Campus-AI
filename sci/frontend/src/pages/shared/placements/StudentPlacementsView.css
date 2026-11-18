@@ -42,7 +42,7 @@
 .student-tab-bar {
   display: flex;
   gap: 1.25rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--color-border);
   padding-bottom: 0.5rem;
 }
 
@@ -249,7 +249,7 @@
 .student-status-badge.closed {
   background-color: rgba(255, 255, 255, 0.05);
   color: #8e9196;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-border);
 }
 
 .student-badges-row {
@@ -294,7 +294,7 @@
   font-size: 12px;
   color: var(--text-secondary);
   padding-top: 0.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid var(--color-border);
 }
 
 .eligibility-label {
@@ -307,7 +307,7 @@
   justify-content: space-between;
   align-items: center;
   padding-top: 0.75rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid var(--color-border);
 }
 
 .student-deadline-text {
@@ -356,7 +356,7 @@
   padding: 0.55rem 0.85rem;
   background-color: #1a1b20;
   color: #64748b;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 12px;
   font-weight: 600;
@@ -457,7 +457,7 @@
 
 .student-app-review-box {
   background: #0d0e11;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 0.75rem 1rem;
   font-size: 12px;

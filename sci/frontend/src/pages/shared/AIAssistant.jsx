@@ -554,8 +554,9 @@ export const AIAssistant = () => {
       });
       setSummaryResult(res.data);
       toast.success("Summary generated!");
-    } catch {
-      toast.error("Failed to summarize PDF");
+    } catch (err) {
+      const msg = err.response?.data?.detail || "Failed to summarize document";
+      toast.error(msg);
     } finally {
       setSummaryLoading(false);
     }
@@ -576,8 +577,9 @@ export const AIAssistant = () => {
       });
       setQuizQuestions(res.data.questions);
       toast.success("Quiz generated!");
-    } catch {
-      toast.error("Failed to generate quiz");
+    } catch (err) {
+      const msg = err.response?.data?.detail || "Failed to generate quiz";
+      toast.error(msg);
     } finally {
       setQuizLoading(false);
     }
@@ -1158,14 +1160,14 @@ export const AIAssistant = () => {
             <div className="planner-config-card">
               <h3 className="planner-card-title">
                 <FileText size={16} />
-                <span>Upload Lecture Notes or Textbook PDF</span>
+                <span>Upload Lecture Notes, Textbook PDF or DOCX</span>
               </h3>
               
               <form onSubmit={handleSummarizerSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                 <div className="pdf-upload-box">
                   <input
                     type="file"
-                    accept=".pdf"
+                    accept=".pdf,.docx,.doc,.txt"
                     onChange={(e) => setPdfFile(e.target.files[0] || null)}
                     className="pdf-file-input"
                   />
@@ -1178,9 +1180,9 @@ export const AIAssistant = () => {
                   ) : (
                     <>
                       <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "var(--text-primary)" }}>
-                        Click to browse or drag and drop your study PDF
+                        Click to browse or drag and drop your study document (PDF, Word DOCX)
                       </p>
-                      <span className="pdf-upload-label">Supports lecture slides, textbook excerpts, and study notes (up to 20MB)</span>
+                      <span className="pdf-upload-label">Supports PDF documents, DOCX lecture notes, slides, and study notes (up to 20MB)</span>
                     </>
                   )}
                 </div>
@@ -1362,12 +1364,12 @@ export const AIAssistant = () => {
                   {/* Document RAG Dropzone (Optional) */}
                   <div>
                     <label style={{ fontSize: "12px", fontWeight: 700, color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>
-                      Ground Questions on Lecture Notes / PDF (Optional)
+                      Ground Questions on Lecture Notes, PDF or DOCX (Optional)
                     </label>
                     <label className="quiz-dropzone">
                       <input
                         type="file"
-                        accept=".pdf"
+                        accept=".pdf,.docx,.doc,.txt"
                         onChange={(e) => setQuizFile(e.target.files[0] || null)}
                         style={{ display: "none" }}
                       />

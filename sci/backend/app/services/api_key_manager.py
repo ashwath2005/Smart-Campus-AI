@@ -7,7 +7,7 @@ import asyncio
 from typing import List, Optional
 import threading
 from fastapi import HTTPException
-from app.config import AI_API_KEY_1, AI_API_KEY_2, AI_API_KEY_3, GEMINI_API_KEY
+from app.config import AI_API_KEY_1, AI_API_KEY_2, AI_API_KEY_3, GEMINI_API_KEY, GEMINI_MODEL
 
 logger = logging.getLogger("api_key_manager")
 
@@ -48,19 +48,19 @@ class APIKeyManager:
         self._initialized = True
 
     def _load_keys(self):
-        # Prefer AI_API_KEY_* first, fallback to GEMINI_API_KEY
-        key1 = AI_API_KEY_1 or GEMINI_API_KEY
-        key2 = AI_API_KEY_2
-        key3 = AI_API_KEY_3
+        candidate_keys = [
+            ("GEMINI_API_KEY", GEMINI_API_KEY),
+            ("AI_API_KEY_1", AI_API_KEY_1),
+            ("AI_API_KEY_2", AI_API_KEY_2),
+            ("AI_API_KEY_3", AI_API_KEY_3),
+        ]
+        seen_values = set()
+        for label, val in candidate_keys:
+            if val and val.strip() and val.strip() not in seen_values:
+                seen_values.add(val.strip())
+                self.keys.append(APIKey(val.strip(), f"Key{len(self.keys)+1} ({label})"))
 
-        if key1:
-            self.keys.append(APIKey(key1, "Key1"))
-        if key2:
-            self.keys.append(APIKey(key2, "Key2"))
-        if key3:
-            self.keys.append(APIKey(key3, "Key3"))
-
-        logger.info(f"APIKeyManager: Loaded {len(self.keys)} API keys.")
+        logger.info(f"APIKeyManager: Loaded {len(self.keys)} unique API keys.")
 
     def getActiveKey(self) -> Optional[APIKey]:
         with self.lock:
@@ -146,7 +146,7 @@ api_key_manager = APIKeyManager()
 api_call_lock = threading.Lock()
 
 async def execute_ai_call_with_retry(
-    model_name: str = "gemini-2.5-flash",
+    model_name: Optional[str] = None,
     system_instruction: Optional[str] = None,
     prompt: Optional[str] = None,
     schema: Optional[type] = None,
@@ -155,12 +155,22 @@ async def execute_ai_call_with_retry(
     is_chat: bool = False,
     chat_history: Optional[List[dict]] = None,
     chat_question: Optional[str] = None,
+    timeout: float = 20.0,
 ):
     import google.generativeai as genai
     import asyncio
     
+    # Establish fallback model candidates
+    primary_model = model_name or GEMINI_MODEL or "gemini-3.5-flash-lite"
+    candidate_pool = [primary_model, "gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-3.5-flash", "gemini-flash-latest", "gemini-2.5-flash"]
+    candidate_models: List[str] = []
+    for m in candidate_pool:
+        if m and m not in candidate_models:
+            candidate_models.append(m)
+
     max_retries_per_key = 2
     tried_keys = set()
+    last_failure_reason = "Unknown error"
     
     while True:
         active_key_obj = api_key_manager.getActiveKey()
@@ -177,94 +187,121 @@ async def execute_ai_call_with_retry(
         if len(tried_keys) >= len(api_key_manager.keys):
             raise HTTPException(
                 status_code=502,
-                detail="All configured Gemini API keys failed or exceeded quotas. Please try again later."
+                detail=f"All configured Gemini API keys failed or exceeded quotas. Last error: {last_failure_reason}. Please verify GEMINI_API_KEY in the backend .env file."
             )
             
         tried_keys.add(key_val)
-        
-        for attempt in range(1, max_retries_per_key + 1):
-            start_time = time.time()
-            logger.info(
-                f"APIKeyManager: Executing request using {key_name} ({key_mask}). Attempt {attempt}/{max_retries_per_key}."
-            )
-            
-            try:
-                # Synchronous task execution wrapper block
-                def _run():
-                    with api_call_lock:
-                        genai.configure(api_key=key_val)
-                        model = genai.GenerativeModel(
-                            model_name=model_name,
-                            system_instruction=system_instruction
-                        )
-                        
-                        if is_chat:
-                            history_gemini = []
-                            if chat_history:
-                                for msg in chat_history:
-                                    gemini_role = "user" if msg["role"] == "user" else "model"
-                                    history_gemini.append({
-                                        "role": gemini_role,
-                                        "parts": [msg["message"]]
-                                    })
-                            chat = model.start_chat(history=history_gemini)
-                            response = chat.send_message(chat_question)
-                            return response.text
-                        elif mime_type and file_bytes:
-                            if schema:
-                                response = model.generate_content(
-                                    [
-                                        {"mime_type": mime_type, "data": file_bytes},
-                                        prompt
-                                    ],
-                                    generation_config={
-                                        "response_mime_type": "application/json",
-                                        "response_schema": schema
-                                    }
-                                )
-                            else:
-                                response = model.generate_content(
-                                    [
-                                        {"mime_type": mime_type, "data": file_bytes},
-                                        prompt
-                                    ]
-                                )
-                            return response.text
-                        else:
-                            if schema:
-                                response = model.generate_content(
-                                    prompt,
-                                    generation_config={
-                                        "response_mime_type": "application/json",
-                                        "response_schema": schema
-                                    }
-                                )
-                            else:
-                                response = model.generate_content(prompt)
-                            return response.text
+        key_aborted = False
 
-                # Run synchronous call in worker thread with timeout
-                result = await asyncio.wait_for(asyncio.to_thread(_run), timeout=4.0)
-                
-                duration = time.time() - start_time
+        for current_model in candidate_models:
+            if key_aborted:
+                break
+
+            for attempt in range(1, max_retries_per_key + 1):
+                start_time = time.time()
                 logger.info(
-                    f"APIKeyManager: Success using {key_name} ({key_mask}). Response time: {duration:.2f}s."
-                )
-                api_key_manager.markKeyHealthy(key_val)
-                return result
-                
-            except Exception as e:
-                duration = time.time() - start_time
-                error_msg = str(e)
-                logger.warning(
-                    f"APIKeyManager: Failure using {key_name} ({key_mask}). Response time: {duration:.2f}s. Error: {error_msg}"
+                    f"APIKeyManager: Executing request using {key_name} ({key_mask}) on {current_model}. Attempt {attempt}/{max_retries_per_key}."
                 )
                 
-                api_key_manager.markKeyFailed(key_val, reason=error_msg[:100])
-                
-                if attempt == max_retries_per_key:
-                    logger.warning(
-                        f"APIKeyManager: Key {key_name} failed {max_retries_per_key} times. Rotating to next key..."
+                try:
+                    def _run(target_model=current_model):
+                        with api_call_lock:
+                            genai.configure(api_key=key_val)
+                            model = genai.GenerativeModel(
+                                model_name=target_model,
+                                system_instruction=system_instruction
+                            )
+                            
+                            if is_chat:
+                                history_gemini = []
+                                if chat_history:
+                                    for msg in chat_history:
+                                        gemini_role = "user" if msg.get("role") == "user" else "model"
+                                        history_gemini.append({
+                                            "role": gemini_role,
+                                            "parts": [msg.get("message", "")]
+                                        })
+                                chat = model.start_chat(history=history_gemini)
+                                response = chat.send_message(chat_question)
+                                return response.text
+                            elif mime_type and file_bytes:
+                                if schema:
+                                    response = model.generate_content(
+                                        [
+                                            {"mime_type": mime_type, "data": file_bytes},
+                                            prompt
+                                        ],
+                                        generation_config={
+                                            "response_mime_type": "application/json",
+                                            "response_schema": schema
+                                        }
+                                    )
+                                else:
+                                    response = model.generate_content(
+                                        [
+                                            {"mime_type": mime_type, "data": file_bytes},
+                                            prompt
+                                        ]
+                                    )
+                                return response.text
+                            else:
+                                if schema:
+                                    response = model.generate_content(
+                                        prompt,
+                                        generation_config={
+                                            "response_mime_type": "application/json",
+                                            "response_schema": schema
+                                        }
+                                    )
+                                else:
+                                    response = model.generate_content(prompt)
+                                return response.text
+
+                    result = await asyncio.wait_for(asyncio.to_thread(_run), timeout=timeout)
+                    
+                    duration = time.time() - start_time
+                    logger.info(
+                        f"APIKeyManager: Success using {key_name} ({key_mask}) on {current_model}. Response time: {duration:.2f}s."
                     )
-                    api_key_manager.rotateKey()
+                    api_key_manager.markKeyHealthy(key_val)
+                    return result
+                    
+                except asyncio.TimeoutError:
+                    duration = time.time() - start_time
+                    last_failure_reason = f"Request timed out after {timeout:.1f}s on {current_model}"
+                    logger.warning(
+                        f"APIKeyManager: Timeout using {key_name} ({key_mask}) on {current_model}. Response time: {duration:.2f}s."
+                    )
+                    # Break out to try next candidate model
                     break
+
+                except Exception as e:
+                    duration = time.time() - start_time
+                    error_msg = str(e) or type(e).__name__
+                    last_failure_reason = error_msg
+                    logger.warning(
+                        f"APIKeyManager: Failure using {key_name} ({key_mask}) on {current_model}. Response time: {duration:.2f}s. Error: {error_msg[:120]}"
+                    )
+                    
+                    err_lower = error_msg.lower()
+                    # Model specific quota exhaustion or deprecation -> switch immediately to next fallback model
+                    if "404" in error_msg or "not found" in err_lower or "429" in error_msg or "quota" in err_lower or "resourceexhausted" in err_lower:
+                        logger.info(
+                            f"APIKeyManager: Model {current_model} returned availability/quota limit. Trying next candidate model..."
+                        )
+                        break
+
+                    # Key-level credential error (invalid API key / forbidden) -> no need to try more models on this key
+                    if "400" in error_msg or "api_key_invalid" in err_lower or "permission_denied" in err_lower or "403" in error_msg:
+                        logger.error(
+                            f"APIKeyManager: Key {key_name} is rejected as invalid/unauthorized. Rotating key."
+                        )
+                        key_aborted = True
+                        break
+
+        # All candidate models failed on this key
+        api_key_manager.markKeyFailed(key_val, reason=last_failure_reason[:100])
+        logger.warning(
+            f"APIKeyManager: Key {key_name} exhausted all model options. Rotating to next key..."
+        )
+        api_key_manager.rotateKey()

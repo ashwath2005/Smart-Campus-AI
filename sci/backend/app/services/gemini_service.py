@@ -2,13 +2,13 @@ import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 import google.generativeai as genai
 import asyncio
-from app.config import GEMINI_API_KEY
+from app.config import GEMINI_API_KEY, GEMINI_MODEL
 import json
 from pydantic import BaseModel, Field
 from typing import List, Optional
 
 genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel("gemini-2.5-flash")
+model = genai.GenerativeModel(GEMINI_MODEL)
 
 # ─── Pydantic Response Models for Structured Output ──────────────────────────
 

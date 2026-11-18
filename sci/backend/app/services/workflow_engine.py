@@ -15,6 +15,7 @@ from app.models.user import User, StudentLeave, StudentOD
 from app.models.communication import Notification
 from app.models.audit_log import AuditLog
 from app.utils.websocket_manager import manager as ws_manager
+from app.utils.audit_metadata import serialize_audit_metadata
 
 
 class WorkflowEngine:
@@ -122,7 +123,7 @@ class WorkflowEngine:
             action=action_name or f"TRANSITION_TO_{new_state}",
             previous_state=previous_state,
             new_state=new_state,
-            metadata_json=remarks or "",
+            metadata_json=serialize_audit_metadata(remarks=remarks),
             timestamp=datetime.utcnow(),
         )
         db.add(audit_log)

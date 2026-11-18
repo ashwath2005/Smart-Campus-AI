@@ -830,7 +830,7 @@
   height: 32px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--color-border);
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -932,7 +932,7 @@
   gap: 0.75rem;
   padding: 1.25rem;
   background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border);
   border-radius: 16px;
   width: 100%;
   box-sizing: border-box;
@@ -942,7 +942,7 @@
   padding: 1rem;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -972,7 +972,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.35rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .gp-modal-info-label {
@@ -1015,7 +1015,7 @@
   font-family: monospace;
   font-size: 0.75rem;
   background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border);
   padding: 0.6rem 0.85rem;
   border-radius: 8px;
   color: #ef4444;

@@ -10,13 +10,13 @@ print("API Key configured:", bool(api_key))
 
 try:
     # 1. Test basic generation
-    model = genai.GenerativeModel("gemini-2.5-flash")
+    model = genai.GenerativeModel("gemini-3.8-flash")
     resp = model.generate_content("Hello! What is your name?")
     print("Response:", resp.text)
     
     # 2. Test system instruction and chat history
     system_inst = "You are a friendly smart campus assistant named CampusBot."
-    chat_model = genai.GenerativeModel("gemini-2.5-flash", system_instruction=system_inst)
+    chat_model = genai.GenerativeModel("gemini-3.8-flash", system_instruction=system_inst)
     
     chat = chat_model.start_chat(history=[
         {"role": "user", "parts": ["Hi, I am Alex, a CSE student."]},
@@ -35,7 +35,7 @@ try:
         topics: list[str]
 
     struct_model = genai.GenerativeModel(
-        "gemini-2.5-flash",
+        "gemini-3.8-flash",
         generation_config={
             "response_mime_type": "application/json",
             "response_schema": StudyPlan

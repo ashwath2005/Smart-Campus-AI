@@ -116,7 +116,7 @@
 
 .forum-post-list-card:hover {
   border-color: rgba(255, 255, 255, 0.2);
-  background: #111111;
+  background: var(--color-bg-muted);
   transform: translateY(-2px);
   box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.7);
 }
@@ -221,7 +221,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--color-border);
   padding-bottom: 0.75rem;
 }
 
@@ -244,7 +244,7 @@
 
 .forum-stat-box {
   background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--color-border);
   border-radius: 10px;
   padding: 0.65rem 0.5rem;
   text-align: center;
@@ -386,7 +386,7 @@
 .forum-modal-input:focus {
   border-color: var(--brand, #f21722) !important;
   box-shadow: 0 0 0 3px rgba(242, 23, 34, 0.15) !important;
-  background: #0a0a0a !important;
+  background: var(--color-bg-surface) !important;
 }
 
 .forum-modal-input::placeholder {
@@ -413,7 +413,7 @@
 .forum-modal-textarea:focus {
   border-color: var(--brand, #f21722) !important;
   box-shadow: 0 0 0 3px rgba(242, 23, 34, 0.15) !important;
-  background: #0a0a0a !important;
+  background: var(--color-bg-surface) !important;
 }
 
 .forum-modal-textarea::placeholder {
@@ -430,7 +430,7 @@
 
 .forum-tag-suggestion-pill {
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-border);
   border-radius: 9999px;
   padding: 2px 8px;
   font-size: 0.72rem;

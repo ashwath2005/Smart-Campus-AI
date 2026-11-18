@@ -19,7 +19,7 @@
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--color-border);
   padding-bottom: 1.25rem;
 }
 
@@ -60,7 +60,7 @@
   font-weight: 500;
   color: #94a3b8;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -108,7 +108,7 @@
 
 .faculty-att-kpi-card {
   background: #111215;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 1.1rem 1.25rem;
   display: flex;
@@ -193,7 +193,7 @@
 /* Controls Bar */
 .faculty-att-controls-card {
   background: #111215;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 1rem 1.25rem;
   display: flex;
@@ -237,7 +237,7 @@
 .att-subject-select,
 .att-search-input {
   background: #0a0b0d;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   color: #f8fafc;
   padding: 0.55rem 0.85rem;
@@ -314,7 +314,7 @@
 /* Student Roster Table */
 .faculty-att-table-wrapper {
   background: #111215;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
@@ -328,7 +328,7 @@
 
 .faculty-att-table thead tr {
   background: #16171b;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .faculty-att-table th {
@@ -359,7 +359,7 @@
   display: inline-block;
   padding: 0.25rem 0.55rem;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   font-family: monospace;
   font-size: 0.8125rem;
@@ -378,7 +378,7 @@
   height: 32px;
   border-radius: 50%;
   background: #1f2229;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--color-border);
   color: #f21722;
   font-weight: 700;
   display: flex;
@@ -412,7 +412,7 @@
 .att-segmented-control {
   display: inline-flex;
   background: #0a0b0d;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 3px;
   gap: 2px;
@@ -452,7 +452,7 @@
 .att-remarks-input {
   width: 100%;
   background: #0a0b0d;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   color: #e2e8f0;
   padding: 0.4rem 0.65rem;
@@ -488,7 +488,7 @@
   right: 0;
   background: rgba(17, 18, 21, 0.95);
   backdrop-filter: blur(12px);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--color-border);
   padding: 0.85rem 2rem;
   display: flex;
   align-items: center;
@@ -516,7 +516,7 @@
   display: inline-block;
   padding: 0.25rem 0.75rem;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border);
   border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 600;

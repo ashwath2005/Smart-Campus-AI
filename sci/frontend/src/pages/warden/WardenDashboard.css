@@ -98,7 +98,7 @@
 }
 
 .wd-stat-card {
-  background: #0D0D0D;
+  background: var(--color-bg-surface);
   border: 1px solid #1F1F1F;
   border-radius: 10px;
   padding: 18px;
@@ -152,7 +152,7 @@
 }
 
 .wd-card {
-  background: #0D0D0D;
+  background: var(--color-bg-surface);
   border: 1px solid #1F1F1F;
   border-radius: 12px;
   padding: 20px;

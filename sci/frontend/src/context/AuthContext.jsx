@@ -2,67 +2,89 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 import { hasPermission as checkPermission } from '../permissions';
+import { tokenStorage } from '../services/storage/tokenStorage';
 
 const AuthContext = createContext(undefined);
 
-const STORAGE_KEY = 'campus_user';
-
-function getStoredAuth() {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      return { user: parsed.user || null, token: parsed.token || null };
-    }
-  } catch { /* ignore */ }
-  return { user: null, token: null };
-}
-
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => getStoredAuth().user);
-  const [token, setToken] = useState(() => getStoredAuth().token);
-  const [isLoading, setIsLoading] = useState(() => !getStoredAuth().user);
+  const [user, setUser] = useState(() => tokenStorage.getAuth().user);
+  const [token, setToken] = useState(() => tokenStorage.getAuth().token);
+  const [isLoading, setIsLoading] = useState(() => {
+    const auth = tokenStorage.getAuth();
+    return Boolean(auth.user && auth.token);
+  });
 
-  // On mount, restore session from localStorage
+  // Sync token state whenever tokenStorage refreshes the token, and clear across tabs on logout
   useEffect(() => {
-    const { user: storedUser, token: storedToken } = getStoredAuth();
+    const handleTokenRefreshed = (e) => {
+      if (e.detail) {
+        setToken(e.detail);
+      }
+    };
+    const handleStorageChange = (e) => {
+      if (e.key === 'campus_user' && e.storageArea === window.localStorage) {
+        const auth = tokenStorage.getAuth();
+        setUser(auth.user);
+        setToken(auth.token);
+      }
+    };
+    window.addEventListener('auth:token-refreshed', handleTokenRefreshed);
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('auth:token-refreshed', handleTokenRefreshed);
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
+  // On mount, verify any stored session with the backend before allowing protected routes
+  useEffect(() => {
+    const { user: storedUser, token: storedToken } = tokenStorage.getAuth();
     if (storedUser && storedToken) {
       setUser(storedUser);
       setToken(storedToken);
-      // Validate token by fetching current user
       api.get('/auth/me')
         .then((res) => {
           const validatedUser = res.data.user || res.data;
+          const latestToken = tokenStorage.getToken() || storedToken;
           setUser(validatedUser);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify({ user: validatedUser, token: storedToken }));
+          setToken(latestToken);
+          tokenStorage.updateUser(validatedUser);
         })
         .catch(() => {
-          // Token invalid, clear session
+          // Token invalid or expired without valid refresh, clear session
           setUser(null);
           setToken(null);
-          localStorage.removeItem(STORAGE_KEY);
+          tokenStorage.clear();
         })
         .finally(() => setIsLoading(false));
     } else {
+      setUser(null);
+      setToken(null);
+      tokenStorage.clear();
       setIsLoading(false);
     }
   }, []);
 
-  const saveAuth = useCallback((userData, authToken) => {
+  const saveAuth = useCallback((userData, authToken, rememberMe = false) => {
     setUser(userData);
     setToken(authToken);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ user: userData, token: authToken }));
+    tokenStorage.setAuth(userData, authToken, rememberMe);
   }, []);
 
   const login = useCallback(async (credentials) => {
     try {
-      const res = await api.post('/auth/login', credentials, { withCredentials: true });
+      const { rememberMe = false, ...restCredentials } = credentials || {};
+      const payload = {
+        ...restCredentials,
+        remember_me: Boolean(rememberMe || restCredentials.remember_me),
+      };
+      const res = await api.post('/auth/login', payload, { withCredentials: true });
       const { token: authToken, user: userData, access_token } = res.data;
       const finalToken = authToken || access_token;
       const finalUser = userData || res.data;
-      
-      if (finalToken) {
-        saveAuth(finalUser, finalToken);
+
+      if (finalToken && finalUser) {
+        saveAuth(finalUser, finalToken, payload.remember_me);
         toast.success(`Welcome back, ${finalUser.name || 'User'}!`);
         return { user: finalUser, token: finalToken };
       } else {
@@ -78,13 +100,14 @@ export function AuthProvider({ children }) {
 
   const register = useCallback(async (data) => {
     try {
-      const res = await api.post('/auth/register', data, { withCredentials: true });
+      const { rememberMe = false, ...restData } = data || {};
+      const res = await api.post('/auth/register', restData, { withCredentials: true });
       const { token: authToken, user: userData, access_token } = res.data;
       const finalToken = authToken || access_token;
       const finalUser = userData || res.data;
-      
-      if (finalToken) {
-        saveAuth(finalUser, finalToken);
+
+      if (finalToken && finalUser) {
+        saveAuth(finalUser, finalToken, Boolean(rememberMe));
         toast.success('Account created successfully!');
       } else {
         toast.success('Registration successful! Please log in.');
@@ -98,15 +121,15 @@ export function AuthProvider({ children }) {
   }, [saveAuth]);
 
   const logout = useCallback(async () => {
-    // Revoke refresh token server-side before clearing local session
+    setUser(null);
+    setToken(null);
+    tokenStorage.clear();
+    // Revoke refresh token server-side
     try {
       await api.post('/auth/logout', {}, { withCredentials: true });
     } catch {
       // Proceed with local logout even if server call fails
     }
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem(STORAGE_KEY);
     toast.success('Logged out successfully');
   }, []);
 
@@ -115,10 +138,7 @@ export function AuthProvider({ children }) {
       const res = await api.put('/auth/profile', data);
       const updatedUser = res.data.user || res.data;
       setUser(updatedUser);
-      const currentToken = token || getStoredAuth().token;
-      if (currentToken) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ user: updatedUser, token: currentToken }));
-      }
+      tokenStorage.updateUser(updatedUser);
       toast.success('Profile updated successfully!');
     } catch (error) {
       const err = error;
@@ -126,15 +146,12 @@ export function AuthProvider({ children }) {
       toast.error(message);
       throw error;
     }
-  }, [token]);
+  }, []);
 
   const updateUser = useCallback((updatedUser) => {
     setUser(updatedUser);
-    const currentToken = token || getStoredAuth().token;
-    if (currentToken) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ user: updatedUser, token: currentToken }));
-    }
-  }, [token]);
+    tokenStorage.updateUser(updatedUser);
+  }, []);
 
   const hasPermission = useCallback((permission) => {
     if (!user || !user.role) return false;

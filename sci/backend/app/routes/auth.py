@@ -18,6 +18,21 @@ from app.middleware.auth_middleware import get_current_user
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
+def _set_refresh_cookie(response: Response, raw_token: str, remember_me: bool) -> None:
+    """Attach refresh_token cookie as persistent (7d) when remembered, or session-scoped otherwise."""
+    cookie_kwargs = {
+        "key": "refresh_token",
+        "value": raw_token,
+        "httponly": True,
+        "secure": False,  # Set to True in production (HTTPS)
+        "samesite": "lax",
+        "path": "/api/auth",
+    }
+    if remember_me:
+        cookie_kwargs["max_age"] = 7 * 24 * 60 * 60
+    response.set_cookie(**cookie_kwargs)
+
+
 class RegisterRequest(BaseModel):
     name: str
     email: EmailStr
@@ -27,11 +42,13 @@ class RegisterRequest(BaseModel):
     roll_number: Optional[str] = None
     semester: Optional[int] = None
     section: Optional[str] = "A"
+    remember_me: bool = False
 
 
 class LoginRequest(BaseModel):
     email: str
     password: str
+    remember_me: bool = False
 
 
 class ForgotPasswordRequest(BaseModel):
@@ -90,17 +107,11 @@ async def register(req: RegisterRequest, response: Response, db: AsyncSession = 
 
     # Create refresh token and set as HTTP-only cookie
     raw_refresh_token = await create_refresh_token(
-        user_id=new_user.id, device_id=None, db=db
+        user_id=new_user.id,
+        device_id="remember" if req.remember_me else "session",
+        db=db,
     )
-    response.set_cookie(
-        key="refresh_token",
-        value=raw_refresh_token,
-        httponly=True,
-        secure=False,  # Set to True in production (HTTPS)
-        samesite="lax",
-        path="/api/auth",
-        max_age=7 * 24 * 60 * 60,  # 7 days
-    )
+    _set_refresh_cookie(response, raw_refresh_token, req.remember_me)
 
     return {
         "token": token,
@@ -157,17 +168,11 @@ async def login(req: LoginRequest, response: Response, db: AsyncSession = Depend
 
     # Create refresh token and set as HTTP-only cookie
     raw_refresh_token = await create_refresh_token(
-        user_id=user.id, device_id=None, db=db
+        user_id=user.id,
+        device_id="remember" if req.remember_me else "session",
+        db=db,
     )
-    response.set_cookie(
-        key="refresh_token",
-        value=raw_refresh_token,
-        httponly=True,
-        secure=False,  # Set to True in production (HTTPS)
-        samesite="lax",
-        path="/api/auth",
-        max_age=7 * 24 * 60 * 60,  # 7 days
-    )
+    _set_refresh_cookie(response, raw_refresh_token, req.remember_me)
 
     return {
         "token": token,
@@ -225,6 +230,7 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         "phone_number": current_user.get("phone_number"),
         "semester": current_user.get("semester"),
         "section": current_user.get("section"),
+        "is_first_login": current_user.get("is_first_login", False),
         "created_at": current_user.get("created_at"),
     }
 
@@ -375,17 +381,13 @@ async def refresh(request: Request, response: Response, db: AsyncSession = Depen
     )
 
     # Set new refresh token as HTTP-only cookie
-    response.set_cookie(
-        key="refresh_token",
-        value=new_refresh_token,
-        httponly=True,
-        secure=False,  # Set to True in production (HTTPS)
-        samesite="lax",
-        path="/api/auth",
-        max_age=7 * 24 * 60 * 60,  # 7 days
+    _set_refresh_cookie(
+        response,
+        new_refresh_token,
+        remember_me=(token_record.device_id == "remember"),
     )
 
-    return {"access_token": access_token}
+    return {"access_token": access_token, "token": access_token}
 
 
 @router.post("/logout")
